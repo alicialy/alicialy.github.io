@@ -6,16 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>What I Talk About When I Talk About Performance | Alicia&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
+  <meta name="description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
+要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧 [ House ] 豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找">
 <meta property="og:type" content="article">
 <meta property="og:title" content="What I Talk About When I Talk About Performance">
 <meta property="og:url" content="http://yoursite.com/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description">
-<meta property="og:updated_time" content="2016-03-30T04:13:22.000Z">
+<meta property="og:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
+要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧 [ House ] 豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找">
+<meta property="og:image" content="http://yoursite.com/post_images/performance1.jpg">
+<meta property="og:updated_time" content="2016-04-01T04:35:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Performance">
-<meta name="twitter:description">
+<meta name="twitter:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
+要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧 [ House ] 豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找">
+<meta name="twitter:image" content="http://yoursite.com/post_images/performance1.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Alicia&#39;s Blog" type="application/atom+xml">
   
@@ -24,6 +29,19 @@
   
   <link rel="stylesheet" href="/css/style.css">
   
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
 </head>
 
 <body>
@@ -56,11 +74,6 @@
 							<div class="ribbon"></div>
 						</div>
 						
-						<div class="icon-wrap icon-link hide" data-idx="2">
-							<div class="loopback_l"></div>
-							<div class="loopback_r"></div>
-						</div>
-						
 						
 						<div class="icon-wrap icon-me hide" data-idx="3">
 							<div class="user"></div>
@@ -76,10 +89,8 @@
 						<li>Menu</li>
 						<li>Tags</li>
 						
-						<li>Links</li>
 						
-						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -114,36 +125,18 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/iOS-Debug/" style="font-size: 10px;">iOS, Debug</a>
+						<a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a>
 					</div>
 				</section>
 				
 				
 				
-				<section class="switch-part switch-part3">
-					<div id="js-friends">
-					
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">奥巴马的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">卡卡的美丽传说</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">本泽马的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">吉格斯的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">习大大大不同</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">托蒂的博客</a>
-			        
-			        </div>
-				</section>
-				
 
 				
 				
-				<section class="switch-part switch-part4">
+				<section class="switch-part switch-part3">
 				
-					<div id="js-aboutme">我是谁，我从哪里来，我到哪里去？我就是我，是颜色不一样的吃货…</div>
+					<div id="js-aboutme">独立开发者，目前正在开发一款拼图类应用 [PhotoBook]，即将上架。</div>
 				</section>
 				
 			</div>
@@ -220,7 +213,7 @@
       <div class="article-info article-info-post">
         
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-Debug/">iOS, Debug</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Debug/">Debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
 	</div>
 
         
@@ -231,7 +224,67 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
+<p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧 [ House ] 豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
+<p>另外，由于最近为［伯乐在线］翻译一篇文章，作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
+<p>最近自己设计和编码的项目［PhotoBook］（一款拼图应用）基本完成了，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。<br><br></p>
+<h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
+<p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
+<a id="more"></a>
+<pre><code>NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+[toImageView setImage:scaledImage];
+</code></pre><p>将上面的方法放到线程中，另外由于 imageWithContentsOfFile 方法不会进行缓存，所以加载图片后将其加到缓存 (类型是 NSCache )中。</p>
+<pre><code>UIImage *tplImage = [self.cache objectForKey:indexPath];
+if (tplImage) {
+    [toImageView setImage:tplImage];
+}
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+    UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+    UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+    [self.cache setObject:scaledImage forKey:indexPath];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [toImageView setImage:scaledImage];
+    });
+});
+</code></pre><p>这样优化后，setTplCoverModel 方法由原来的 32ms 降低到了 2ms。</p>
+<p>通过 Time Profiler 找到最耗时的调用，不影响主线程的操作放到应当线程中；需要优化算法的通过算法降低时间复杂度；经常访问的数据放到缓存中，通过以上方法做调整。<br><br></p>
+<h2 id="Allocations-amp-Leaks"><a href="#Allocations-amp-Leaks" class="headerlink" title="Allocations &amp; Leaks"></a>Allocations &amp; Leaks</h2><p>运行 Leaks 检查是否存在内存泄漏。但是 ARC 出现后，即使检测过程中覆盖面够大，大多数情况下也是查不出什么泄漏的，除非你犯了太明显的错误，所以 Leaks 工具可能还不够用。<br><br></p>
+<p>之后运行 Allocations，点击所有的页面，看看进入每个页面后退出，内存是否会下降回或者接近进入该页面前的内存数。如果进入某个页面，再退出，发现内存没有减少回初始状态，说明操作的页面应该是有内存泄漏的。</p>
+<p>那么如何哪里泄漏呢，这里可以使用 Generation Analysis。发现有问题后，一定要记住重现步骤，每次按照重现步骤操作，操作中在进入怀疑有内存泄漏的页面 Mark Gerneration，等待几秒钟，页面加载完毕后，再退出该页面，再 Mark Gerneration 下，如果 Snapshot 的 Growth 和 Persistent 一直增长，说明肯定是有问题的。如果这个时候你打开对应页面的代码，随便看一眼，看到某个 Block 中有循环引用或者其他错误，那么恭喜你问题找到了。但是如果问题太隐蔽怎么办？看我的下一篇文章吧。<br><br></p>
+<h2 id="Core-Animation"><a href="#Core-Animation" class="headerlink" title="Core Animation"></a>Core Animation</h2><p>运行 Core Animation 查看帧率，如果滚动时帧率达不到60 fps 都是有调整的空间。下面按照设置面板中的 Debug Options 分别说明。<br><br></p>
+<p><em>Color Blended Layers</em><br>红色的区域说明该 View 是透明的，系统需要对这些 View 和下层的 View 混合（Blend）才能计算出实际颜色。所以应当尽量将红色的 View 设置为不透明。</p>
+<p>这个优化，我觉得主要是要和设计师协作才能有好的效果。例如：如果图片是 PNG 的，且部分地方透明，可以的话可以将透明部分的颜色设置为背景色（这样做，是不是逼死设计师，平白无辜的给人家添了些工作，估计还要费一番口舌去解释原因）</p>
+<p>再者，可以看下手机 QQ 的应用，打开左侧边栏，有很多应用为了美观在滚动区域设置了背景图，但是手机 QQ 遇到这个问题是怎么解决的？看下你就知道了，上方不滚动区域有背景图，但是滚动区域是不加背景图的。这样能保证滚动区域的视图是非透明的。<br><br></p>
+<p><em>Color Hits Green and Misses Red</em><br>如果设置了栅格 shouldRasterized 属性，那么这里会使用红色对栅格化进行高亮。</p>
+<pre><code>cell.layer.shouldRasterize = YES;
+</code></pre><p>如果在离屏渲染中使用了圆角、阴影等效果，在对应视图的层上开启栅格化属性，该属性在绘制图层时会对图像进行缓存，所以对其进行栅格化后，页面刚加载的时候会和未优化时帧率差不太多，但是滚动中因为进行了缓存，效率有所提高。所以说栅格化就是一把双刃剑。<br><br></p>
+<p><em>Color Copied Images</em><br>这里指图片的颜色或者格式 GPU 处理不了，这时图片需要使用 CPU 处理。如果遇到这种情况，请检查下图片格式或者颜色空间设置。<br><br></p>
+<p><em>Color Immediately</em><br>通常 Core Animatin Instruments 以每毫秒10次的频率更新图层，对于某些效果来说，这个速度可能会比较慢，所以设置该选项后每秒都会刷新，但是该选项开启后会影响到渲染性能，导致帧率测量不准确，所以不需要时请不要勾选此项<br><br></p>
+<p><em>Color Misaligned Images</em><br>设置该选项后，被绘制为黄色的 View 是被缩放的，被设置为洋红色的  View 是像素没有对齐（像素对齐指绘制的点无法直接映射到屏幕的像素点上）的。</p>
+<p>处理黄色视图方法：图片大小和控件大小不一致，可以使用 Core Graphics 中的 UIGraphicsBeginImageContextWithOptions 方法将图片缩放到控件大小，缩放图片的调用应放到线程中，避免阻塞主线程。</p>
+<p>处理洋红色视图方法：尽管 Core Graphics 中的坐标都是浮点型的，但是请尽量将坐标设置为整型的，例如在 [PhotoBook]项目中很多视图的坐标是计算出来的，难免就出现浮点型，这时可以使用 ceilf、floorf和 CGRectIntegral 将小数整数化。</p>
+<p>说一段痛苦的经历，在修改 Color Misaligned Images 问题时，我经历过类似 Bishop (前言提到的翻译文章作者) 查找内存泄漏时遭遇的不幸，当我把图片进行缩放后放到 ImageView 中，发现 ImageView 仍然显示黄色，Debug 和 UI Debug 还有 Reveal 查看视图的大小和图片的大小都是一致的，但是仍然显示成黄色，于是还特意查了很多其他资料，看看是否有其他原因导致黄色，但是都无果。经过一个多小时的折腾，我发现这个问题可能是 Instruments 的问题。</p>
+<p>我为何会怀疑 Instruments 呢，因为我将模拟器（说明下用模拟器做性能测试，是在各种方式尝试后仍找不到原因才使用的，希望这里不要误导了大家，性能方面的测试还是要在真机上运行滴）的 Debug -&gt; Color Misaligned Images 勾选后，可以直接查看视图问题，这时开启 Reveal，在 Reveal 中查看是没有黄色的，那么是不是因为 Reveal 的 Debug 没有显示有问题的视图的功能呢？于是我把代码退回到优化前的版本，可以看到 Reveal 是有洋红色和黄色的，这时 Instruments 也是显示有问题，再使用修改后的版本，Reveal 上不再有洋红色和黄色，Instruments 上黄色还存在，但是洋红色比之前少了。所以暂时作罢，不再查了，因为调整后帧率已经从52 - 56 增长到 57 - 60 fps了。<br><br></p>
+<p><em>Color Offscreen-Rendered Yellow</em><br>离屏渲染。网上很多说如何优化离屏渲染的文章，不详述了，主要是滚动视图中直接使用 cornerRadius 处理圆角会有性能问题，很多人写了 Core Graphics 绘制圆角等方法解决；</p>
+<pre><code>view.layer.shadowOffset = CGSizeMake(-1.0f, 1.0f);
+view.layer.shadowRadius = 5.0f;
+view.layer.shadowOpacity = 0.6;
+</code></pre><p>使用阴影的话要添加 shadowPath 来优化。</p>
+<pre><code>view.layer.shadowPath = [[UIBezierPath bezierPathWithRect:view.bounds] CGPath];
+</code></pre><p><br></p>
+<p><em>Color OpenGL Fast-Path Blue</em><br>勾选该选项后会对任何直接使用OpenGL绘制的图层进行高亮。如果仅使用 UIKit 或者 Core Animation 的 API，那么不会有任何效果。如果使用 GLKView 或者 CAEAGLLayer，那如果不显示蓝色块的话就意味着你正在强制 CPU 渲染额外的纹理，而不是绘制到屏幕。<br><br></p>
+<p><em>Flash Updated Regions</em><br>勾选该选项会对重绘的内容高亮成黄色（也就是任何在软件层面使用 Core Graphics 绘制的图层）。这种绘图的速度很慢。如果频繁发生这种情况的话，这意味着有一个隐藏的 bug 或者说通过增加缓存或者使用替代方案会有提升性能的空间。</p>
+<p>上面的描述是不是太术语化了，举个例子可能就好明白了。例如写一个时钟的应用，大多数时间只需要调整秒针的位置，这个时候只需要重会秒针的区域，但是如果重绘的区域显示为这个表盘的话就需要优化下代码了。</p>
+<h2 id="OpenGL-ES-Analysis"><a href="#OpenGL-ES-Analysis" class="headerlink" title="OpenGL ES Analysis"></a>OpenGL ES Analysis</h2><p>如果想知道 GPU 的利用率，无疑这个工具是可以帮助你，另外它还可用来判断和 GPU 相关的动画性能。</p>
+<p>右侧边栏的统计数据有一些有用的指标<br><em>Renderer Utilization</em><br>这个值大于50%，看下是否有离屏渲染问题或者 Blended View 把混合视图尽量设置为不透明。</p>
+<p><em>Tiler Utilization</em><br>这个值大于50%，看看是否能将图层数减少，是否有多余的图层删除或者合并。</p>
+<h2 id="测试设备"><a href="#测试设备" class="headerlink" title="测试设备"></a>测试设备</h2><p>注意的是测试性能一定要使用真机，不同型号的 iPhone 测试结果也会不同，例如 iPhone 5s 上测试滚动帧率在50多 fps，在 iPhone 4上的帧率可能也就 30 － 40。</p>
+<p>另外 Insturments 有时跟矫情的小娘们一样耍耍小性儿，开始按钮不能点击，或者连接了真机后，设备中的真机不可用。这时尝试拔掉手机连线，重启手机，还不管用再重启下电脑和 Xcode。</p>
+<h2 id="写到最后"><a href="#写到最后" class="headerlink" title="写到最后"></a>写到最后</h2><p>最后说明下，以上文章出自多年积累，某些概念因年旧没有记录出处了。另外，如果有写的不对的地方请指正。</p>
+
       
     </div>
     
@@ -241,8 +294,8 @@
 <nav id="article-nav">
   
   
-    <a href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Leaks/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">What I Talk About When I Talk About Leaks</div>
+    <a href="/2016/03/29/A-brand-new-beginning/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">A brand new beginning</div>
       <strong class="article-nav-caption">></strong>
     </a>
   

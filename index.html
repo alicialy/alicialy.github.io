@@ -84,7 +84,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>About</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -183,6 +183,80 @@ var _hmt = _hmt || [];
 
       <div class="body-wrap">
   
+    <article id="post-What-I-Talk-About-When-I-Talk-About-Leaks" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/" class="article-date">
+  	<time datetime="2016-04-01T03:42:09.000Z" itemprop="datePublished">2016-04-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/">What I Talk About When I Talk About Leaks</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近为［伯乐在线］翻译一篇文章，作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。</p>
+<h2 id="一种麻烦的检查内存泄漏方式"><a href="#一种麻烦的检查内存泄漏方式" class="headerlink" title="一种麻烦的检查内存泄漏方式"></a>一种麻烦的检查内存泄漏方式</h2><p>为什么麻烦还要介绍呢，因为看到有人这样调试的。这种方式需要写些代码，这些代码完全是调试用的，而且只能让你知道是否存在泄漏，但是无法定位，看看这种方式如何操作。</p>
+<p>在 dealloc 方法中写一个日志，如果退出页面的时候能够打印出日志内容，说明该页面没有问题，如果没有打印，那么就是有问题的。</p>
+<pre><code>- (void)dealloc {
+     DLog(@&quot;release&quot;);
+ }
+</code></pre><p>DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
+<pre><code>#ifdef DEBUG
+#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+</code></pre>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Debug/">Debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-What-I-Talk-About-When-I-Talk-About-Performance" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -247,6 +321,8 @@ var _hmt = _hmt || [];
 
 
 
+
+
   
     <article id="post-A-brand-new-beginning" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -294,6 +370,8 @@ var _hmt = _hmt || [];
   </div>
   
 </article>
+
+
 
 
 
@@ -363,6 +441,7 @@ MathJax.Hub.Queue(function() {
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
 
 
   </div>

@@ -90,7 +90,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>About</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -293,6 +293,15 @@ view.layer.shadowOpacity = 0.6;
     
 <nav id="article-nav">
   
+    <a href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          What I Talk About When I Talk About Leaks
+        
+      </div>
+    </a>
+  
   
     <a href="/2016/03/29/A-brand-new-beginning/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">A brand new beginning</div>
@@ -303,6 +312,36 @@ view.layer.shadowOpacity = 0.6;
 
   
 </article>
+
+
+    
+<!-- 添加捐赠图标 -->
+   <div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           Enjoy it ? Donate me !  欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 支付宝打赏图案 -->
+        <img src="/images/alipay.jpg" alt="支付宝打赏"> 
+        <!-- 微信打赏图案 -->
+        <img src="/images/wepay.jpg" alt="微信打赏">  
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<!-- End 添加捐赠图标 -->
+
+
+
 
 
 <div class="share_jia">
@@ -408,6 +447,7 @@ MathJax.Hub.Queue(function() {
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
 
 
   </div>

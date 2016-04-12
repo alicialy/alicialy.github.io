@@ -88,7 +88,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -123,7 +123,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 20px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -228,6 +228,38 @@ var _hmt = _hmt || [];
     
   </div>
   
+  
+    
+<!-- 添加捐赠图标 -->
+   <div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           ～～喜欢我就点我吧～～
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 支付宝打赏图案 -->
+        <img src="/images/alipay.jpg" alt="支付宝打赏"> 
+        <img src="/images/donate.jpg">
+        <!-- 微信打赏图案 -->
+        <img src="/images/wepay.jpg" alt="微信打赏">  
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<!-- End 添加捐赠图标 -->
+
+
+  
+  
+  
     
 <nav id="article-nav">
   
@@ -244,35 +276,8 @@ var _hmt = _hmt || [];
 </nav>
 
   
+  
 </article>
-
-
-    
-<!-- 添加捐赠图标 -->
-   <div class ="post-donate">
-    <div id="donate_board" class="donate_bar center">
-        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
-        <span class="donate_txt">
-           &uarr;<br>
-           Enjoy it ? Donate me !  欣赏此文？求鼓励，求支持！
-        </span>
-        <br>
-      </div>  
-    <div id="donate_guide" class="donate_bar center hidden" >
-        <!-- 支付宝打赏图案 -->
-        <img src="/images/alipay.jpg" alt="支付宝打赏"> 
-        <!-- 微信打赏图案 -->
-        <img src="/images/wepay.jpg" alt="微信打赏">  
-    </div>
-    <script type="text/javascript">
-        document.getElementById('btn_donate').onclick = function(){
-            $('#donate_board').addClass('hidden');
-            $('#donate_guide').removeClass('hidden');
-        }
-    </script>
-</div>
-<!-- End 添加捐赠图标 -->
-
 
 
 

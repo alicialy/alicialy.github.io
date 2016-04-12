@@ -84,7 +84,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -119,7 +119,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 20px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -183,6 +183,77 @@ var _hmt = _hmt || [];
 
       <div class="body-wrap">
   
+    <article id="post-How-To-Record-Your-App-With-QuickTime" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/12/How-To-Record-Your-App-With-QuickTime/" class="article-date">
+  	<time datetime="2016-04-12T02:42:54.000Z" itemprop="datePublished">2016-04-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/12/How-To-Record-Your-App-With-QuickTime/">How To Record Your App With QuickTime</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前为 Github 上的开源项目录制了一个 Demo 的 Gif，因为有些硬盘洁癖，所以没有下载其他录屏工具，使用的是 Mac 自带的 QuickTime，之后将录制的视频转成 Gif，可是隔段时间以后就忘了如何录制了，在此记录下过程。</p>
+<p>将程序在你的 iOS 设备上允许，之后打开 QuickTime 后，进行以下操作</p>
+<ul>
+<li>点击 “File” </li>
+<li>点击 “New Movie Recording”</li>
+<li>在出现的窗口中点击录制按钮旁边的三角剪头，选择你的 iOS 设备，开始录制吧</li>
+</ul>
+<p><img src="http://d.image.i4.cn/i4web/image//ueditor/php/upload/image/20141215/1418612164200584.png" alt="img"></p>
+<p>视频录制后使用 GIFBrewery 工具生成 Gif，该工具可以设置捕捉帧数及图片颜色数量。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mac/">Mac</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+  
+  
+  
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-What-I-Talk-About-When-I-Talk-About-Leaks" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -209,7 +280,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近为［伯乐在线］翻译一篇文章，作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。</p>
 <h2 id="一种麻烦的检查内存泄漏方式"><a href="#一种麻烦的检查内存泄漏方式" class="headerlink" title="一种麻烦的检查内存泄漏方式"></a>一种麻烦的检查内存泄漏方式</h2><p>为什么麻烦还要介绍呢，因为看到有人这样调试的。这种方式需要写些代码，这些代码完全是调试用的，而且只能让你知道是否存在泄漏，但是无法定位，看看这种方式如何操作。</p>
 <p>在 dealloc 方法中写一个日志，如果退出页面的时候能够打印出日志内容，说明该页面没有问题，如果没有打印，那么就是有问题的。</p>
 <pre><code>- (void)dealloc {
@@ -243,6 +314,10 @@ var _hmt = _hmt || [];
     </div>
     
   </div>
+  
+  
+  
+  
   
 </article>
 
@@ -285,8 +360,8 @@ var _hmt = _hmt || [];
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
 <p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧 [ House ] 豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
-<p>另外，由于最近为［伯乐在线］翻译一篇文章，作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
-<p>最近自己设计和编码的项目［PhotoBook］（一款拼图应用）基本完成了，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。<br><br /></p>
+<p>另外，由于最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
+<p>自己设计和编码的项目［PhotoBook］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。<br><br /></p>
 <h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
 <p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
       
@@ -310,6 +385,10 @@ var _hmt = _hmt || [];
     </div>
     
   </div>
+  
+  
+  
+  
   
 </article>
 
@@ -368,6 +447,10 @@ var _hmt = _hmt || [];
     </div>
     
   </div>
+  
+  
+  
+  
   
 </article>
 

@@ -183,6 +183,104 @@ var _hmt = _hmt || [];
 
       <div class="body-wrap">
   
+    <article id="post-iOS-Memory-Warning" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/05/20/iOS-Memory-Warning/" class="article-date">
+  	<time datetime="2016-05-20T05:48:50.000Z" itemprop="datePublished">2016-05-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/20/iOS-Memory-Warning/">iOS Memory Warning</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>[PhotoBook] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。</p>
+<h2 id="处理内存警告"><a href="#处理内存警告" class="headerlink" title="处理内存警告"></a>处理内存警告</h2><p>处理所有 ViewController 中的 didReceiveMemoryWarning 方法<br>didReceiveMemoryWarning 方法中应当把缓存的变量都清空，这些变量最好都是通过懒加载的方式创建，这样收到内存警告后也会自动加载。</p>
+<pre><code>@interface TestViewController () 
+@property (strong, nonatomic) NSMutableArray *dataArray;
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+    self.dataArray = nil;
+}
+- (NSMutableArray *)dataArray {
+    if (!_dataArray) {
+        _dataArray = [[NSMutableArray alloc] init];
+    }
+    // 赋值处理 ... 
+    return _dataArray;
+}
+</code></pre><p>在处理图片的 Controller 中当用户点击某个按钮时会加载一些 View，例如处理文字、背景、绘图笔等是弹出的设置页面，这些 View 都封装成了自定义的类从 Controller 中分离出去，这些类的内存可以被处理，如果在 didReceiveMemoryWarning 中把这些视图清理时，需要判断当前视图是否是否正在使用，否则可能出现正在操作这些视图时，由于收到内存警告而被删除导致错误，在 iOS 6 以上的版本中可以用如下方式判断视图是否在使用</p>
+<pre><code>- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    if ([self.view window] == nil)   { // 视图是否正在使用
+       self.settingView = nil;
+    }
+}
+</code></pre><p>另外，NSCache 缓存类会在收到 Memory Warning 时自动删除缓存内容，不需要手动做清理，有个 Demo <a href="http://www.15yan.com/story/45toOUzFGlr/" target="_blank" rel="external">点击查看</a></p>
+<p>还可以在 AppDelegate 中实现 applicationDidReceiveMemoryWarning 方法做一些全局数据清理</p>
+<pre><code>- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+
+}
+</code></pre><h2 id="消耗内存的对象创建放到-AutoReleasePool-中"><a href="#消耗内存的对象创建放到-AutoReleasePool-中" class="headerlink" title="消耗内存的对象创建放到 AutoReleasePool 中"></a>消耗内存的对象创建放到 AutoReleasePool 中</h2><pre><code>@autoreleasepool {
+     ALAsset *asset = self.assetArray[i];
+     if (asset &amp;&amp; ![asset isEqual:[NSNull null]]) {
+         UIImage *img = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]];
+         // ...
+     }
+ }
+</code></pre><h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://www.raywenderlich.com/31166/25-ios-app-performance-tips-tricks" target="_blank" rel="external">25 iOS App Performance Tips Tricks</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+  
+  
+  
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-What-can-make-Core-Graphics-coding-easy" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -209,11 +307,12 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>[PhotoBook] 这个项目用到太多图形绘制，少不了使用 Core Graphics，因为用法简单所以之前也没什么困扰，但是这个项目中复杂图形和曲线绘制的频繁使用导致查询 API 和计算弧度的时间消耗，今天找到一个好工具 ［PaintCode］，可谓是射鸡屎和程序猿通吃的神器。</p>
+        <p>[PhotoBook] 这个项目用到太多图形绘制，少不了使用 Core Graphics，因为用法简单所以之前也没什么困扰，但是这个项目中复杂图形和曲线绘制的频繁使用导致查询 API 和计算弧度的时间消耗，如果绘制贝塞尔曲线用 Sketch 画好后再计算控制点太费劲了。今天找到一个好工具 ［PaintCode］，可谓是射鸡屎和程序猿通吃的神器。</p>
 <p><img src="http://image.woshipm.com/wp-files/2015/05/3aa286544500.jpg" alt="img"></p>
 <p>这个工具最大的好处就是可以像操作［Sketch］一样，可视化的方式操作各种图形，OC 代码就直接生成了，大大滴提高了效率。</p>
 <p><img src="http://image.woshipm.com/wp-files/2015/05/123123123-1024x640.png" alt="img"></p>
-<p>它的操作也很简单，常用的功能在顶部，属性设置在右方，不学就能会。摸不到头脑的话可以看看这个系列的 <a href="http://www.woshipm.com/ucd/154006.html" target="_blank" rel="external">使用介绍</a> 。</p>
+<p>［Sketch］ 设计好的矢量图形可以导出 SVG 格式，直接拖到［PaintCode］代码就生成了。</p>
+<p>它的操作也很简单，常用的功能在顶部，属性设置在右方，不学就能会。摸不到头脑的话可以看看 <a href="http://www.paintcodeapp.com" target="_blank" rel="external">官方文档</a> 或者这个系列的 <a href="http://www.woshipm.com/ucd/154006.html" target="_blank" rel="external">使用介绍</a> 。</p>
 
       
     </div>

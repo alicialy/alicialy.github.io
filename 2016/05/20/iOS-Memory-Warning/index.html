@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="[PhotoBook] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。
 处理内存警告处理所有 ViewController 中的 didReceiveMemoryWarning 方法didReceiveMemoryWarning 方法中应当把缓存的变量都清空，这些变量最好都是通过懒加载的方式创建，这样收到内存警告">
-<meta property="og:updated_time" content="2016-05-20T08:31:39.000Z">
+<meta property="og:updated_time" content="2016-05-25T03:13:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Memory Warning">
 <meta name="twitter:description" content="[PhotoBook] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。
@@ -250,14 +250,42 @@ var _hmt = _hmt || [];
 <pre><code>- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
 
 }
-</code></pre><h2 id="消耗内存的对象创建放到-AutoReleasePool-中"><a href="#消耗内存的对象创建放到-AutoReleasePool-中" class="headerlink" title="消耗内存的对象创建放到 AutoReleasePool 中"></a>消耗内存的对象创建放到 AutoReleasePool 中</h2><pre><code>@autoreleasepool {
+</code></pre><a id="more"></a>
+<h2 id="消耗内存的对象创建放到-AutoReleasePool-中"><a href="#消耗内存的对象创建放到-AutoReleasePool-中" class="headerlink" title="消耗内存的对象创建放到 AutoReleasePool 中"></a>消耗内存的对象创建放到 AutoReleasePool 中</h2><p>函数中出现很多中间变量占据大量内存，或者不多的中间变量但是也是占用较大内存的，需要放到自动释放池中</p>
+<pre><code>@autoreleasepool {
      ALAsset *asset = self.assetArray[i];
      if (asset &amp;&amp; ![asset isEqual:[NSNull null]]) {
          UIImage *img = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]];
          // ...
      }
  }
-</code></pre><h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://www.raywenderlich.com/31166/25-ios-app-performance-tips-tricks" target="_blank" rel="external">25 iOS App Performance Tips Tricks</a></p>
+</code></pre><h2 id="使用-Allocations-工具查看是否有应该释放但是没有被释放的内存"><a href="#使用-Allocations-工具查看是否有应该释放但是没有被释放的内存" class="headerlink" title="使用 Allocations 工具查看是否有应该释放但是没有被释放的内存"></a>使用 Allocations 工具查看是否有应该释放但是没有被释放的内存</h2><p>如果进入一个页面后退出该页面，内存没有降回或者接近降回到进入该页面前的内存数，说明该页面有内存没有被释放。</p>
+<p>例如点击 [PhotoBook] 中点击添加照片的按钮，添加照片后退出这个页面后发现内存中驻留了该页面的内存，而该段内存是存在 LTPhotoPickerViewController 的某个变量中的，查看页面代码发现添加图片按钮中有如下代码，每次点击都创建了相同的控制器，但是没有对其释放的地方，所以创建了多个重复的对象，而这个对象中保存了很多内存。</p>
+<pre><code>- (void)stickerPhotoAction:(id)sender {
+    LTPhotoPickerViewController *pickerController = [[LTPhotoPickerViewController alloc] init];
+    [self.navigationController pushViewController:pickerController animated:YES];
+}
+</code></pre><p>这种简单的错误很容易修改，只是早期的时候脑袋坏掉不小心写错，要解决问题最困难的问题不是如何修改，而是如何找到问题在哪。</p>
+<p>修改方法：将 pickerController 改为属性，每次点击按钮的时候使用同样的属性对象即可。</p>
+<h2 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h2><p>除了 Block 内部要注意不要引用自己，还要注意是否有属性应当是 weak 的，但是设置成 strong，导致内部引用计数错误导致的无法释放，这种现象也要靠 Allocations 工具检查，页面退出后还有对象被 Persistent，可以看看是否有该 weak 的被 strong 了。</p>
+<h2 id="如果使用照片尽量对其进行压缩节省内存"><a href="#如果使用照片尽量对其进行压缩节省内存" class="headerlink" title="如果使用照片尽量对其进行压缩节省内存"></a>如果使用照片尽量对其进行压缩节省内存</h2><pre><code>// ALAsset *asset = ...;
+UIImage *img = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]]; 
+NSData *imgData = UIImageJPEGRepresentation(fullScreenImage, 0.7);
+UIImage *img = [UIImage imageWithData:imgData];
+// scaled
+UIImage *img = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage] scale:scale orientation:UIImageOrientationUp];
+</code></pre><p>同样是获取相册中的照片，两种方式进行压缩节省内存</p>
+<h2 id="图片保存时注意保存图片的大小"><a href="#图片保存时注意保存图片的大小" class="headerlink" title="图片保存时注意保存图片的大小"></a>图片保存时注意保存图片的大小</h2><p>如果需要自己创建图片上下文并绘制，给用户选择的图片大小最大不要超过 4096 ** 4096 像素，可以给用户大、中、小几种选择。</p>
+<p>创建图片上下文使用  UIGraphicsBeginImageContextWithOptions(size, YES, [UIScreen mainScreen].scale); 的话，在主流机上 scale 都是 2，那么创建出的图片像素都是 size 大小的 2倍，如果让用户选择 3200 <strong> 3200 大小的照片，保存后就是 6400 </strong> 6400，图片这么大很容易造成内存吃紧，收到警告，所以不要使用 UIGraphicsBeginImageContextWithOptions 方式，保存图片后看下图片是否是想要的大小。</p>
+<h2 id="GCD-Timer-的使用注意事项"><a href="#GCD-Timer-的使用注意事项" class="headerlink" title="GCD Timer 的使用注意事项"></a>GCD Timer 的使用注意事项</h2><p>NSTimer 一定要在恰当的地方执行 invalidate，否则会造成内存泄漏，但是用 GCD Timer 就可以绕过这个问题。但是在 [PhotoBook] 项目中添加 GCD Timer 后想要在某种情况下，把 Timer 暂停，于是设置了某个变量，当该变量在某种情况下将 timer 暂停，于是有了下面的代码</p>
+<pre><code>dispatch_source_set_event_handler(timer, ^() {
+    // if (condition)  {      
+        // dispatch_suspend(timer);
+   // }
+}
+dispatch_resume(timer);
+</code></pre><p>发现在 dispatch_source_set_event_handler 中加上 dispatch_suspend，该页面无法被释放，看来不能在内部暂停自己</p>
+<h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="https://www.raywenderlich.com/31166/25-ios-app-performance-tips-tricks" target="_blank" rel="external">25 iOS App Performance Tips Tricks</a></p>
 
       
     </div>

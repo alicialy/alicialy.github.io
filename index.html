@@ -232,20 +232,12 @@ var _hmt = _hmt || [];
        self.settingView = nil;
     }
 }
-</code></pre><p>另外，NSCache 缓存类会在收到 Memory Warning 时自动删除缓存内容，不需要手动做清理，有个 Demo <a href="http://www.15yan.com/story/45toOUzFGlr/" target="_blank" rel="external">点击查看</a></p>
+</code></pre><p>另外，NSCache 缓存类会在收到 Memory Warning 时自动删除缓存内容，不需要手动做清理，有个 Demo <a href="http://www.15yan.com/story/45toOUzFGlr/">点击查看</a></p>
 <p>还可以在 AppDelegate 中实现 applicationDidReceiveMemoryWarning 方法做一些全局数据清理</p>
 <pre><code>- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
 
 }
-</code></pre><h2 id="消耗内存的对象创建放到-AutoReleasePool-中"><a href="#消耗内存的对象创建放到-AutoReleasePool-中" class="headerlink" title="消耗内存的对象创建放到 AutoReleasePool 中"></a>消耗内存的对象创建放到 AutoReleasePool 中</h2><pre><code>@autoreleasepool {
-     ALAsset *asset = self.assetArray[i];
-     if (asset &amp;&amp; ![asset isEqual:[NSNull null]]) {
-         UIImage *img = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]];
-         // ...
-     }
- }
-</code></pre><h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://www.raywenderlich.com/31166/25-ios-app-performance-tips-tricks" target="_blank" rel="external">25 iOS App Performance Tips Tricks</a></p>
-
+</code></pre>
       
     </div>
     
@@ -258,6 +250,10 @@ var _hmt = _hmt || [];
 
       
 
+      
+        <p class="article-more-link">
+          <a  href="/2016/05/20/iOS-Memory-Warning/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>

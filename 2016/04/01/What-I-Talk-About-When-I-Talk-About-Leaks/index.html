@@ -16,7 +16,7 @@
 一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
 <meta property="og:image" content="http://yoursite.com/post_images/leak1.jpg">
 <meta property="og:image" content="http://yoursite.com/post_images/leak2.jpg">
-<meta property="og:updated_time" content="2016-04-04T14:52:12.000Z">
+<meta property="og:updated_time" content="2016-05-26T12:37:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Leaks">
 <meta name="twitter:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
@@ -62,6 +62,8 @@ var _hmt = _hmt || [];
 		</hgroup>
 
 		
+		<p class="header-subtitle">［LEAF Photo］作者</p>
+		
 
 		
 			<div class="switch-btn">
@@ -91,7 +93,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>About</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -137,7 +139,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part3">
 				
-					<div id="js-aboutme">独立开发者，目前正在开发一款拼图类应用 [PhotoBook]，即将上架。</div>
+					<div id="js-aboutme">独立开发者，目前正在开发一款拼图类应用 [LEAF Photo]，已上架。</div>
 				</section>
 				
 			</div>
@@ -162,6 +164,8 @@ var _hmt = _hmt || [];
 			<hgroup>
 			  <h1 class="header-author">Alicia Ly</h1>
 			</hgroup>
+			
+			<p class="header-subtitle">［LEAF Photo］作者</p>
 			
 			<nav class="header-menu">
 				<ul>
@@ -239,14 +243,14 @@ var _hmt = _hmt || [];
 #endif
 </code></pre><a id="more"></a>
 <p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
-<pre><code>2016-04-01 12:51:56.992 PhotoBook[267:19048] -[CollageViewController dealloc] - [Line 88] -- release
+<pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
 </code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
 <pre><code>self.paperSizeView.paperSizeBlock = ^(PaperSizeModel *sizeModel) {
     self.paperSize = sizeModel.paperSize;
 }
 </code></pre><p>要把 self 改为 WeakSelf。</p>
 <p>下面说说 Instrument 中如何检查这个问题并定位的。</p>
-<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [PhotoBook] 举例，运行 Allocation。</p>
+<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
 <p>运行后，将所有的页面都跑一遍，会看到内存一直增长，当返回页面后内存应该是下降趋势的。如果内存没有返回到初始状态，说明在某个页面是有内存泄漏的。这时可以在搜索框搜索自己写的类名。</p>
 <p><img src="/post_images/leak1.jpg" alt="img"></p>
 <p>看，这是进入 CollageViewController 后退出后可以发现内存不断增长，在内存中搜索类名能看到这个视图控制器没有被释放，还有一些其他相关的类。这样就能知道是否有泄漏存在了。当然了，这个代码很容易查到原因，只需要点击进入每行对应的代码查看，查看到 CollagePaperSizeView 时会指引到 paperSizeView 的 Block 中有循环引用。</p>

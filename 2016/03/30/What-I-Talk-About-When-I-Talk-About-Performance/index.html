@@ -15,7 +15,7 @@
 <meta property="og:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
 要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”">
 <meta property="og:image" content="http://yoursite.com/post_images/performance1.jpg">
-<meta property="og:updated_time" content="2016-05-05T02:47:46.000Z">
+<meta property="og:updated_time" content="2016-05-26T12:36:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Performance">
 <meta name="twitter:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
@@ -61,6 +61,8 @@ var _hmt = _hmt || [];
 		</hgroup>
 
 		
+		<p class="header-subtitle">［LEAF Photo］作者</p>
+		
 
 		
 			<div class="switch-btn">
@@ -90,7 +92,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>About</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -136,7 +138,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part3">
 				
-					<div id="js-aboutme">独立开发者，目前正在开发一款拼图类应用 [PhotoBook]，即将上架。</div>
+					<div id="js-aboutme">独立开发者，目前正在开发一款拼图类应用 [LEAF Photo]，已上架。</div>
 				</section>
 				
 			</div>
@@ -161,6 +163,8 @@ var _hmt = _hmt || [];
 			<hgroup>
 			  <h1 class="header-author">Alicia Ly</h1>
 			</hgroup>
+			
+			<p class="header-subtitle">［LEAF Photo］作者</p>
 			
 			<nav class="header-menu">
 				<ul>
@@ -227,7 +231,7 @@ var _hmt = _hmt || [];
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
 <p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
 <p>另外，由于最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
-<p>自己设计和编码的项目［PhotoBook］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。<br><br></p>
+<p>自己设计和编码的项目［LEAF Photo］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。<br><br></p>
 <h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
 <p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
 <a id="more"></a>
@@ -265,7 +269,7 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 <p><em>Color Immediately</em><br>通常 Core Animatin Instruments 以每毫秒10次的频率更新图层，对于某些效果来说，这个速度可能会比较慢，所以设置该选项后每秒都会刷新，但是该选项开启后会影响到渲染性能，导致帧率测量不准确，所以不需要时请不要勾选此项<br><br></p>
 <p><em>Color Misaligned Images</em><br>设置该选项后，被绘制为黄色的 View 是被缩放的，被设置为洋红色的  View 是像素没有对齐（像素对齐指绘制的点无法直接映射到屏幕的像素点上）的。</p>
 <p>处理黄色视图方法：图片大小和控件大小不一致，可以使用 Core Graphics 中的 UIGraphicsBeginImageContextWithOptions 方法将图片缩放到控件大小，缩放图片的调用应放到线程中，避免阻塞主线程。</p>
-<p>处理洋红色视图方法：尽管 Core Graphics 中的坐标都是浮点型的，但是请尽量将坐标设置为整型的，例如在 [PhotoBook]项目中很多视图的坐标是计算出来的，难免就出现浮点型，这时可以使用 ceilf、floorf和 CGRectIntegral 将小数整数化。</p>
+<p>处理洋红色视图方法：尽管 Core Graphics 中的坐标都是浮点型的，但是请尽量将坐标设置为整型的，例如在 [LEAF Photo]项目中很多视图的坐标是计算出来的，难免就出现浮点型，这时可以使用 ceilf、floorf和 CGRectIntegral 将小数整数化。</p>
 <p>说一段痛苦的经历，在修改 Color Misaligned Images 问题时，我经历过类似 Bishop (前言提到的翻译文章作者) 查找内存泄漏时遭遇的不幸，当我把图片进行缩放后放到 ImageView 中，发现 ImageView 仍然显示黄色，Debug 和 UI Debug 还有 Reveal 查看视图的大小和图片的大小都是一致的，但是仍然显示成黄色，于是还特意查了很多其他资料，看看是否有其他原因导致黄色，但是都无果。经过一个多小时的折腾，我发现这个问题可能是 Instruments 的问题。</p>
 <p>我为何会怀疑 Instruments 呢，因为我将模拟器（说明下用模拟器做性能测试，是在各种方式尝试后仍找不到原因才使用的，希望这里不要误导了大家，性能方面的测试还是要在真机上运行滴）的 Debug -&gt; Color Misaligned Images 勾选后，可以直接查看视图问题，这时开启 Reveal，在 Reveal 中查看是没有黄色的，那么是不是因为 Reveal 的 Debug 没有显示有问题的视图的功能呢？于是我把代码退回到优化前的版本，可以看到 Reveal 是有洋红色和黄色的，这时 Instruments 也是显示有问题，再使用修改后的版本，Reveal 上不再有洋红色和黄色，Instruments 上黄色还存在，但是洋红色比之前少了。所以暂时作罢，不再查了，因为调整后帧率已经从52 - 56 增长到 57 - 60 fps了。<br><br></p>
 <p><em>Color Offscreen-Rendered Yellow</em><br>离屏渲染。网上很多说如何优化离屏渲染的文章，不详述了，主要是滚动视图中直接使用 cornerRadius 处理圆角会有性能问题，很多人写了 Core Graphics 绘制圆角等方法解决；</p>

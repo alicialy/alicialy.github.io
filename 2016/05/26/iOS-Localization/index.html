@@ -4,24 +4,23 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>What I Talk About When I Talk About Leaks | Alicia&#39;s Blog</title>
+  <title>iOS Localization | Alicia&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
-一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
+  <meta name="description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
+其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="What I Talk About When I Talk About Leaks">
-<meta property="og:url" content="http://yoursite.com/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/index.html">
+<meta property="og:title" content="iOS Localization">
+<meta property="og:url" content="http://yoursite.com/2016/05/26/iOS-Localization/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
-一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
-<meta property="og:image" content="http://yoursite.com/post_images/leak1.jpg">
-<meta property="og:image" content="http://yoursite.com/post_images/leak2.jpg">
-<meta property="og:updated_time" content="2016-04-04T14:52:12.000Z">
+<meta property="og:description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
+其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
+<meta property="og:image" content="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg">
+<meta property="og:updated_time" content="2016-05-26T12:33:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="What I Talk About When I Talk About Leaks">
-<meta name="twitter:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
-一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
-<meta name="twitter:image" content="http://yoursite.com/post_images/leak1.jpg">
+<meta name="twitter:title" content="iOS Localization">
+<meta name="twitter:description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
+其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
+<meta name="twitter:image" content="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Alicia&#39;s Blog" type="application/atom+xml">
   
@@ -188,11 +187,11 @@ var _hmt = _hmt || [];
 	</div>
 </nav>
 
-      <div class="body-wrap"><article id="post-What-I-Talk-About-When-I-Talk-About-Leaks" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-iOS-Localization" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/" class="article-date">
-  	<time datetime="2016-04-01T03:42:09.000Z" itemprop="datePublished">2016-04-01</time>
+      <a href="/2016/05/26/iOS-Localization/" class="article-date">
+  	<time datetime="2016-05-26T12:26:21.000Z" itemprop="datePublished">2016-05-26</time>
 </a>
     </div>
   
@@ -205,7 +204,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      What I Talk About When I Talk About Leaks
+      iOS Localization
     </h1>
   
 
@@ -225,40 +224,10 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。</p>
-<h2 id="一种麻烦的检查内存泄漏方式"><a href="#一种麻烦的检查内存泄漏方式" class="headerlink" title="一种麻烦的检查内存泄漏方式"></a>一种麻烦的检查内存泄漏方式</h2><p>为什么麻烦还要介绍呢，因为看到有人这样调试的。这种方式需要写些代码，这些代码完全是调试用的，而且只能让你知道是否存在泄漏，但是无法定位，看看这种方式如何操作。</p>
-<p>在 dealloc 方法中写一个日志，如果退出页面的时候能够打印出日志内容，说明该页面没有问题，如果没有打印，那么就是有问题的。</p>
-<pre><code>- (void)dealloc {
-     DLog(@&quot;release&quot;);
- }
-</code></pre><p>DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
-<pre><code>#ifdef DEBUG
-#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#   define DLog(...)
-#endif
-</code></pre><a id="more"></a>
-<p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
-<pre><code>2016-04-01 12:51:56.992 PhotoBook[267:19048] -[CollageViewController dealloc] - [Line 88] -- release
-</code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
-<pre><code>self.paperSizeView.paperSizeBlock = ^(PaperSizeModel *sizeModel) {
-    self.paperSize = sizeModel.paperSize;
-}
-</code></pre><p>要把 self 改为 WeakSelf。</p>
-<p>下面说说 Instrument 中如何检查这个问题并定位的。</p>
-<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [PhotoBook] 举例，运行 Allocation。</p>
-<p>运行后，将所有的页面都跑一遍，会看到内存一直增长，当返回页面后内存应该是下降趋势的。如果内存没有返回到初始状态，说明在某个页面是有内存泄漏的。这时可以在搜索框搜索自己写的类名。</p>
-<p><img src="/post_images/leak1.jpg" alt="img"></p>
-<p>看，这是进入 CollageViewController 后退出后可以发现内存不断增长，在内存中搜索类名能看到这个视图控制器没有被释放，还有一些其他相关的类。这样就能知道是否有泄漏存在了。当然了，这个代码很容易查到原因，只需要点击进入每行对应的代码查看，查看到 CollagePaperSizeView 时会指引到 paperSizeView 的 Block 中有循环引用。</p>
-<h2 id="Mark-Generation"><a href="#Mark-Generation" class="headerlink" title="Mark Generation"></a>Mark Generation</h2><p>如果问题这么容易就定位到了，Bishop 也就不用写一大篇文章了，上面是刚好我们能搜到类名，正好出现问题的地方用了类名。如果搜索不出来应当怎么办呢，那么 Mark Generation 该上场了。</p>
-<p>就像 Bishop 所说的一样，按照重现步骤操作，在出现问题的页面进入之前 Mark 一下，进入页面退出后再 Mark 一下。</p>
-<p>这样会生成 Generaton A 和 Generation B，展开 Generation B ，看 Persistent 数最多的，这里是 non-object，再展开估计也看不出来什么了，点击进入 non-object，查看详细，接下来的页面也是很多数据，可以将 Responsible Libaray 列排序，然后找到你的项目名字。</p>
-<p><img src="/post_images/leak2.jpg" alt="img"></p>
-<p>这里就没有那么多噪声了，很容易就能找到哪个是出问题的地方，看这里提示 save 方法有问题，就是该方法中出现了循环引用了。</p>
-<h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><blockquote>
-<p>之后我想起来：这就是我们通常所谓的 Xcode，我打开终端，然后执行 fuxcode (我写的一个清理所有 DerivedData 的脚本）。又一次的重新编译之后 Instruments 确认没有任何泄漏了。</p>
-</blockquote>
-<p>Xcode 有缓存估计很多人都经历过这个痛楚吧。写个脚本把所有的 DerivedData 删除 （哦，删吧，删了能把硬盘腾出很多地方），或者只删除当前项目的 DerivedData 吧，点击菜单 Xcode -&gt; Product，按住 Option 键，Clean 变成 Clean Build Folder，清理下编译目录即可。</p>
+        <p>上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。</p>
+<p>其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，写到这里备忘。</p>
+<p>Product -&gt; Scheme -&gt; Edit Scheme -&gt; Options -&gt; Application Language 中设置语言</p>
+<p><img src="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg" alt="img"></p>
 
       
     </div>
@@ -300,18 +269,9 @@ var _hmt = _hmt || [];
     
 <nav id="article-nav">
   
-    <a href="/2016/04/12/How-To-Record-Your-App-With-QuickTime/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          How To Record Your App With QuickTime
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">What I Talk About When I Talk About Performance</div>
+    <a href="/2016/05/20/iOS-Memory-Warning/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS Memory Warning</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -349,7 +309,7 @@ var _hmt = _hmt || [];
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="What-I-Talk-About-When-I-Talk-About-Leaks" data-title="What I Talk About When I Talk About Leaks" data-url="http://yoursite.com/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/"></div>
+	<div class="ds-thread" data-thread-key="iOS-Localization" data-title="iOS Localization" data-url="http://yoursite.com/2016/05/26/iOS-Localization/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

@@ -226,7 +226,9 @@ void release() {
     }
 }
 </code></pre><p>查看支持原子操作的列表，参阅/user/include/libkern/OSAtomic.h头文件和参见 <a href="https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/OSAtomicTestAndSet.3.html">atomic主页</a>。</p>
-<h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。<br><br /><br>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为volatile变量。<br><br /><br>因为内存屏障和volatile变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
+<h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。</p>
+<p>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为volatile变量。</p>
+<p>因为内存屏障和volatile变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
 <pre><code>// ...
 OSMemoryBarrier();
 // ...

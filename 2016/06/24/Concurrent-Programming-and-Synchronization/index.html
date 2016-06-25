@@ -18,7 +18,7 @@ void retain() {
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
     OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
-<meta property="og:updated_time" content="2016-06-24T03:56:58.000Z">
+<meta property="og:updated_time" content="2016-06-25T01:21:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Concurrent Programming and Synchronization">
 <meta name="twitter:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
@@ -245,7 +245,9 @@ void release() {
     }
 }
 </code></pre><p>查看支持原子操作的列表，参阅/user/include/libkern/OSAtomic.h头文件和参见 <a href="https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/OSAtomicTestAndSet.3.html" target="_blank" rel="external">atomic主页</a>。</p>
-<h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。<br><br><br>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为volatile变量。<br><br><br>因为内存屏障和volatile变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
+<h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。</p>
+<p>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为volatile变量。</p>
+<p>因为内存屏障和volatile变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
 <pre><code>// ...
 OSMemoryBarrier();
 // ...
@@ -283,7 +285,9 @@ while (moreToDo) {
         // Everything between the braces is protected by the @synchronized directive.
     }
 }
-</code></pre><h3 id="NSConditionLock-对象"><a href="#NSConditionLock-对象" class="headerlink" title="NSConditionLock 对象"></a>NSConditionLock 对象</h3><p>它定义了一个互斥锁，可以使用特定值来锁住和解锁。不要把该类型的锁和条件（参见“条件”部分）混淆了。它的行为和条件有点类似，但是它们的实现非常不同。<br><br><br>通常，当多线程需要以特定的顺序来执行任务的时候，你可以使用一个 NSConditionLock 对象，比如当一个线程生产数据，而另外一个线程消费数据。生产者执行时，消费者使用由你程序指定的条件来获取锁（条件本身是一个你定义的整形值）。当生产者完成时，它会解锁该锁并设置锁的条件为合适的整形值来唤醒消费者线程，之后消费线程继续处理数据。<br><br><br>NSConditionLock 的锁住和解锁方法可以任意组合使用。比如，你可以使用 unlockWithCondition: 和 lock 消息，或使用 lockWhenCondition: 和 unlock 消息。当然，后面的组合可以解锁一个锁但是可能没有释放任何等待某特定条件值的线程。</p>
+</code></pre><h3 id="NSConditionLock-对象"><a href="#NSConditionLock-对象" class="headerlink" title="NSConditionLock 对象"></a>NSConditionLock 对象</h3><p>它定义了一个互斥锁，可以使用特定值来锁住和解锁。不要把该类型的锁和条件（参见“条件”部分）混淆了。它的行为和条件有点类似，但是它们的实现非常不同。</p>
+<p>通常，当多线程需要以特定的顺序来执行任务的时候，你可以使用一个 NSConditionLock 对象，比如当一个线程生产数据，而另外一个线程消费数据。生产者执行时，消费者使用由你程序指定的条件来获取锁（条件本身是一个你定义的整形值）。当生产者完成时，它会解锁该锁并设置锁的条件为合适的整形值来唤醒消费者线程，之后消费线程继续处理数据。</p>
+<p>NSConditionLock 的锁住和解锁方法可以任意组合使用。比如，你可以使用 unlockWithCondition: 和 lock 消息，或使用 lockWhenCondition: 和 unlock 消息。当然，后面的组合可以解锁一个锁但是可能没有释放任何等待某特定条件值的线程。</p>
 <pre><code>// Common
 id condLock = [[NSConditionLock alloc] initWithCondition:NO_DATA];
 
@@ -300,7 +304,8 @@ while (true) {
     //消费
     [condLock unlockWithCondition:NO_DATA];
 }
-</code></pre><h2 id="锁-递归锁"><a href="#锁-递归锁" class="headerlink" title="锁 - 递归锁"></a>锁 - 递归锁</h2><p>NSRecursiveLock 类定义的锁可以在同一线程多次获得，而不会造成死锁。一个递归锁会跟踪它被多少次成功获得了。每次成功的获得该锁都必须平衡调用锁住和解锁的操作。只有所有的锁住和解锁操作都平衡的时候，锁才真正被释放给其他线程获得。<br><br><br>正如它名字所言，这种类型的锁通常被用在一个递归函数里面来防止递归造成阻塞线程。你可以类似的在非递归的情况下使用他来调用函数，这些函数的语义要求它们使用锁。以下是一个简单递归函数，它在递归中获取锁。如果你不在该代码里使用 NSRecursiveLock 对象，当函数被再次调用的时候线程将会出现死锁。</p>
+</code></pre><h2 id="锁-递归锁"><a href="#锁-递归锁" class="headerlink" title="锁 - 递归锁"></a>锁 - 递归锁</h2><p>NSRecursiveLock 类定义的锁可以在同一线程多次获得，而不会造成死锁。一个递归锁会跟踪它被多少次成功获得了。每次成功的获得该锁都必须平衡调用锁住和解锁的操作。只有所有的锁住和解锁操作都平衡的时候，锁才真正被释放给其他线程获得。</p>
+<p>正如它名字所言，这种类型的锁通常被用在一个递归函数里面来防止递归造成阻塞线程。你可以类似的在非递归的情况下使用他来调用函数，这些函数的语义要求它们使用锁。以下是一个简单递归函数，它在递归中获取锁。如果你不在该代码里使用 NSRecursiveLock 对象，当函数被再次调用的时候线程将会出现死锁。</p>
 <pre><code>NSRecursiveLock *theLock = [[NSRecursiveLock alloc] init];
 
 void MyRecursiveFunction(int value) {
@@ -314,14 +319,21 @@ void MyRecursiveFunction(int value) {
 
 MyRecursiveFunction(5);
 </code></pre><h2 id="锁-读写锁"><a href="#锁-读写锁" class="headerlink" title="锁 - 读写锁"></a>锁 - 读写锁</h2><p>// TODO: 待完善… </p>
-<h2 id="锁-分布锁"><a href="#锁-分布锁" class="headerlink" title="锁 - 分布锁"></a>锁 - 分布锁</h2><p>NSDistributedLock 分布锁，文件方式实现，可以跨进程用 tryLock 方法获取锁。用 unlock方 法释放锁。<br><br><br>NSDistributedLock 类可以被多台主机上的多个应用程序使用来限制对某些共享资源的访问，比如一个文件。锁本身是一个高效的互斥锁，它使用文件系统项目来实现，比如一个文件或目录。对于一个可用的NSDistributedLock对象，锁必须由所有使用它的程序写入。这通常意味着把它放在文件系统，该文件系统可以被所有运行在计算机上面的应用程序访问。<br><br><br>不像其他类型的锁，NSDistributedLock 并没有实现 NSLocking 协议，所有它没有lock 方法。一个 lock 方法将会阻塞线程的执行，并要求系统以预定的速度轮询锁。以其在你的代码中实现这种约束，NSDistributedLock 提供了一个 tryLock 方法，并让你决定是否轮询。<br><br><br>因为它使用文件系统来实现，一个 NSDistributedLock 对象不会被释放除非它的拥有者显式的释放它。如果你的程序在用户一个分布锁的时候崩溃了，其他客户端简无法访问该受保护的资源。在这种情况下，你可以使用 breadLock 方法来打破现存的锁以便你可以获取它。但是通常应该避免打破锁，除非你确定拥有进程已经死亡并不可能再释放该锁。<br><br><br>和其他类型的锁一样，当你使用 NSDistributedLock 对象时，你可以通过调用 unlock 方法来释放它。</p>
-<h2 id="锁-自旋锁"><a href="#锁-自旋锁" class="headerlink" title="锁 -  自旋锁"></a>锁 -  自旋锁</h2><p>自旋锁：当上一个线程的任务没有执行完毕的时候（被锁住），那么下一个线程会一直等待（不会睡眠），当上一个线程的任务执行完毕，下一个线程会立即执行。<br><br><br>互斥锁：当上一个线程的任务没有执行完毕的时候（被锁住），那么下一个线程会进入睡眠状态等待任务执行完毕，当上一个线程的任务执行完毕，下一个线程会自动唤醒然后执行任务。<br><br><br>自旋锁在被锁后，下一个线程会一直等待上一个线程执行完毕，互斥锁则会进入睡眠状态等待。因为自旋不会引起调用者睡眠，所以效率高于互斥锁，它适合不耗时的操作，否则他一直占用CPU使CPU效率降低。</p>
+<h2 id="锁-分布锁"><a href="#锁-分布锁" class="headerlink" title="锁 - 分布锁"></a>锁 - 分布锁</h2><p>NSDistributedLock 分布锁，文件方式实现，可以跨进程用 tryLock 方法获取锁。用 unlock方 法释放锁。</p>
+<p>NSDistributedLock 类可以被多台主机上的多个应用程序使用来限制对某些共享资源的访问，比如一个文件。锁本身是一个高效的互斥锁，它使用文件系统项目来实现，比如一个文件或目录。对于一个可用的NSDistributedLock对象，锁必须由所有使用它的程序写入。这通常意味着把它放在文件系统，该文件系统可以被所有运行在计算机上面的应用程序访问。</p>
+<p>不像其他类型的锁，NSDistributedLock 并没有实现 NSLocking 协议，所有它没有lock 方法。一个 lock 方法将会阻塞线程的执行，并要求系统以预定的速度轮询锁。以其在你的代码中实现这种约束，NSDistributedLock 提供了一个 tryLock 方法，并让你决定是否轮询。</p>
+<p>因为它使用文件系统来实现，一个 NSDistributedLock 对象不会被释放除非它的拥有者显式的释放它。如果你的程序在用户一个分布锁的时候崩溃了，其他客户端简无法访问该受保护的资源。在这种情况下，你可以使用 breadLock 方法来打破现存的锁以便你可以获取它。但是通常应该避免打破锁，除非你确定拥有进程已经死亡并不可能再释放该锁。</p>
+<p>和其他类型的锁一样，当你使用 NSDistributedLock 对象时，你可以通过调用 unlock 方法来释放它。</p>
+<h2 id="锁-自旋锁"><a href="#锁-自旋锁" class="headerlink" title="锁 -  自旋锁"></a>锁 -  自旋锁</h2><p>自旋锁：当上一个线程的任务没有执行完毕的时候（被锁住），那么下一个线程会一直等待（不会睡眠），当上一个线程的任务执行完毕，下一个线程会立即执行。</p>
+<p>互斥锁：当上一个线程的任务没有执行完毕的时候（被锁住），那么下一个线程会进入睡眠状态等待任务执行完毕，当上一个线程的任务执行完毕，下一个线程会自动唤醒然后执行任务。</p>
+<p>自旋锁在被锁后，下一个线程会一直等待上一个线程执行完毕，互斥锁则会进入睡眠状态等待。因为自旋不会引起调用者睡眠，所以效率高于互斥锁，它适合不耗时的操作，否则他一直占用CPU使CPU效率降低。</p>
 <pre><code>OSSpinLock spinlock = OS_SPINLOCK_INIT;  
 OSSpinLockLock(&amp;spinlock);  
 // do something ...
 OSSpinLockUnlock(&amp;spinlock);  
 </code></pre><h2 id="锁-双重检查锁"><a href="#锁-双重检查锁" class="headerlink" title="锁 - 双重检查锁"></a>锁 - 双重检查锁</h2><p>// TODO: 待完善… </p>
-<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>GCD提供一种信号的机制，使用它我们可以创建“锁”，这个地方加引号是因为它不是锁。<br><br><br>我们把信号量当作是一个计数器，当计数器是一个非负整数时，所有通过它的线程都应该把这个整数减 1。如果计数器大于 0，那么则允许访问，并把计数器减 1。如果为 0，则访问被禁止，所有通过它的线程都处于等待的状态。</p>
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>GCD提供一种信号的机制，使用它我们可以创建“锁”，这个地方加引号是因为它不是锁。</p>
+<p>我们把信号量当作是一个计数器，dispatch_semaphore_wait 等待信号，当信号总量为 0 时则一直等待，否则就可以正常的执行，并让信号总量 -1；dispatch_semaphore_signal 是发送一个信号，让信号总量加 1。</p>
 <pre><code>// 实例类person
 Person *person = [[Person alloc] init];
 // 创建并设置信号量
@@ -340,8 +352,8 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [person personB];
     dispatch_semaphore_signal(semaphore);
 });
-</code></pre><p>上述代码是 dispatch_semaphore_wait 方法把信号量加 1 ，dispatch_semaphore_signal是把信号量减 1。</p>
-<h2 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h2><p>条件是信号量的另外一个形式，它允许在条件为真的时候线程间互相发送信号。<br><br><br>事件队列可能使用条件变量来给等待线程发送信号，此时它们在事件队列中的时候。如果一个事件到达时，队列将给条件发送合适信号。如果一个线程已经处于等待，它会被唤醒，届时它将会取出事件并处理它。如果两个事件到达队列的时间大致相同，队列将会发送两次信号唤醒两个线程。<br><br></p>
+</code></pre><h2 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h2><p>条件是信号量的另外一个形式，它允许在条件为真的时候线程间互相发送信号。</p>
+<p>事件队列可能使用条件变量来给等待线程发送信号，此时它们在事件队列中的时候。如果一个事件到达时，队列将给条件发送合适信号。如果一个线程已经处于等待，它会被唤醒，届时它将会取出事件并处理它。如果两个事件到达队列的时间大致相同，队列将会发送两次信号唤醒两个线程。</p>
 <h3 id="条件-使用-NSCondition-类"><a href="#条件-使用-NSCondition-类" class="headerlink" title="条件 - 使用 NSCondition 类"></a>条件 - 使用 NSCondition 类</h3><pre><code>// Thread A，为等待一个 NSCondition 对象的事件序列。
 // cocaoCondition 变量包含了一个 NSCondition 对象
 [cocoaCondition lock];
@@ -390,19 +402,23 @@ void SignalThreadUsingCondition() {
     pthread_cond_signal(&amp;condition);
     pthread_mutex_unlock(&amp;mutex);
 }
-</code></pre><h2 id="执行-Selector"><a href="#执行-Selector" class="headerlink" title="执行 Selector"></a>执行 Selector</h2><p>NSObject 类声明了方法可以在应用的一个活动线程上面执行 selector 的方法。这些方法允许你的线程以异步的方式来传递消息，以确保它们在同一个线程上面执行是同步的。<br><br><br>在《Effective Objective-C 2.0》第 42 条指出多用 GCD，少用 performSelector 系列方法。</p>
+</code></pre><h2 id="执行-Selector"><a href="#执行-Selector" class="headerlink" title="执行 Selector"></a>执行 Selector</h2><p>NSObject 类声明了方法可以在应用的一个活动线程上面执行 selector 的方法。这些方法允许你的线程以异步的方式来传递消息，以确保它们在同一个线程上面执行是同步的。</p>
+<p>在《Effective Objective-C 2.0》第 42 条指出多用 GCD，少用 performSelector 系列方法。</p>
 <pre><code>[self performSelectorOnMainThread:@selector(doSomething) withObject:nil waitUntialDone:NO];
 
 dispatch_async(dispatch_get_main_queue(), ^{
     [self doSomething];
 });
-</code></pre><h2 id="同步的性能"><a href="#同步的性能" class="headerlink" title="同步的性能"></a>同步的性能</h2><p>同步可以确保你的程序正确执行，但是可能会牺牲掉部分性能。如果发生锁的争夺，你的线程有可能进入阻塞，在体验上会产生更大的迟延。<br><br><br>参考下 <a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Benchmark Demo</a>，对比几种锁在加锁和解锁 33554432 次 (即 1024<em>1024</em>32)，耗时时间分别是<br>NSLock: 3.5175 sec<br>NSLock+IMP Cache: 3.1165 sec<br>pthread_mutex: 1.5870 sec<br>OSSpinLock: 1.0893<br>@synchronized: 9.9488 sec</p>
+</code></pre><h2 id="同步的性能"><a href="#同步的性能" class="headerlink" title="同步的性能"></a>同步的性能</h2><p>同步可以确保你的程序正确执行，但是可能会牺牲掉部分性能。如果发生锁的争夺，你的线程有可能进入阻塞，在体验上会产生更大的迟延。</p>
+<p>参考下 <a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Benchmark Demo</a>，对比几种锁在加锁和解锁 33554432 次 (即 1024<em>1024</em>32)，耗时时间分别是<br>NSLock: 3.5175 sec<br>NSLock+IMP Cache: 3.1165 sec<br>pthread_mutex: 1.5870 sec<br>OSSpinLock: 1.0893<br>@synchronized: 9.9488 sec</p>
 <ul>
 <li>NSLock 和 NSLock+IMP 时间比较接近，他们都是 pthread mutexes 封装的，创建对象时需要额外开销</li>
 <li>pthread_mutex C 语言中的互斥锁，性能较高，且较安全</li>
 <li>OSSpinLock 自旋锁占用时间最少</li>
-<li>@synchronized 内部会创建异常捕获的 handler 和其他内部使用的锁，所以消耗时间最长<br><br><br>也可以参考下 ibireme (郭曜源) 的 ［Benchmark Demo］(<a href="https://github.com/ibireme/tmp/tree/master/iOSLockBenckmark/iOSLockBenckmark)。同时" target="_blank" rel="external">https://github.com/ibireme/tmp/tree/master/iOSLockBenckmark/iOSLockBenckmark)。同时</a> ibireme 指出 <a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">OSSPinLock 不再安全</a>，所以看他的源码基本上是用 pthread_mutex 的情况比较多。<br><br><br>另外，在《Effective Objective-C 2.0》第 41 条指出应当多用派发队列，少用同步锁。即使用”串行同步队列” 或者 GCD 的 dispatch_barrier_async / dispatch_barrier_sync 来避开同步锁的使用。</li>
+<li>@synchronized 内部会创建异常捕获的 handler 和其他内部使用的锁，所以消耗时间最长</li>
 </ul>
+<p>也可以参考下 ibireme (郭曜源) 的 <a href="https://github.com/ibireme/tmp/tree/master/iOSLockBenckmark/iOSLockBenckmark" target="_blank" rel="external">Benchmark Demo</a>。同时 ibireme 指出 <a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">OSSPinLock 不再安全</a>，所以看他的源码基本上是用 pthread_mutex 的情况比较多。</p>
+<p>另外，在《Effective Objective-C 2.0》第 41 条指出应当多用派发队列，少用同步锁。即使用”串行同步队列” 或者 GCD 的 dispatch_barrier_async / dispatch_barrier_sync 来避开同步锁的使用。</p>
 <h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html" target="_blank" rel="external">iOS 多线程之线程安全</a><br><a href="http://www.dreamingwish.com/article/the-ios-multithreaded-programming-guide-4-thread-synchronization.html" target="_blank" rel="external">iOS 多线程编程指南之线程同步</a><br><a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Synchronized NSLock pthread OSSpinLock 的正确使用</a><br><a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a></p>
 
       

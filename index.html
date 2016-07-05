@@ -121,7 +121,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 10px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -186,6 +186,81 @@ var _hmt = _hmt || [];
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-Source-Code-Learning-SDWebImage" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/04/Source-Code-Learning-SDWebImage/" class="article-date">
+  	<time datetime="2016-07-04T03:16:24.000Z" itemprop="datePublished">2016-07-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/04/Source-Code-Learning-SDWebImage/">Source Code Learning - SDWebImage</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下</p>
+<h2 id="Macros-宏"><a href="#Macros-宏" class="headerlink" title="Macros 宏"></a>Macros 宏</h2><h4 id="判断是否支持了垃圾回收"><a href="#判断是否支持了垃圾回收" class="headerlink" title="判断是否支持了垃圾回收"></a>判断是否支持了垃圾回收</h4><pre><code>#ifdef __OBJC_GC__
+#error SDWebImage does not support Objective-C Garbage Collection
+#endif
+</code></pre><p>从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不用考虑有关保持和释放对象、自动释放池或保持计数的问题了。但是这种机制只支持 OS X (Mac OS X 10.5 - 10.8) 系统，而且在早期的 Xcode 的编译设置中还能看到设置 GC 的选项，现在已经没有该设置了。所以这算是个历史问题。</p>
+<p>#error token-sequence<br>其主要的作用是在编译的时候输出编译错误信息 token-sequence，从方便程序员检查程序中出现的错误。 该指令常和 ifdef 和 ifndef 搭配使用。写代码的时候如果要提醒有个错误必须修改，也可以临时写个该指令，提交代码前再删掉。</p>
+<h4 id="判断系统版本"><a href="#判断系统版本" class="headerlink" title="判断系统版本"></a>判断系统版本</h4><pre><code>#if __IPHONE_OS_VERSION_MIN_REQUIRED != 20000 &amp;&amp; __IPHONE_OS_VERSION_MIN_REQUIRED &lt; __IPHONE_5_0
+#error SDWebImage doesn&apos;t support Deployment Target version &lt; 5.0
+#endif
+</code></pre><p>SDWebImage 3.0 版本只支持 iOS 7 了，这里看来是没有调整。20000 对应版本 2.0，2.2.1 对应的是 20201。至于为什么要和 2.0 比较下，还未想通。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SouceCode/">SouceCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/04/Source-Code-Learning-SDWebImage/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+  
+  
+  
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
   
     <article id="post-Concurrent-Programming-and-Synchronization" class="article article-type-post" itemscope itemprop="blogPost">
   

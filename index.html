@@ -121,7 +121,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 10px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 13.33px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -186,6 +186,97 @@ var _hmt = _hmt || [];
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-Source-Code-Learning-YYModel" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/05/Source-Code-Learning-YYModel/" class="article-date">
+  	<time datetime="2016-07-05T05:04:51.000Z" itemprop="datePublished">2016-07-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/05/Source-Code-Learning-YYModel/">Source Code Learning - YYModel</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>源码看的是 YYKit，因为内容太多所以还是按照功能分开</p>
+<h2 id="kCFNull"><a href="#kCFNull" class="headerlink" title="kCFNull"></a>kCFNull</h2><p>NSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典</p>
+<pre><code>NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&quot;someKey&quot;] = [NSNull null]; // Sets value of NSNull singleton for `someKey`
+NSLog(@&quot;Keys: %@&quot;, [mutableDictionary allKeys]); // @[@&quot;someKey&quot;]
+</code></pre><p>kCFNull 这个是什么呢，看定义可以知道</p>
+<pre><code>typedef const struct CF_BRIDGED_TYPE(NSNull) __CFNull * CFNullRef;
+const CFNullRef kCFNull;    // the singleton null instance
+</code></pre><p>看个栗子</p>
+<pre><code>NSNull *null1 = (id)kCFNull;
+NSNull *null2 = [NSNull null];
+</code></pre><p>输出信息</p>
+<pre><code>(NSNull *) null1 = 0x0000000107b10af0
+(NSNull *) null2 = 0x0000000107b10af0
+</code></pre><p>说明 (id)kCFNull 就是 [NSNull null]</p>
+<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><pre><code>- (id)deepCopy {
+    id obj = nil;
+    @try {
+        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
+    }
+    @catch (NSException *exception) {
+         NSLog(@&quot;%@&quot;, exception);
+    }
+    return obj;
+}
+</code></pre><p>下面说说浅拷贝和深拷贝。集合类的拷贝分为浅拷贝和深拷贝<br>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SouceCode/">SouceCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/05/Source-Code-Learning-YYModel/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+  
+  
+  
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
   
     <article id="post-Source-Code-Learning-SDWebImage" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -877,68 +968,10 @@ if ([theLock lock]) {
 
 
   
-    <article id="post-A-brand-new-beginning" class="article article-type-post" itemscope itemprop="blogPost">
   
-    <div class="article-meta">
-      <a href="/2016/03/29/A-brand-new-beginning/" class="article-date">
-  	<time datetime="2016-03-29T05:07:37.000Z" itemprop="datePublished">2016-03-29</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/29/A-brand-new-beginning/">A brand new beginning</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>2016，这是一个新的开始。</p>
-<p>想想过去创业的三、四年，自己身上背负了太多事情，就像一头拉磨的驴，只知道拉磨，却忽略了方向。整个人陷入了一个怪圈，整天都在忙，却不知道自己忙着什么，因为太忙碌，也就没时间思考，靠经验和体力拼命地做着什么。那段时间，发现自己已经不会慢下来，无法安静，看不下去文学类的书籍；做事情，总会先想是否能有所得，为了什么而做。偶尔片刻地反思，发现自己越来越不像自己。能感觉到自己走得太快，忽略了很多东西，于是想办法让自己慢下来，捡起很久没有做的事情：行走、读书、绘画、旅行……</p>
-<p>当然工作仍然是最重要的部分，它能支撑着我有行走、读书、绘画和旅行的本钱。之前所有的工作积累都记录到 Evernote 上，给自己写的东西，不需要前因后果自己能看懂很容易记录，好处显而易见，缺点是记得容易忘得也快。所以打算将之前的积累结合现在在做的事情，做一次梳理，为了加深印象，再者，“人人为我，我为人人”。</p>
-<p>这一年的伊始，就从这里开始吧，将自己做过的事情，在做的事情，将要做的事情都做一些文字的记录，希望经过这样思考和记录的过程，找回最初的自己，也从中得到升华吧。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-  
-  
-  
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 </div>
       <footer id="footer">

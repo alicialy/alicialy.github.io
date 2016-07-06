@@ -4,30 +4,27 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Source Code Learning - SDWebImage | Alicia&#39;s Blog</title>
+  <title>Source Code Learning - YYModel | Alicia&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
-Macros 宏判断是否支持了垃圾回收#ifdef __OBJC_GC__
-#error SDWebImage does not support Objective-C Garbage Collection
-#endif
-从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不">
+  <meta name="description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
+kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
+NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Source Code Learning - SDWebImage">
-<meta property="og:url" content="http://yoursite.com/2016/07/04/Source-Code-Learning-SDWebImage/index.html">
+<meta property="og:title" content="Source Code Learning - YYModel">
+<meta property="og:url" content="http://yoursite.com/2016/07/05/Source-Code-Learning-YYModel/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
-Macros 宏判断是否支持了垃圾回收#ifdef __OBJC_GC__
-#error SDWebImage does not support Objective-C Garbage Collection
-#endif
-从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不">
-<meta property="og:updated_time" content="2016-07-05T04:15:29.000Z">
+<meta property="og:description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
+kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
+NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
+<meta property="og:updated_time" content="2016-07-06T03:02:16.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Source Code Learning - SDWebImage">
-<meta name="twitter:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
-Macros 宏判断是否支持了垃圾回收#ifdef __OBJC_GC__
-#error SDWebImage does not support Objective-C Garbage Collection
-#endif
-从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不">
+<meta name="twitter:title" content="Source Code Learning - YYModel">
+<meta name="twitter:description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
+kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
+NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
   
     <link rel="alternative" href="/atom.xml" title="Alicia&#39;s Blog" type="application/atom+xml">
   
@@ -198,11 +195,11 @@ var _hmt = _hmt || [];
 	</div>
 </nav>
 
-      <div class="body-wrap"><article id="post-Source-Code-Learning-SDWebImage" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Source-Code-Learning-YYModel" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/07/04/Source-Code-Learning-SDWebImage/" class="article-date">
-  	<time datetime="2016-07-04T03:16:24.000Z" itemprop="datePublished">2016-07-04</time>
+      <a href="/2016/07/05/Source-Code-Learning-YYModel/" class="article-date">
+  	<time datetime="2016-07-05T05:04:51.000Z" itemprop="datePublished">2016-07-05</time>
 </a>
     </div>
   
@@ -215,7 +212,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      Source Code Learning - SDWebImage
+      Source Code Learning - YYModel
     </h1>
   
 
@@ -235,74 +232,81 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下</p>
-<h2 id="Macros-宏"><a href="#Macros-宏" class="headerlink" title="Macros 宏"></a>Macros 宏</h2><h4 id="判断是否支持了垃圾回收"><a href="#判断是否支持了垃圾回收" class="headerlink" title="判断是否支持了垃圾回收"></a>判断是否支持了垃圾回收</h4><pre><code>#ifdef __OBJC_GC__
-#error SDWebImage does not support Objective-C Garbage Collection
-#endif
-</code></pre><p>从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不用考虑有关保持和释放对象、自动释放池或保持计数的问题了。但是这种机制只支持 OS X (Mac OS X 10.5 - 10.8) 系统，而且在早期的 Xcode 的编译设置中还能看到设置 GC 的选项，现在已经没有该设置了。所以这算是个历史问题。</p>
-<p>#error token-sequence<br>其主要的作用是在编译的时候输出编译错误信息 token-sequence，从方便程序员检查程序中出现的错误。 该指令常和 ifdef 和 ifndef 搭配使用。写代码的时候如果要提醒有个错误必须修改，也可以临时写个该指令，提交代码前再删掉。</p>
-<h4 id="判断系统版本"><a href="#判断系统版本" class="headerlink" title="判断系统版本"></a>判断系统版本</h4><pre><code>#if __IPHONE_OS_VERSION_MIN_REQUIRED != 20000 &amp;&amp; __IPHONE_OS_VERSION_MIN_REQUIRED &lt; __IPHONE_5_0
-#error SDWebImage doesn&apos;t support Deployment Target version &lt; 5.0
-#endif
-</code></pre><p>SDWebImage 3.0 版本只支持 iOS 7 了，这里看来是没有调整。20000 对应版本 2.0，2.2.1 对应的是 20201。至于为什么要和 2.0 比较下，还未想通。</p>
-<a id="more"></a>
-<h4 id="判断是否支持了-ARC"><a href="#判断是否支持了-ARC" class="headerlink" title="判断是否支持了 ARC"></a>判断是否支持了 ARC</h4><pre><code>#if !__has_feature(objc_arc)
-#error SDWebImage is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
-#endif
-</code></pre><h4 id="忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告"><a href="#忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告" class="headerlink" title="忽视 performSelector may cause a leak because its selector is unknown 警告"></a>忽视 performSelector may cause a leak because its selector is unknown 警告</h4><pre><code>#pragma clang diagnostic push
-#pragma clang diagnostic ignored &quot;-Warc-performSelector-leaks&quot;
-     id activityIndicator = [NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;) performSelector:NSSelectorFromString(@&quot;sharedActivityIndicator&quot;)];
-#pragma clang diagnostic pop
-</code></pre><p>另外还可以通过函数指针方式避免该警告</p>
-<pre><code>SEL selector = NSSelectorFromString(@&quot;sharedActivityIndicator&quot;);
-IMP imp = [NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;) methodForSelector:selector];
-void (*func)(id, SEL) = (void *)imp;
-func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
-</code></pre><h2 id="NSURLSession-工作模式"><a href="#NSURLSession-工作模式" class="headerlink" title="NSURLSession 工作模式"></a>NSURLSession 工作模式</h2><p>NSURLSessionConfiguration 分为三种工作模式<br>default: 可以使用磁盘缓存、身份认证、Cookie<br>ephemeral(及时模式): 数据只能保存到内存，无法存储到磁盘。<br>background: 可以在后台执行上传或下载任务</p>
-<h2 id="后进先出"><a href="#后进先出" class="headerlink" title="后进先出"></a>后进先出</h2><p>后进先出通过 NSOperation 的依赖实现</p>
-<pre><code>if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
-        // Emulate LIFO execution order by systematically adding new operations as last operation&apos;s dependency
-        [wself.lastAddedOperation addDependency:operation];
-        wself.lastAddedOperation = operation;
-}
-</code></pre><h2 id="GCD-barrier"><a href="#GCD-barrier" class="headerlink" title="GCD barrier"></a>GCD barrier</h2><p>dispatch_barrier_async 比较常见，那么 dispatch_barrier_sync 又是做什么的，区别是什么呢？看文档可知 dispatch_barrier_async 不用执行完内部方法即可返回，dispatch_barrier_sync 需要等到执行完内部方法才会返回</p>
-<pre><code>dispatch_aync(queue, ^{
-    NSLog(@&quot;In 1&quot;);
-});
-dispatch_barrier_sync(queue,^{
-    for (int i = 0; i &lt; 100000; i++) {
-        // ...
+        <p>源码看的是 YYKit，因为内容太多所以还是按照功能分开</p>
+<h2 id="kCFNull"><a href="#kCFNull" class="headerlink" title="kCFNull"></a>kCFNull</h2><p>NSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典</p>
+<pre><code>NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&quot;someKey&quot;] = [NSNull null]; // Sets value of NSNull singleton for `someKey`
+NSLog(@&quot;Keys: %@&quot;, [mutableDictionary allKeys]); // @[@&quot;someKey&quot;]
+</code></pre><p>kCFNull 这个是什么呢，看定义可以知道</p>
+<pre><code>typedef const struct CF_BRIDGED_TYPE(NSNull) __CFNull * CFNullRef;
+const CFNullRef kCFNull;    // the singleton null instance
+</code></pre><p>看个栗子</p>
+<pre><code>NSNull *null1 = (id)kCFNull;
+NSNull *null2 = [NSNull null];
+</code></pre><p>输出信息</p>
+<pre><code>(NSNull *) null1 = 0x0000000107b10af0
+(NSNull *) null2 = 0x0000000107b10af0
+</code></pre><p>说明 (id)kCFNull 就是 [NSNull null]</p>
+<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><pre><code>- (id)deepCopy {
+    id obj = nil;
+    @try {
+        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
     }
-    NSLog(@&quot;In barrier&quot;);
-});
-NSLog(@&quot;In 2&quot;);
-</code></pre><p>输出结果为</p>
-<pre><code>In 1
-In barrier
-In 2
-</code></pre><p>如果 dispatch_barrier_sync 改为 dispatch_barrier_async</p>
-<p>输出结果为</p>
-<pre><code>In 1
-In 2
-In barrier
-</code></pre><h2 id="一些调用方法"><a href="#一些调用方法" class="headerlink" title="一些调用方法"></a>一些调用方法</h2><ul>
-<li><p>maxCacheAge 缓存的有效时间是1周，清理缓存的方式见 SDImageCache cleanDiskWithCompletionBlock 方法，先删除1周前的文件，如果文件还超出设置的最大缓存容量，则将磁盘文件按大小排序后按大小顺序删除文件，直到缓存空间小于最大磁盘容量</p>
-</li>
-<li><p>可以给定一组链接，下载后按照动画方式展示</p>
-</li>
-</ul>
-<p><code>-(void)sd_setAnimationImagesWithURLs:arrayOfURLs</code></p>
-<ul>
-<li>可以给定一个链接，如果已经有过缓存，则将缓存图片先展示，而不是展示占位图</li>
-</ul>
-<p><code>-(void)sd_setImageWithPreviousCachedImageWithURL:placeholderImage:options: progress: completed;</code></p>
-<ul>
-<li><p>downloadTimeout 超时时间是15s</p>
-</li>
-<li><p>如果下载一些图片后不着急使用，即不需要设置 completeBlock 时使用 SDWebImagePrefetcher 它的下载优先级也是低的</p>
-</li>
-</ul>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.raywenderlich.com/110458/nsurlsession-tutorial-getting-started" target="_blank" rel="external">NSURLSession 教程</a><br><a href="http://www.cocoachina.com/industry/20131106/7304.html" target="_blank" rel="external">NSURLSession 使用说明</a><br><a href="http://www.jianshu.com/p/fafc67475c73" target="_blank" rel="external">使用 NSURLSession</a></p>
+    @catch (NSException *exception) {
+         NSLog(@&quot;%@&quot;, exception);
+    }
+    return obj;
+}
+</code></pre><p>下面说说浅拷贝和深拷贝。集合类的拷贝分为浅拷贝和深拷贝<br><a id="more"></a><br>浅拷贝</p>
+<pre><code>NSArray *shallowCopyArray = [someArray copyWithZone:nil];
+
+NSDictionary *shallowCopyDict = [[NSDictionary alloc] initWithDictionary:someDictionary copyItems:NO];
+</code></pre><p>完全深拷贝</p>
+<pre><code>NSArray *deepCopyArray = [[NSArray alloc] initWithArray:someArray copyItems:YES];
+
+NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:
+      [NSKeyedArchiver archivedDataWithRootObject:oldArray]];
+</code></pre><p>这里的深拷贝是完全深拷贝(real-deep copy)，如果使用 mutableCopy 是单层深拷贝 (one-level-deep copy)</p>
+<pre><code>NSMutableArray *array = [NSMutableArray arrayWithObjects:[NSMutableString stringWithString:@&quot;one&quot;],[NSMutableString stringWithString:@&quot;two&quot;],[NSMutableString stringWithString:@&quot;three&quot;],nil];
+
+NSMutableArray *copyArray = [array mutableCopy];
+
+NSMutableString *str = [array objectAtIndex:0];
+[str appendString:@&quot; One&quot;];
+
+NSLog(@&quot;array:&quot;);
+[self printArray:array];
+NSLog(@&quot;copyArray:&quot;);
+[self printArray:copyArray];
+
+[copyArray removeObjectAtIndex:0];
+
+NSLog(@&quot;array:&quot;);
+[self printArray:array];
+NSLog(@&quot;copyArray:&quot;);
+[self printArray:copyArray];
+</code></pre><p>输出结果</p>
+<pre><code>array:
+one One
+two
+three
+
+copyArray:
+one One
+two
+three
+
+array:
+one One
+two
+three
+
+copyArray:
+two
+three
+</code></pre><p>copyArray 通过 array 的 mutableCopy 方法进行了拷贝，该方法进行一层深拷贝，在内存中为新的数组对象分配了空间，并且将元素复制到另一个数组元素（仅将引用从一个数组元素复制到另一个数元素），这样的结果就是两个数组中的元素指向内存中的同一个字符。要实现完全深拷贝则要使用上面的完全深拷贝中的两种方式。</p>
+<p>另外在使用 NSKeyedUnarchiver 时，如果解压数据为 nil 或者数据中有异常时，可能会导致崩溃，所以调用该方法时放到 try catch 中，保证程序不会崩溃。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://xiongzenghuidegithub.github.io/blog/2014/02/23/nil-nsnull-null-kcfnull/" target="_blank" rel="external">Nil NSNull NULL KCFNull</a><br><a href="https://developer.apple.com/library/prerelease/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html" target="_blank" rel="external">Copying Collections</a><br><a href="http://lists.apple.com/archives/cocoa-dev/2009/Jul/msg00181.html" target="_blank" rel="external">NSKeyedUnarchiver crash</a></p>
 
       
     </div>
@@ -344,18 +348,9 @@ In barrier
     
 <nav id="article-nav">
   
-    <a href="/2016/07/05/Source-Code-Learning-YYModel/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Source Code Learning - YYModel
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/06/24/Concurrent-Programming-and-Synchronization/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Concurrent Programming and Synchronization</div>
+    <a href="/2016/07/04/Source-Code-Learning-SDWebImage/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Source Code Learning - SDWebImage</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -393,7 +388,7 @@ In barrier
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Source-Code-Learning-SDWebImage" data-title="Source Code Learning - SDWebImage" data-url="http://yoursite.com/2016/07/04/Source-Code-Learning-SDWebImage/"></div>
+	<div class="ds-thread" data-thread-key="Source-Code-Learning-YYModel" data-title="Source Code Learning - YYModel" data-url="http://yoursite.com/2016/07/05/Source-Code-Learning-YYModel/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

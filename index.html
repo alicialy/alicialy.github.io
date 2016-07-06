@@ -86,7 +86,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -314,6 +314,14 @@ NSNull *null2 = [NSNull null];
 #error SDWebImage doesn&apos;t support Deployment Target version &lt; 5.0
 #endif
 </code></pre><p>SDWebImage 3.0 版本只支持 iOS 7 了，这里看来是没有调整。20000 对应版本 2.0，2.2.1 对应的是 20201。至于为什么要和 2.0 比较下，还未想通。</p>
+<h4 id="判断是否支持了-ARC"><a href="#判断是否支持了-ARC" class="headerlink" title="判断是否支持了 ARC"></a>判断是否支持了 ARC</h4><pre><code>#if !__has_feature(objc_arc)
+#error SDWebImage is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
+#endif
+</code></pre><h4 id="忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告"><a href="#忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告" class="headerlink" title="忽视 performSelector may cause a leak because its selector is unknown 警告"></a>忽视 performSelector may cause a leak because its selector is unknown 警告</h4><pre><code>#pragma clang diagnostic push
+#pragma clang diagnostic ignored &quot;-Warc-performSelector-leaks&quot;
+     id activityIndicator = [NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;) performSelector:NSSelectorFromString(@&quot;sharedActivityIndicator&quot;)];
+#pragma clang diagnostic pop
+</code></pre><p>另外还可以通过函数指针方式避免该警告</p>
       
     </div>
     
@@ -629,18 +637,6 @@ if ([theLock lock]) {
     return _dataArray;
 }
 </code></pre><p>在处理图片的 Controller 中当用户点击某个按钮时会加载一些 View，例如处理文字、背景、绘图笔等是弹出的设置页面，这些 View 都封装成了自定义的类从 Controller 中分离出去，这些类的内存可以被处理，如果在 didReceiveMemoryWarning 中把这些视图清理时，需要判断当前视图是否是否正在使用，否则可能出现正在操作这些视图时，由于收到内存警告而被删除导致错误，在 iOS 6 以上的版本中可以用如下方式判断视图是否在使用</p>
-<pre><code>- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    if ([self.view window] == nil)   { // 视图是否正在使用
-       self.settingView = nil;
-    }
-}
-</code></pre><p>另外，NSCache 缓存类会在收到 Memory Warning 时自动删除缓存内容，不需要手动做清理，有个 Demo <a href="http://www.15yan.com/story/45toOUzFGlr/">点击查看</a></p>
-<p>还可以在 AppDelegate 中实现 applicationDidReceiveMemoryWarning 方法做一些全局数据清理</p>
-<pre><code>- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
-
-}
-</code></pre>
       
     </div>
     
@@ -857,7 +853,14 @@ if ([theLock lock]) {
 #else
 #   define DLog(...)
 #endif
-</code></pre>
+</code></pre><p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
+<pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
+</code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
+<pre><code>self.paperSizeView.paperSizeBlock = ^(PaperSizeModel *sizeModel) {
+    self.paperSize = sizeModel.paperSize;
+}
+</code></pre><p>要把 self 改为 WeakSelf。</p>
+<p>下面说说 Instrument 中如何检查这个问题并定位的。<br>
       
     </div>
     
@@ -926,9 +929,30 @@ if ([theLock lock]) {
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
 <p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
 <p>另外，由于最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
-<p>自己设计和编码的项目［LEAF Photo］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。<br><br /></p>
+<p>自己设计和编码的项目［LEAF Photo］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。 </p>
 <h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
 <p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
+<pre><code>NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+[toImageView setImage:scaledImage];
+</code></pre><p>将上面的方法放到线程中，另外由于 imageWithContentsOfFile 方法不会进行缓存，所以加载图片后将其加到缓存 (类型是 NSCache )中。</p>
+<pre><code>UIImage *tplImage = [self.cache objectForKey:indexPath];
+if (tplImage) {
+    [toImageView setImage:tplImage];
+}
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+    UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+    UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+    [self.cache setObject:scaledImage forKey:indexPath];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [toImageView setImage:scaledImage];
+    });
+});
+</code></pre><p>这样优化后，setTplCoverModel 方法由原来的 32ms 降低到了 2ms。</p>
+<p>通过 Time Profiler 找到最耗时的调用，不影响主线程的操作放到应当线程中；需要优化算法的通过算法降低时间复杂度；经常访问的数据放到缓存中，通过以上方法做调整。</p>
+<p>看完 Timer Profiler 接下来看看 Allocations 和 Leaks 的使用。<br>
       
     </div>
     

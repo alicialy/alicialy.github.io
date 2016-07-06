@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="[LEAF Photo] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。
 处理内存警告处理所有 ViewController 中的 didReceiveMemoryWarning 方法didReceiveMemoryWarning 方法中应当把缓存的变量都清空，这些变量最好都是通过懒加载的方式创建，这样收到内存警">
-<meta property="og:updated_time" content="2016-05-26T12:36:31.000Z">
+<meta property="og:updated_time" content="2016-07-06T10:43:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Memory Warning">
 <meta name="twitter:description" content="[LEAF Photo] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。
@@ -90,7 +90,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -243,6 +243,7 @@ var _hmt = _hmt || [];
     return _dataArray;
 }
 </code></pre><p>在处理图片的 Controller 中当用户点击某个按钮时会加载一些 View，例如处理文字、背景、绘图笔等是弹出的设置页面，这些 View 都封装成了自定义的类从 Controller 中分离出去，这些类的内存可以被处理，如果在 didReceiveMemoryWarning 中把这些视图清理时，需要判断当前视图是否是否正在使用，否则可能出现正在操作这些视图时，由于收到内存警告而被删除导致错误，在 iOS 6 以上的版本中可以用如下方式判断视图是否在使用</p>
+<a id="more"></a>
 <pre><code>- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     if ([self.view window] == nil)   { // 视图是否正在使用
@@ -254,8 +255,7 @@ var _hmt = _hmt || [];
 <pre><code>- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
 
 }
-</code></pre><a id="more"></a>
-<h2 id="消耗内存的对象创建放到-AutoReleasePool-中"><a href="#消耗内存的对象创建放到-AutoReleasePool-中" class="headerlink" title="消耗内存的对象创建放到 AutoReleasePool 中"></a>消耗内存的对象创建放到 AutoReleasePool 中</h2><p>函数中出现很多中间变量占据大量内存，或者不多的中间变量但是也是占用较大内存的，需要放到自动释放池中</p>
+</code></pre><h2 id="消耗内存的对象创建放到-AutoReleasePool-中"><a href="#消耗内存的对象创建放到-AutoReleasePool-中" class="headerlink" title="消耗内存的对象创建放到 AutoReleasePool 中"></a>消耗内存的对象创建放到 AutoReleasePool 中</h2><p>函数中出现很多中间变量占据大量内存，或者不多的中间变量但是也是占用较大内存的，需要放到自动释放池中</p>
 <pre><code>@autoreleasepool {
      ALAsset *asset = self.assetArray[i];
      if (asset &amp;&amp; ![asset isEqual:[NSNull null]]) {

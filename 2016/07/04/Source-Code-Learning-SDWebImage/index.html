@@ -20,7 +20,7 @@ Macros 宏判断是否支持了垃圾回收#ifdef __OBJC_GC__
 #error SDWebImage does not support Objective-C Garbage Collection
 #endif
 从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不">
-<meta property="og:updated_time" content="2016-07-05T04:15:29.000Z">
+<meta property="og:updated_time" content="2016-07-06T10:43:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - SDWebImage">
 <meta name="twitter:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
@@ -99,7 +99,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -245,7 +245,6 @@ var _hmt = _hmt || [];
 #error SDWebImage doesn&apos;t support Deployment Target version &lt; 5.0
 #endif
 </code></pre><p>SDWebImage 3.0 版本只支持 iOS 7 了，这里看来是没有调整。20000 对应版本 2.0，2.2.1 对应的是 20201。至于为什么要和 2.0 比较下，还未想通。</p>
-<a id="more"></a>
 <h4 id="判断是否支持了-ARC"><a href="#判断是否支持了-ARC" class="headerlink" title="判断是否支持了 ARC"></a>判断是否支持了 ARC</h4><pre><code>#if !__has_feature(objc_arc)
 #error SDWebImage is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
 #endif
@@ -254,6 +253,7 @@ var _hmt = _hmt || [];
      id activityIndicator = [NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;) performSelector:NSSelectorFromString(@&quot;sharedActivityIndicator&quot;)];
 #pragma clang diagnostic pop
 </code></pre><p>另外还可以通过函数指针方式避免该警告</p>
+<a id="more"></a>
 <pre><code>SEL selector = NSSelectorFromString(@&quot;sharedActivityIndicator&quot;);
 IMP imp = [NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;) methodForSelector:selector];
 void (*func)(id, SEL) = (void *)imp;

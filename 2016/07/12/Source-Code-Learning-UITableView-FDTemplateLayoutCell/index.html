@@ -24,7 +24,7 @@ Since SELs are guaranteed to be unique">
 可以注意下 Associated-objects 中有排小字：
 
 Since SELs are guaranteed to be unique">
-<meta property="og:updated_time" content="2016-07-14T02:21:26.000Z">
+<meta property="og:updated_time" content="2016-07-14T09:21:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - UITableView-FDTemplateLayoutCell">
 <meta name="twitter:description" content="给 Category 添加属性_cmd 表示当前方法的selector
@@ -105,7 +105,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -292,7 +292,23 @@ b(x);
 };
 </code></pre><p>上面的方式又出现语法错误，所以修改为以下方式即可</p>
 <pre><code>#define foo(x) do { a(x); a(x); } while (0)
-</code></pre><p>参考文章<br><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-TPXREF163" target="_blank" rel="external">Runtime Programming Guide</a>、<br><a href="http://www.pixelstech.net/article/1390482950-do-%7B-%7D-while-%280%29-in-macros" target="_blank" rel="external">do while in macros</a></p>
+</code></pre><h2 id="实现-NSCopying-协议限定"><a href="#实现-NSCopying-协议限定" class="headerlink" title="实现 NSCopying 协议限定"></a>实现 NSCopying 协议限定</h2><pre><code>- (BOOL)existsHeightForKey:(id&lt;NSCopying&gt;)key;
+</code></pre><p>id<nscopying> 限定参数 Key 必须实现了 NSCopying 协议</nscopying></p>
+<h2 id="用枚举和数组设置变量"><a href="#用枚举和数组设置变量" class="headerlink" title="用枚举和数组设置变量"></a>用枚举和数组设置变量</h2><pre><code>static const CGFloat systemAccessoryWidths[] = {
+        [UITableViewCellAccessoryNone] = 0,
+        [UITableViewCellAccessoryDisclosureIndicator] = 34,
+        [UITableViewCellAccessoryDetailDisclosureButton] = 68,
+        [UITableViewCellAccessoryCheckmark] = 40,
+        [UITableViewCellAccessoryDetailButton] = 48
+    };
+contentViewWidth -= systemAccessoryWidths[cell.accessoryType];
+</code></pre><h2 id="kindof-返回一个子类实例"><a href="#kindof-返回一个子类实例" class="headerlink" title="__kindof 返回一个子类实例"></a>__kindof 返回一个子类实例</h2><pre><code>- (__kindof UITableViewHeaderFooterView *)fd_templateHeaderFooterViewForReuseIdentifier:(NSString *)identifier {
+    // ...
+}
+
+ UITableViewHeaderFooterView *templateHeaderFooterView = [self fd_templateHeaderFooterViewForReuseIdentifier:identifier];
+</code></pre><p>用 __kindof UITableViewHeaderFooterView 替换 id，明确表明了返回值的类型，又不需要调用的时候进行强制转换，只要 templateHeaderFooterView 是 UITableViewHeaderFooterView 的子类即可，不会出现警告，不再需要强制类型转换。</p>
+<p>参考文章<br><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-TPXREF163" target="_blank" rel="external">Runtime Programming Guide</a>、<br><a href="http://www.pixelstech.net/article/1390482950-do-%7B-%7D-while-%280%29-in-macros" target="_blank" rel="external">do while in macros</a><br><a href="http://blog.sunnyxx.com/2015/06/12/objc-new-features-in-2015/" target="_blank" rel="external">Objectice - C 特性</a></p>
 
       
     </div>

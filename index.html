@@ -86,7 +86,7 @@ var _hmt = _hmt || [];
 						<li>Tags</li>
 						
 						
-						<li>About</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -217,7 +217,7 @@ var _hmt = _hmt || [];
 <pre><code>- (BOOL)fd_debugLogEnabled {
     return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
-</code></pre><p>可以注意下 <a href="http://nshipster.com/associated-objects/" target="_blank" rel="external">Associated-objects</a> 中有排小字：</p>
+</code></pre><p>可以注意下 <a href="http://nshipster.com/associated-objects/">Associated-objects</a> 中有排小字：</p>
 <blockquote>
 <p>Since SELs are guaranteed to be unique and constant, you can use _cmd as the key for objc_setAssociatedObject(). #objective-c #snowleopard</p>
 </blockquote>
@@ -234,7 +234,7 @@ var _hmt = _hmt || [];
     }
 }
 </code></pre><p>利用判断条件或者在循环中调用某个方法的方式如上</p>
-<p>已知函数名，有两种方式调用函数，之前在 <a href="http://alicialy.github.io/2016/07/04/Source-Code-Learning-SDWebImage/" target="_blank" rel="external">SDWebImage 解析</a> 中总结过可以使用 performSelector 或者 methodForSelector 两个函数。</p>
+<p>已知函数名，有两种方式调用函数，之前在 <a href="http://alicialy.github.io/2016/07/04/Source-Code-Learning-SDWebImage/">SDWebImage 解析</a> 中总结过可以使用 performSelector 或者 methodForSelector 两个函数。</p>
 <h2 id="32-位和-64-位"><a href="#32-位和-64-位" class="headerlink" title="32 位和 64 位"></a>32 位和 64 位</h2><pre><code>#if CGFLOAT_IS_DOUBLE
     return number.doubleValue;
 #else
@@ -245,26 +245,7 @@ var _hmt = _hmt || [];
     callout();
 }
 #define FDPrimaryCall(...) do {__FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(^{__VA_ARGS__});} while(0)
-</code></pre><p>do{} while(0) 构造后宏的定义不会受到大括号、分号等影响。上面的使用方法展示了大括号问题，下面看看分号的影响。</p>
-<pre><code>#define foo(x) a(x); b(x)
-</code></pre><p>这段代码本义是调用 foo 函数时指行 a 方法和 b 方法。但是如果你这样使用</p>
-<pre><code>if (isTrue) 
-    foo(x);
-</code></pre><p>那么宏扩展后变为</p>
-<pre><code>if (isTrue)
-    a(x);
-b(x);
-</code></pre><p>那么改为下面这样呢</p>
-<pre><code>#define foo(x) { a(x); b(x); }
-</code></pre><p>扩展后变为</p>
-<pre><code>if (isTrue) {
-    a(x);
-    b(x);
-};
-</code></pre><p>上面的方式又出现语法错误，所以修改为以下方式即可</p>
-<pre><code>#define foo(x) do { a(x); a(x); } while (0)
-</code></pre><p>参考文章<br><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-TPXREF163" target="_blank" rel="external">Runtime Programming Guide</a>、<br><a href="http://www.pixelstech.net/article/1390482950-do-%7B-%7D-while-%280%29-in-macros" target="_blank" rel="external">do while in macros</a></p>
-
+</code></pre>
       
     </div>
     
@@ -277,6 +258,10 @@ b(x);
 
       
 
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>

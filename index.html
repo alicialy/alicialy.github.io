@@ -291,15 +291,7 @@
 
       
         
-          <h2 id="给-Category-添加属性"><a href="#给-Category-添加属性" class="headerlink" title="给 Category 添加属性"></a>给 Category 添加属性</h2><p>_cmd 表示当前方法的selector</p>
-<pre><code>- (BOOL)fd_debugLogEnabled {
-    return [objc_getAssociatedObject(self, _cmd) boolValue];
-}
-</code></pre><p>可以注意下 <a href="http://nshipster.com/associated-objects/">Associated-objects</a> 中有排小字：</p>
-<blockquote>
-<p>Since SELs are guaranteed to be unique and constant, you can use _cmd as the key for objc_setAssociatedObject(). #objective-c #snowleopard</p>
-</blockquote>
-<h2 id="actionSheet-避开-switch-case-写法"><a href="#actionSheet-避开-switch-case-写法" class="headerlink" title="actionSheet 避开 switch case 写法"></a>actionSheet 避开 switch case 写法</h2><pre><code>- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+          <h2 id="actionSheet-避开-switch-case-写法"><a href="#actionSheet-避开-switch-case-写法" class="headerlink" title="actionSheet 避开 switch case 写法"></a>actionSheet 避开 switch case 写法</h2><pre><code>- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     SEL selectors[] = {
         @selector(insertRow),
         @selector(insertSection),
@@ -313,12 +305,6 @@
 }
 </code></pre><p>利用判断条件或者在循环中调用某个方法的方式如上</p>
 <p>已知函数名，有两种方式调用函数，之前在 <a href="http://alicialy.github.io/2016/07/04/Source-Code-Learning-SDWebImage/">SDWebImage 解析</a> 中总结过可以使用 performSelector 或者 methodForSelector 两个函数。</p>
-<h2 id="32-位和-64-位"><a href="#32-位和-64-位" class="headerlink" title="32 位和 64 位"></a>32 位和 64 位</h2><pre><code>#if CGFLOAT_IS_DOUBLE
-    return number.doubleValue;
-#else
-    return number.floatValue;
-#endif
-</code></pre><p>NSNumber 中的浮点型变量取 double 还是 float 值，使用 CGFLOAT_IS_DOUBLE 判断，64 位的话则使用 double, 32 位的话则使用 float</p>
 <h2 id="do-while-0-在宏定义中的使用"><a href="#do-while-0-在宏定义中的使用" class="headerlink" title="do {} while(0) 在宏定义中的使用"></a>do {} while(0) 在宏定义中的使用</h2><pre><code>static void __FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(void (^callout)(void)) {
     callout();
 }
@@ -541,23 +527,34 @@ NSNull *null2 = [NSNull null];
       
         
           <p>之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下</p>
-<h2 id="Macros-宏"><a href="#Macros-宏" class="headerlink" title="Macros 宏"></a>Macros 宏</h2><h4 id="判断是否支持了垃圾回收"><a href="#判断是否支持了垃圾回收" class="headerlink" title="判断是否支持了垃圾回收"></a>判断是否支持了垃圾回收</h4><pre><code>#ifdef __OBJC_GC__
-#error SDWebImage does not support Objective-C Garbage Collection
-#endif
-</code></pre><p>从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不用考虑有关保持和释放对象、自动释放池或保持计数的问题了。但是这种机制只支持 OS X (Mac OS X 10.5 - 10.8) 系统，而且在早期的 Xcode 的编译设置中还能看到设置 GC 的选项，现在已经没有该设置了。所以这算是个历史问题。</p>
-<p>#error token-sequence<br>其主要的作用是在编译的时候输出编译错误信息 token-sequence，从方便程序员检查程序中出现的错误。 该指令常和 ifdef 和 ifndef 搭配使用。写代码的时候如果要提醒有个错误必须修改，也可以临时写个该指令，提交代码前再删掉。</p>
-<h4 id="判断系统版本"><a href="#判断系统版本" class="headerlink" title="判断系统版本"></a>判断系统版本</h4><pre><code>#if __IPHONE_OS_VERSION_MIN_REQUIRED != 20000 &amp;&amp; __IPHONE_OS_VERSION_MIN_REQUIRED &lt; __IPHONE_5_0
-#error SDWebImage doesn&apos;t support Deployment Target version &lt; 5.0
-#endif
-</code></pre><p>SDWebImage 3.0 版本只支持 iOS 7 了，这里看来是没有调整。20000 对应版本 2.0，2.2.1 对应的是 20201。至于为什么要和 2.0 比较下，还未想通。</p>
-<h4 id="判断是否支持了-ARC"><a href="#判断是否支持了-ARC" class="headerlink" title="判断是否支持了 ARC"></a>判断是否支持了 ARC</h4><pre><code>#if !__has_feature(objc_arc)
-#error SDWebImage is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
-#endif
-</code></pre><h4 id="忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告"><a href="#忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告" class="headerlink" title="忽视 performSelector may cause a leak because its selector is unknown 警告"></a>忽视 performSelector may cause a leak because its selector is unknown 警告</h4><pre><code>#pragma clang diagnostic push
-#pragma clang diagnostic ignored &quot;-Warc-performSelector-leaks&quot;
-     id activityIndicator = [NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;) performSelector:NSSelectorFromString(@&quot;sharedActivityIndicator&quot;)];
-#pragma clang diagnostic pop
-</code></pre><p>另外还可以通过函数指针方式避免该警告</p>
+<h2 id="NSURLSession-工作模式"><a href="#NSURLSession-工作模式" class="headerlink" title="NSURLSession 工作模式"></a>NSURLSession 工作模式</h2><p>NSURLSessionConfiguration 分为三种工作模式<br>default: 可以使用磁盘缓存、身份认证、Cookie<br>ephemeral(及时模式): 数据只能保存到内存，无法存储到磁盘。<br>background: 可以在后台执行上传或下载任务</p>
+<h2 id="后进先出"><a href="#后进先出" class="headerlink" title="后进先出"></a>后进先出</h2><p>后进先出通过 NSOperation 的依赖实现</p>
+<pre><code>if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
+        // Emulate LIFO execution order by systematically adding new operations as last operation&apos;s dependency
+        [wself.lastAddedOperation addDependency:operation];
+        wself.lastAddedOperation = operation;
+}
+</code></pre><h2 id="GCD-barrier"><a href="#GCD-barrier" class="headerlink" title="GCD barrier"></a>GCD barrier</h2><p>dispatch_barrier_async 比较常见，那么 dispatch_barrier_sync 又是做什么的，区别是什么呢？看文档可知 dispatch_barrier_async 不用执行完内部方法即可返回，dispatch_barrier_sync 需要等到执行完内部方法才会返回</p>
+<pre><code>dispatch_aync(queue, ^{
+    NSLog(@&quot;In 1&quot;);
+});
+dispatch_barrier_sync(queue,^{
+    for (int i = 0; i &lt; 100000; i++) {
+        // ...
+    }
+    NSLog(@&quot;In barrier&quot;);
+});
+NSLog(@&quot;In 2&quot;);
+</code></pre><p>输出结果为</p>
+<pre><code>In 1
+In barrier
+In 2
+</code></pre><p>如果 dispatch_barrier_sync 改为 dispatch_barrier_async</p>
+<p>输出结果为</p>
+<pre><code>In 1
+In 2
+In barrier
+</code></pre><h2 id="Macros-宏"><a href="#Macros-宏" class="headerlink" title="Macros 宏"></a>Macros 宏</h2>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/07/04/Source-Code-Learning-SDWebImage/#more" rel="contents">
               Read more &raquo;

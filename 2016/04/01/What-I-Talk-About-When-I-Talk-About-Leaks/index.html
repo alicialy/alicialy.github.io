@@ -16,7 +16,7 @@
 一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
 <meta property="og:image" content="http://yoursite.com/post_images/leak1.jpg">
 <meta property="og:image" content="http://yoursite.com/post_images/leak2.jpg">
-<meta property="og:updated_time" content="2016-07-06T10:40:03.000Z">
+<meta property="og:updated_time" content="2016-07-13T04:27:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Leaks">
 <meta name="twitter:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
@@ -128,7 +128,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 13.33px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 16.67px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -241,6 +241,14 @@ var _hmt = _hmt || [];
 #else
 #   define DLog(...)
 #endif
+</code></pre><p>插一句题外话，如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">喵神的代码</a></p>
+<pre><code>#define NSLog(format, ...) do { \
+    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
+    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
+    __LINE__, __func__);  \
+   (NSLog)((format), ##__VA_ARGS__);   \
+   fprintf(stderr, &quot;-------\n&quot;);       \
+} while (0)
 </code></pre><p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
 <pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
 </code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>

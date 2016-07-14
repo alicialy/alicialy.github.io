@@ -121,7 +121,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 13.33px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 16.67px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -186,6 +186,119 @@ var _hmt = _hmt || [];
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-Source-Code-Learning-UITableView-FDTemplateLayoutCell" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/" class="article-date">
+  	<time datetime="2016-07-12T05:51:12.000Z" itemprop="datePublished">2016-07-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/">Source Code Learning - UITableView-FDTemplateLayoutCell</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="给-Category-添加属性"><a href="#给-Category-添加属性" class="headerlink" title="给 Category 添加属性"></a>给 Category 添加属性</h2><p>_cmd 表示当前方法的selector</p>
+<pre><code>- (BOOL)fd_debugLogEnabled {
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
+}
+</code></pre><p>可以注意下 <a href="http://nshipster.com/associated-objects/" target="_blank" rel="external">Associated-objects</a> 中有排小字：</p>
+<blockquote>
+<p>Since SELs are guaranteed to be unique and constant, you can use _cmd as the key for objc_setAssociatedObject(). #objective-c #snowleopard</p>
+</blockquote>
+<h2 id="actionSheet-避开-switch-case-写法"><a href="#actionSheet-避开-switch-case-写法" class="headerlink" title="actionSheet 避开 switch case 写法"></a>actionSheet 避开 switch case 写法</h2><pre><code>- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    SEL selectors[] = {
+        @selector(insertRow),
+        @selector(insertSection),
+        @selector(deleteSection)
+    };
+
+    if (buttonIndex &lt; sizeof(selectors) / sizeof(SEL)) {
+        void(*imp)(id, SEL) = (typeof(imp))[self methodForSelector:selectors[buttonIndex]];
+        imp(self, selectors[buttonIndex]);
+    }
+}
+</code></pre><p>利用判断条件或者在循环中调用某个方法的方式如上</p>
+<p>已知函数名，有两种方式调用函数，之前在 <a href="http://alicialy.github.io/2016/07/04/Source-Code-Learning-SDWebImage/" target="_blank" rel="external">SDWebImage 解析</a> 中总结过可以使用 performSelector 或者 methodForSelector 两个函数。</p>
+<h2 id="32-位和-64-位"><a href="#32-位和-64-位" class="headerlink" title="32 位和 64 位"></a>32 位和 64 位</h2><pre><code>#if CGFLOAT_IS_DOUBLE
+    return number.doubleValue;
+#else
+    return number.floatValue;
+#endif
+</code></pre><p>NSNumber 中的浮点型变量取 double 还是 float 值，使用 CGFLOAT_IS_DOUBLE 判断，64 位的话则使用 double, 32 位的话则使用 float</p>
+<h2 id="do-while-0-在宏定义中的使用"><a href="#do-while-0-在宏定义中的使用" class="headerlink" title="do {} while(0) 在宏定义中的使用"></a>do {} while(0) 在宏定义中的使用</h2><pre><code>static void __FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(void (^callout)(void)) {
+    callout();
+}
+#define FDPrimaryCall(...) do {__FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(^{__VA_ARGS__});} while(0)
+</code></pre><p>do{} while(0) 构造后宏的定义不会受到大括号、分号等影响。上面的使用方法展示了大括号问题，下面看看分号的影响。</p>
+<pre><code>#define foo(x) a(x); b(x)
+</code></pre><p>这段代码本义是调用 foo 函数时指行 a 方法和 b 方法。但是如果你这样使用</p>
+<pre><code>if (isTrue) 
+    foo(x);
+</code></pre><p>那么宏扩展后变为</p>
+<pre><code>if (isTrue)
+    a(x);
+b(x);
+</code></pre><p>那么改为下面这样呢</p>
+<pre><code>#define foo(x) { a(x); b(x); }
+</code></pre><p>扩展后变为</p>
+<pre><code>if (isTrue) {
+    a(x);
+    b(x);
+};
+</code></pre><p>上面的方式又出现语法错误，所以修改为以下方式即可</p>
+<pre><code>#define foo(x) do { a(x); a(x); } while (0)
+</code></pre><p>参考文章<br><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-TPXREF163" target="_blank" rel="external">Runtime Programming Guide</a>、<br><a href="http://www.pixelstech.net/article/1390482950-do-%7B-%7D-while-%280%29-in-macros" target="_blank" rel="external">do while in macros</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SouceCode/">SouceCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+  
+  
+  
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
   
     <article id="post-Source-Code-Learning-YYModel" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -853,6 +966,14 @@ if ([theLock lock]) {
 #else
 #   define DLog(...)
 #endif
+</code></pre><p>插一句题外话，如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/">喵神的代码</a></p>
+<pre><code>#define NSLog(format, ...) do { \
+    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
+    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
+    __LINE__, __func__);  \
+   (NSLog)((format), ##__VA_ARGS__);   \
+   fprintf(stderr, &quot;-------\n&quot;);       \
+} while (0)
 </code></pre><p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
 <pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
 </code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
@@ -876,98 +997,6 @@ if ([theLock lock]) {
       
         <p class="article-more-link">
           <a  href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-  
-  
-  
-  
-</article>
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-What-I-Talk-About-When-I-Talk-About-Performance" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" class="article-date">
-  	<time datetime="2016-03-30T04:12:34.000Z" itemprop="datePublished">2016-03-30</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/">What I Talk About When I Talk About Performance</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
-<p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
-<p>另外，由于最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
-<p>自己设计和编码的项目［LEAF Photo］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。 </p>
-<h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
-<p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
-<pre><code>NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
-UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
-UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
-[toImageView setImage:scaledImage];
-</code></pre><p>将上面的方法放到线程中，另外由于 imageWithContentsOfFile 方法不会进行缓存，所以加载图片后将其加到缓存 (类型是 NSCache )中。</p>
-<pre><code>UIImage *tplImage = [self.cache objectForKey:indexPath];
-if (tplImage) {
-    [toImageView setImage:tplImage];
-}
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
-    UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
-    UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
-    [self.cache setObject:scaledImage forKey:indexPath];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [toImageView setImage:scaledImage];
-    });
-});
-</code></pre><p>这样优化后，setTplCoverModel 方法由原来的 32ms 降低到了 2ms。</p>
-<p>通过 Time Profiler 找到最耗时的调用，不影响主线程的操作放到应当线程中；需要优化算法的通过算法降低时间复杂度；经常访问的数据放到缓存中，通过以上方法做调整。</p>
-<p>看完 Timer Profiler 接下来看看 Allocations 和 Leaks 的使用。<br>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Debug/">Debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

@@ -18,7 +18,7 @@ void retain() {
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
     OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
-<meta property="og:updated_time" content="2016-06-25T01:21:45.000Z">
+<meta property="og:updated_time" content="2016-07-11T01:39:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Concurrent Programming and Synchronization">
 <meta name="twitter:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
@@ -131,7 +131,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 13.33px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 16.67px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -417,7 +417,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
 <li>OSSpinLock 自旋锁占用时间最少</li>
 <li>@synchronized 内部会创建异常捕获的 handler 和其他内部使用的锁，所以消耗时间最长</li>
 </ul>
-<p>也可以参考下 ibireme (郭曜源) 的 <a href="https://github.com/ibireme/tmp/tree/master/iOSLockBenckmark/iOSLockBenckmark" target="_blank" rel="external">Benchmark Demo</a>。同时 ibireme 指出 <a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">OSSPinLock 不再安全</a>，所以看他的源码基本上是用 pthread_mutex 的情况比较多。</p>
+<p>也可以参考下 ibireme (郭曜源) 的 <a href="https://github.com/ibireme/tmp/tree/master/iOSLockBenckmark/iOSLockBenckmark" target="_blank" rel="external">Benchmark Demo</a>。同时 ibireme 指出 <a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">OSSPinLock 不再安全</a>，所以看他的源码基本上是用 pthread_mutex 的情况比较多。另外 iOS 10 已经推出了 OSSpinLock 的替代品 <a href="https://developer.apple.com/reference/os/os_unfair_lock" target="_blank" rel="external">os_unfair_lock</a>。</p>
 <p>另外，在《Effective Objective-C 2.0》第 41 条指出应当多用派发队列，少用同步锁。即使用”串行同步队列” 或者 GCD 的 dispatch_barrier_async / dispatch_barrier_sync 来避开同步锁的使用。</p>
 <h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html" target="_blank" rel="external">iOS 多线程之线程安全</a><br><a href="http://www.dreamingwish.com/article/the-ios-multithreaded-programming-guide-4-thread-synchronization.html" target="_blank" rel="external">iOS 多线程编程指南之线程同步</a><br><a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Synchronized NSLock pthread OSSpinLock 的正确使用</a><br><a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a></p>
 

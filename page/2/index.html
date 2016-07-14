@@ -121,7 +121,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 13.33px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
+						<a href="/tags/Debug/" style="font-size: 16.67px;">Debug</a> <a href="/tags/Mac/" style="font-size: 10px;">Mac</a> <a href="/tags/SouceCode/" style="font-size: 16.67px;">SouceCode</a> <a href="/tags/Tools/" style="font-size: 13.33px;">Tools</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a>
 					</div>
 				</section>
 				
@@ -187,6 +187,98 @@ var _hmt = _hmt || [];
 
       <div class="body-wrap">
   
+    <article id="post-What-I-Talk-About-When-I-Talk-About-Performance" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" class="article-date">
+  	<time datetime="2016-03-30T04:12:34.000Z" itemprop="datePublished">2016-03-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/">What I Talk About When I Talk About Performance</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
+<p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
+<p>另外，由于最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
+<p>自己设计和编码的项目［LEAF Photo］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。 </p>
+<h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
+<p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
+<pre><code>NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+[toImageView setImage:scaledImage];
+</code></pre><p>将上面的方法放到线程中，另外由于 imageWithContentsOfFile 方法不会进行缓存，所以加载图片后将其加到缓存 (类型是 NSCache )中。</p>
+<pre><code>UIImage *tplImage = [self.cache objectForKey:indexPath];
+if (tplImage) {
+    [toImageView setImage:tplImage];
+}
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+    UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+    UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+    [self.cache setObject:scaledImage forKey:indexPath];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [toImageView setImage:scaledImage];
+    });
+});
+</code></pre><p>这样优化后，setTplCoverModel 方法由原来的 32ms 降低到了 2ms。</p>
+<p>通过 Time Profiler 找到最耗时的调用，不影响主线程的操作放到应当线程中；需要优化算法的通过算法降低时间复杂度；经常访问的数据放到缓存中，通过以上方法做调整。</p>
+<p>看完 Timer Profiler 接下来看看 Allocations 和 Leaks 的使用。<br>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Debug/">Debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+  
+  
+  
+  
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-A-brand-new-beginning" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -214,8 +306,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>2016，这是一个新的开始。</p>
-<p>想想过去创业的三、四年，自己身上背负了太多事情，就像一头拉磨的驴，只知道拉磨，却忽略了方向。整个人陷入了一个怪圈，整天都在忙，却不知道自己忙着什么，因为太忙碌，也就没时间思考，靠经验和体力拼命地做着什么。那段时间，发现自己已经不会慢下来，无法安静，看不下去文学类的书籍；做事情，总会先想是否能有所得，为了什么而做。偶尔片刻地反思，发现自己越来越不像自己。能感觉到自己走得太快，忽略了很多东西，于是想办法让自己慢下来，捡起很久没有做的事情：行走、读书、绘画、旅行……</p>
-<p>当然工作仍然是最重要的部分，它能支撑着我有行走、读书、绘画和旅行的本钱。之前所有的工作积累都记录到 Evernote 上，给自己写的东西，不需要前因后果自己能看懂很容易记录，好处显而易见，缺点是记得容易忘得也快。所以打算将之前的积累结合现在在做的事情，做一次梳理，为了加深印象，再者，“人人为我，我为人人”。</p>
+<p>想想过去创业的三、四年，自己身上背负了太多事情，发现自己不会慢下来，无法安静，看不下去文学类的书籍；做事情，总会先想是否能有所得，为了什么而做。偶尔片刻地反思，发现自己越来越不像自己。能感觉到自己走得太快，忽略了很多东西，于是想办法让自己慢下来，捡起很久没有做的事情：行走、读书、绘画、旅行……</p>
+<p>当然工作仍然是最重要的部分，它是支撑着我有行走、读书、绘画和旅行的本钱。之前所有的工作积累都记录到 Evernote 上，给自己写的东西，不需要前因后果自己能看懂很容易记录，好处显而易见，缺点是记得容易忘得也快。所以打算将之前的积累结合现在在做的事情，做一次梳理，为了加深印象，再者，“人人为我，我为人人”。</p>
 <p>这一年的伊始，就从这里开始吧，将自己做过的事情，在做的事情，将要做的事情都做一些文字的记录，希望经过这样思考和记录的过程，找回最初的自己，也从中得到升华吧。</p>
 
       

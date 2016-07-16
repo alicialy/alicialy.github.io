@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,Debug," />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -84,22 +84,37 @@
 
 
 
-<meta name="description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
-其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
+<meta name="description" content="创建 iOS 项目之前不要忘记做好以下事情
+设置编码规范一些编码规范推荐
+ObjC
+Apple 的 Cocoa 编码规范GitHub 基于 Apple Cocoa 的编码规范Google 的 ObjC 编码规范(需翻墙)纽约时报的编码规范
+Swift
+Raywenderlich 官方编码规范GithHub 的编码规范
+确定架构使用传统的 MVC 还是 MVVM 亦或是 VIPER
+为项目命名，使用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS Localization">
-<meta property="og:url" content="http://yoursite.com/2016/05/26/iOS-Localization/index.html">
+<meta property="og:title" content="Things you should do before writing an iOS app">
+<meta property="og:url" content="http://yoursite.com/2016/07/15/Things-you-should-do-before-writing-an-iOS-app/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
-其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
-<meta property="og:image" content="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg">
-<meta property="og:image" content="http://www.peerassembly.com/images/LinguanScreenShot01.png">
-<meta property="og:updated_time" content="2016-07-14T09:43:47.000Z">
+<meta property="og:description" content="创建 iOS 项目之前不要忘记做好以下事情
+设置编码规范一些编码规范推荐
+ObjC
+Apple 的 Cocoa 编码规范GitHub 基于 Apple Cocoa 的编码规范Google 的 ObjC 编码规范(需翻墙)纽约时报的编码规范
+Swift
+Raywenderlich 官方编码规范GithHub 的编码规范
+确定架构使用传统的 MVC 还是 MVVM 亦或是 VIPER
+为项目命名，使用">
+<meta property="og:updated_time" content="2016-07-15T03:42:39.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS Localization">
-<meta name="twitter:description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
-其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
-<meta name="twitter:image" content="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg">
+<meta name="twitter:title" content="Things you should do before writing an iOS app">
+<meta name="twitter:description" content="创建 iOS 项目之前不要忘记做好以下事情
+设置编码规范一些编码规范推荐
+ObjC
+Apple 的 Cocoa 编码规范GitHub 基于 Apple Cocoa 的编码规范Google 的 ObjC 编码规范(需翻墙)纽约时报的编码规范
+Swift
+Raywenderlich 官方编码规范GithHub 的编码规范
+确定架构使用传统的 MVC 还是 MVVM 亦或是 VIPER
+为项目命名，使用">
 
 
 
@@ -120,9 +135,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/05/26/iOS-Localization/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/07/15/Things-you-should-do-before-writing-an-iOS-app/"/>
 
-  <title> iOS Localization | Alicia's Blog </title>
+  <title> Things you should do before writing an iOS app | Alicia's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -252,7 +267,7 @@
             
             
               
-                iOS Localization
+                Things you should do before writing an iOS app
               
             
           </h1>
@@ -264,8 +279,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-26T20:26:21+08:00" content="2016-05-26">
-              2016-05-26
+            <time itemprop="dateCreated" datetime="2016-07-15T10:42:39+08:00" content="2016-07-15">
+              2016-07-15
             </time>
           </span>
 
@@ -292,12 +307,42 @@
       
 
       
-        <p>上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。</p>
-<p>其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，写到这里备忘。</p>
-<p>Product -&gt; Scheme -&gt; Edit Scheme -&gt; Options -&gt; Application Language 中设置语言</p>
-<p><img src="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg" alt="img"></p>
-<p>另外，介绍个工具 <a href="http://www.peerassembly.com/linguan.html" target="_blank" rel="external">Linguan</a>，这个工具可以把本地化的 String 显示在一个画面上，这样编辑的时候省去切换的苦恼，如果有漏掉没有翻译的文字还会有提示。</p>
-<p><img src="http://www.peerassembly.com/images/LinguanScreenShot01.png" alt="img"></p>
+        <p>创建 iOS 项目之前不要忘记做好以下事情</p>
+<h2 id="设置编码规范"><a href="#设置编码规范" class="headerlink" title="设置编码规范"></a>设置编码规范</h2><p>一些编码规范推荐</p>
+<p>ObjC</p>
+<p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html" target="_blank" rel="external">Apple 的 Cocoa 编码规范</a><br><a href="https://github.com/github/objective-c-style-guide" target="_blank" rel="external">GitHub 基于 Apple Cocoa 的编码规范</a><br><a href="https://google.github.io/styleguide/objcguide.xml" target="_blank" rel="external">Google 的 ObjC 编码规范(需翻墙)</a><br><a href="https://github.com/NYTimes/objective-c-style-guide" target="_blank" rel="external">纽约时报的编码规范</a></p>
+<p>Swift</p>
+<p><a href="https://github.com/raywenderlich/swift-style-guide" target="_blank" rel="external">Raywenderlich 官方编码规范</a><br><a href="https://github.com/github/swift-style-guide" target="_blank" rel="external">GithHub 的编码规范</a></p>
+<h2 id="确定架构"><a href="#确定架构" class="headerlink" title="确定架构"></a>确定架构</h2><p>使用传统的 MVC 还是 MVVM 亦或是 VIPER</p>
+<h2 id="为项目命名，使用公司及项目名作为前缀，最好是-3-个字母，避免类名冲突"><a href="#为项目命名，使用公司及项目名作为前缀，最好是-3-个字母，避免类名冲突" class="headerlink" title="为项目命名，使用公司及项目名作为前缀，最好是 3 个字母，避免类名冲突"></a>为项目命名，使用公司及项目名作为前缀，最好是 3 个字母，避免类名冲突</h2><h2 id="为项目添加-gitignore"><a href="#为项目添加-gitignore" class="headerlink" title="为项目添加 .gitignore"></a>为项目添加 .gitignore</h2><pre><code># Xcode
+## Build generated
+build/
+DerivedData/
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+## Other
+*.xcuserstate
+# CocoaPods
+Pods
+Podfile.lock
+</code></pre><a id="more"></a>
+<p><a href="https://github.com/github/gitignore/blob/master/Objective-C.gitignore" target="_blank" rel="external">查看常用的 gitignore 设置</a></p>
+<h2 id="添加必要的项目依赖"><a href="#添加必要的项目依赖" class="headerlink" title="添加必要的项目依赖"></a>添加必要的项目依赖</h2><p>使用 CocoaPods 引入必要的项目依赖，如 AFNetworking，SDWebImage 等等</p>
+<h2 id="确定接口规范，封装接口调用"><a href="#确定接口规范，封装接口调用" class="headerlink" title="确定接口规范，封装接口调用"></a>确定接口规范，封装接口调用</h2><p>引入 AFNetworking 后，创建自己的 AFXXXAPIClient，将用于接口加密的参数字段以及 token 等字段进行封装。</p>
+<h2 id="设定应用目录"><a href="#设定应用目录" class="headerlink" title="设定应用目录"></a>设定应用目录</h2><p>一般情况下，为了他人查找方便，所以我习惯于按照功能设置目录，每个功能下面再按照 MVC / MVVM 的方式创建目录，如下</p>
+<p>|- Home<br>    |– Models<br>    |– Views<br>    |– Controllers (或者是 ViewModels)<br>    |– Stores<br>    |__ Helpers<br>|- Setting<br>    |– … (同上)<br>|- …</p>
+<h2 id="代码结构设定"><a href="#代码结构设定" class="headerlink" title="代码结构设定"></a>代码结构设定</h2><p>|- Life Cycle<br>|- Init<br>|- Public Method<br>|- (Event Response)<br>|- Actions<br>|- Gesture<br>|- Private Method<br>|- Delegate<br>|- Getters and Setters</p>
+<h2 id="为应用设置合适的-Scheme"><a href="#为应用设置合适的-Scheme" class="headerlink" title="为应用设置合适的 Scheme"></a>为应用设置合适的 Scheme</h2><p>分出线上正式区和线下测试区，以及不同语言为其创建不同的 Scheme，<a href="https://medium.com/@nsolter/xcode-deployment-configurations-for-ios-1e8d5dd4025b#.f32sp5k7i" target="_blank" rel="external">查看设置方式(需翻墙)</a></p>
+<h2 id="设置开发和发布证书"><a href="#设置开发和发布证书" class="headerlink" title="设置开发和发布证书"></a>设置开发和发布证书</h2><h2 id="设置应用持续集成和交付过程"><a href="#设置应用持续集成和交付过程" class="headerlink" title="设置应用持续集成和交付过程"></a>设置应用持续集成和交付过程</h2><p>可以使用 Jenkins + Fir</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://medium.com/ios-os-x-development/7-things-you-must-absolutely-do-before-writing-an-ios-app-a8bacf710c57#.lk3e5kcfw" target="_blank" rel="external">7 Things you must absolutely do before writing an iOS app(需翻墙)</a></p>
 
       
     </div>
@@ -343,8 +388,6 @@
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
-            <a href="/tags/Debug/" rel="tag">#Debug</a>
-          
         </div>
       
 
@@ -352,16 +395,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/20/iOS-Memory-Warning/" rel="next" title="iOS Memory Warning">
-                <i class="fa fa-chevron-left"></i> iOS Memory Warning
+              <a href="/2016/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/" rel="next" title="Source Code Learning - UITableView-FDTemplateLayoutCell">
+                <i class="fa fa-chevron-left"></i> Source Code Learning - UITableView-FDTemplateLayoutCell
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/05/26/LEAF-Photo/" rel="prev" title="LEAF Photo">
-                LEAF Photo <i class="fa fa-chevron-right"></i>
+              <a href="/2016/07/15/Mobile-Client-Development-Notice/" rel="prev" title="Mobile Client Development Notice">
+                Mobile Client Development Notice <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -489,7 +532,7 @@
               
             
             
-              <p class="post-toc-empty">This post does not have a Table of Contents</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置编码规范"><span class="nav-number">1.</span> <span class="nav-text">设置编码规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定架构"><span class="nav-number">2.</span> <span class="nav-text">确定架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为项目命名，使用公司及项目名作为前缀，最好是-3-个字母，避免类名冲突"><span class="nav-number">3.</span> <span class="nav-text">为项目命名，使用公司及项目名作为前缀，最好是 3 个字母，避免类名冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为项目添加-gitignore"><span class="nav-number">4.</span> <span class="nav-text">为项目添加 .gitignore</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加必要的项目依赖"><span class="nav-number">5.</span> <span class="nav-text">添加必要的项目依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定接口规范，封装接口调用"><span class="nav-number">6.</span> <span class="nav-text">确定接口规范，封装接口调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设定应用目录"><span class="nav-number">7.</span> <span class="nav-text">设定应用目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码结构设定"><span class="nav-number">8.</span> <span class="nav-text">代码结构设定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为应用设置合适的-Scheme"><span class="nav-number">9.</span> <span class="nav-text">为应用设置合适的 Scheme</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置开发和发布证书"><span class="nav-number">10.</span> <span class="nav-text">设置开发和发布证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置应用持续集成和交付过程"><span class="nav-number">11.</span> <span class="nav-text">设置应用持续集成和交付过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">12.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
           </div>
         </section>

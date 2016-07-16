@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,Debug," />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -84,22 +84,28 @@
 
 
 
-<meta name="description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
-其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
+<meta name="description" content="这是一篇关于移动客户端开发中容易出现的Bug及问题以及产品方面的大杂烩。
+写代码前应当注意的问题
+进度条、提示框的处理。在需要超过 2s 的地方添加进度条或等待提示框。出错时要使用提示框提示用户能看得懂的提示语句。
+删除、放弃等操作需要添加确认提示。
+当设计稿只给定了一种文字样式，这种样式正好文字不是很长时，需要确认文字过多、过长时的显示方式。文字过多时是省略(使用…)还是截取，是否支持多行显示。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS Localization">
-<meta property="og:url" content="http://yoursite.com/2016/05/26/iOS-Localization/index.html">
+<meta property="og:title" content="Mobile Client Development Notice">
+<meta property="og:url" content="http://yoursite.com/2016/07/15/Mobile-Client-Development-Notice/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
-其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
-<meta property="og:image" content="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg">
-<meta property="og:image" content="http://www.peerassembly.com/images/LinguanScreenShot01.png">
-<meta property="og:updated_time" content="2016-07-14T09:43:47.000Z">
+<meta property="og:description" content="这是一篇关于移动客户端开发中容易出现的Bug及问题以及产品方面的大杂烩。
+写代码前应当注意的问题
+进度条、提示框的处理。在需要超过 2s 的地方添加进度条或等待提示框。出错时要使用提示框提示用户能看得懂的提示语句。
+删除、放弃等操作需要添加确认提示。
+当设计稿只给定了一种文字样式，这种样式正好文字不是很长时，需要确认文字过多、过长时的显示方式。文字过多时是省略(使用…)还是截取，是否支持多行显示。">
+<meta property="og:updated_time" content="2016-07-16T05:34:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS Localization">
-<meta name="twitter:description" content="上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。
-其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，">
-<meta name="twitter:image" content="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg">
+<meta name="twitter:title" content="Mobile Client Development Notice">
+<meta name="twitter:description" content="这是一篇关于移动客户端开发中容易出现的Bug及问题以及产品方面的大杂烩。
+写代码前应当注意的问题
+进度条、提示框的处理。在需要超过 2s 的地方添加进度条或等待提示框。出错时要使用提示框提示用户能看得懂的提示语句。
+删除、放弃等操作需要添加确认提示。
+当设计稿只给定了一种文字样式，这种样式正好文字不是很长时，需要确认文字过多、过长时的显示方式。文字过多时是省略(使用…)还是截取，是否支持多行显示。">
 
 
 
@@ -120,9 +126,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/05/26/iOS-Localization/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/07/15/Mobile-Client-Development-Notice/"/>
 
-  <title> iOS Localization | Alicia's Blog </title>
+  <title> Mobile Client Development Notice | Alicia's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -252,7 +258,7 @@
             
             
               
-                iOS Localization
+                Mobile Client Development Notice
               
             
           </h1>
@@ -264,8 +270,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-26T20:26:21+08:00" content="2016-05-26">
-              2016-05-26
+            <time itemprop="dateCreated" datetime="2016-07-15T11:48:01+08:00" content="2016-07-15">
+              2016-07-15
             </time>
           </span>
 
@@ -292,12 +298,31 @@
       
 
       
-        <p>上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。</p>
-<p>其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，写到这里备忘。</p>
-<p>Product -&gt; Scheme -&gt; Edit Scheme -&gt; Options -&gt; Application Language 中设置语言</p>
-<p><img src="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg" alt="img"></p>
-<p>另外，介绍个工具 <a href="http://www.peerassembly.com/linguan.html" target="_blank" rel="external">Linguan</a>，这个工具可以把本地化的 String 显示在一个画面上，这样编辑的时候省去切换的苦恼，如果有漏掉没有翻译的文字还会有提示。</p>
-<p><img src="http://www.peerassembly.com/images/LinguanScreenShot01.png" alt="img"></p>
+        <p>这是一篇关于移动客户端开发中容易出现的Bug及问题以及产品方面的大杂烩。</p>
+<h2 id="写代码前应当注意的问题"><a href="#写代码前应当注意的问题" class="headerlink" title="写代码前应当注意的问题"></a>写代码前应当注意的问题</h2><ol>
+<li>进度条、提示框的处理。在需要超过 2s 的地方添加进度条或等待提示框。出错时要使用提示框提示用户能看得懂的提示语句。</li>
+<li>删除、放弃等操作需要添加确认提示。</li>
+<li>当设计稿只给定了一种文字样式，这种样式正好文字不是很长时，需要确认文字过多、过长时的显示方式。文字过多时是省略(使用…)还是截取，是否支持多行显示。</li>
+<li>图片的显示方式，图片显示时是要进行裁剪还是等比缩放。</li>
+<li>小屏手机上的显示效果。例如出现键盘显示时，如果设计给出的效果在小屏手机上出现键盘遮挡控件时，需要确认如何处理。</li>
+<li>列表点击后是否需要设置选中色。</li>
+<li>需要使用数据库存放数据时，图片、文件、 二进制数据不要存放到数据库中。</li>
+</ol>
+<h2 id="提交测试前应确认的问题"><a href="#提交测试前应确认的问题" class="headerlink" title="提交测试前应确认的问题"></a>提交测试前应确认的问题</h2><ol>
+<li>网络异常时程序是否出现异常。</li>
+<li>带输入框的地方没有输入或输入过长时的处理，是否使用了合适的键盘，纯数字或者文本？能否正确地触发键盘的弹出和收起。</li>
+<li>如果调用系统 API 获取了时间，当本地时间发生变动时是否会造成影响。</li>
+<li>按钮是否支持连续点击。</li>
+<li>列表为空时展示成何种样式，网络出现问题时是否需要支持重新加载。</li>
+<li>Tab 切换是否正常刷新。</li>
+</ol>
+<h2 id="产品相关方面应当考虑的问题"><a href="#产品相关方面应当考虑的问题" class="headerlink" title="产品相关方面应当考虑的问题"></a>产品相关方面应当考虑的问题</h2><ol>
+<li>想不清楚一个功能点时宁可不做，或者突发奇想觉得某个功能很好玩时，先要三思。</li>
+<li>不要期待你的客户帮你想如何改进，他不是你的产品经理。</li>
+<li>如果大家都在为老板做产品，“哎，大家都觉得这里很别扭，大家都觉得这样很难看，但是改吧，老板说要这个功能，老板说要做成这样”，这个时候就要想想是否能试图改变这种状况，否则考虑考虑离开这家公司吧。</li>
+<li>同一个页面有多个入口，同一个功能有多种展现方式？你让用户选择，不如你为用户选择好一个最佳的方式。</li>
+<li>保持产品主干清晰，一个产品应该主要关注一件事情，如果分支太多，或者喧宾夺主，你以为你留存了用户，但是那样的用户大多情况下不是你想要的用户，如果你拉投资需要算人头除外。</li>
+</ol>
 
       
     </div>
@@ -343,8 +368,6 @@
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
-            <a href="/tags/Debug/" rel="tag">#Debug</a>
-          
         </div>
       
 
@@ -352,17 +375,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/20/iOS-Memory-Warning/" rel="next" title="iOS Memory Warning">
-                <i class="fa fa-chevron-left"></i> iOS Memory Warning
+              <a href="/2016/07/15/Things-you-should-do-before-writing-an-iOS-app/" rel="next" title="Things you should do before writing an iOS app">
+                <i class="fa fa-chevron-left"></i> Things you should do before writing an iOS app
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/05/26/LEAF-Photo/" rel="prev" title="LEAF Photo">
-                LEAF Photo <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -489,7 +508,7 @@
               
             
             
-              <p class="post-toc-empty">This post does not have a Table of Contents</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写代码前应当注意的问题"><span class="nav-number">1.</span> <span class="nav-text">写代码前应当注意的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交测试前应确认的问题"><span class="nav-number">2.</span> <span class="nav-text">提交测试前应确认的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#产品相关方面应当考虑的问题"><span class="nav-number">3.</span> <span class="nav-text">产品相关方面应当考虑的问题</span></a></li></ol></div>
             
           </div>
         </section>

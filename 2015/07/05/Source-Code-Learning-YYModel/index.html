@@ -1,0 +1,721 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,SourceCode," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
+kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
+NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Source Code Learning - YYModel">
+<meta property="og:url" content="http://yoursite.com/2015/07/05/Source-Code-Learning-YYModel/index.html">
+<meta property="og:site_name" content="Alicia's Blog">
+<meta property="og:description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
+kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
+NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
+<meta property="og:updated_time" content="2016-07-18T06:48:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Source Code Learning - YYModel">
+<meta name="twitter:description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
+kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
+NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6267334170712737000,
+      author: 'Alicia'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/05/Source-Code-Learning-YYModel/"/>
+
+  <title> Source Code Learning - YYModel | Alicia's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Alicia's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">［LEAF Photo］作者</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Source Code Learning - YYModel
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2015-07-05T13:04:51+08:00" content="2015-07-05">
+              2015-07-05
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>源码看的是 YYKit，因为内容太多所以还是按照功能分开</p>
+<h2 id="kCFNull"><a href="#kCFNull" class="headerlink" title="kCFNull"></a>kCFNull</h2><p>NSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典</p>
+<pre><code>NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&quot;someKey&quot;] = [NSNull null]; // Sets value of NSNull singleton for `someKey`
+NSLog(@&quot;Keys: %@&quot;, [mutableDictionary allKeys]); // @[@&quot;someKey&quot;]
+</code></pre><p>kCFNull 这个是什么呢，看定义可以知道</p>
+<pre><code>typedef const struct CF_BRIDGED_TYPE(NSNull) __CFNull * CFNullRef;
+const CFNullRef kCFNull;    // the singleton null instance
+</code></pre><p>看个栗子</p>
+<pre><code>NSNull *null1 = (id)kCFNull;
+NSNull *null2 = [NSNull null];
+</code></pre><p>输出信息</p>
+<pre><code>(NSNull *) null1 = 0x0000000107b10af0
+(NSNull *) null2 = 0x0000000107b10af0
+</code></pre><p>说明 (id)kCFNull 就是 [NSNull null]</p>
+<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><pre><code>- (id)deepCopy {
+    id obj = nil;
+    @try {
+        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
+    }
+    @catch (NSException *exception) {
+         NSLog(@&quot;%@&quot;, exception);
+    }
+    return obj;
+}
+</code></pre><p>下面说说浅拷贝和深拷贝。集合类的拷贝分为浅拷贝和深拷贝<br><a id="more"></a><br>浅拷贝</p>
+<pre><code>NSArray *shallowCopyArray = [someArray copyWithZone:nil];
+
+NSDictionary *shallowCopyDict = [[NSDictionary alloc] initWithDictionary:someDictionary copyItems:NO];
+</code></pre><p>完全深拷贝</p>
+<pre><code>NSArray *deepCopyArray = [[NSArray alloc] initWithArray:someArray copyItems:YES];
+
+NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:
+      [NSKeyedArchiver archivedDataWithRootObject:oldArray]];
+</code></pre><p>这里的深拷贝是完全深拷贝(real-deep copy)，如果使用 mutableCopy 是单层深拷贝 (one-level-deep copy)</p>
+<pre><code>NSMutableArray *array = [NSMutableArray arrayWithObjects:[NSMutableString stringWithString:@&quot;one&quot;],[NSMutableString stringWithString:@&quot;two&quot;],[NSMutableString stringWithString:@&quot;three&quot;],nil];
+
+NSMutableArray *copyArray = [array mutableCopy];
+
+NSMutableString *str = [array objectAtIndex:0];
+[str appendString:@&quot; One&quot;];
+
+NSLog(@&quot;array:&quot;);
+[self printArray:array];
+NSLog(@&quot;copyArray:&quot;);
+[self printArray:copyArray];
+
+[copyArray removeObjectAtIndex:0];
+
+NSLog(@&quot;array:&quot;);
+[self printArray:array];
+NSLog(@&quot;copyArray:&quot;);
+[self printArray:copyArray];
+</code></pre><p>输出结果</p>
+<pre><code>array:
+one One
+two
+three
+
+copyArray:
+one One
+two
+three
+
+array:
+one One
+two
+three
+
+copyArray:
+two
+three
+</code></pre><p>copyArray 通过 array 的 mutableCopy 方法进行了拷贝，该方法进行一层深拷贝，在内存中为新的数组对象分配了空间，并且将元素复制到另一个数组元素（仅将引用从一个数组元素复制到另一个数元素），这样的结果就是两个数组中的元素指向内存中的同一个字符。要实现完全深拷贝则要使用上面的完全深拷贝中的两种方式。</p>
+<p>另外在使用 NSKeyedUnarchiver 时，如果解压数据为 nil 或者数据中有异常时，可能会导致崩溃，所以调用该方法时放到 try catch 中，保证程序不会崩溃。</p>
+<h2 id="Method-Swizzling"><a href="#Method-Swizzling" class="headerlink" title="Method Swizzling"></a>Method Swizzling</h2><p>Mattt Thompson 说 Method Swizzling 影响全局状态，所以降低资源竞争的可能性是非常重要的，因此 Method Swizzling 应当写到 load 方法中，并且应当只执行一次。好吧，看习惯 load 方法中调用的话，以为只能在初始化的时候使用，再看看 YYModel 就知道了，其实在哪里执行都可以，只是从效率的方面讲建议在 load 方法中执行。</p>
+<pre><code>- (void)viewDidLoad {
+    // ...
+    [YYTest swizzleClassMethod:@selector(printDZ) with:@selector(changePrintDZ)];
+</code></pre><p>}</p>
+<p>继续来讨论下这个黑魔法 swizzleClassMethod 的实现</p>
+<pre><code>+ (BOOL)swizzleClassMethod:(SEL)originalSel with:(SEL)newSel {
+    Class class = object_getClass(self);
+    Method originalMethod = class_getInstanceMethod(class, originalSel);
+    Method newMethod = class_getInstanceMethod(class, newSel);
+    if (!originalMethod || !newMethod) return NO;
+    method_exchangeImplementations(originalMethod, newMethod);
+    return YES;
+}
+</code></pre><p>这段代码大家都很熟悉了，但是需要注意的是，这是交换类方法，我们通常看到的 class_getInstanceMethod 的调用都是交换实例方法，为什么这个地方它也可用来交换类方法呢？答案只能在源码找了。看下 class_getClassMethod 的定义</p>
+<pre><code>Method class_getClassMethod(Class cls, SEL sel) {
+    if (!cls  ||  !sel) return nil;
+    return class_getInstanceMethod(cls-&gt;getMeta(), sel);
+}
+</code></pre><p>原来 class_getClassMethod 调用的就是 class_getInstanceMethod，只是参数传递的是 cls-&gt;getMeta()。</p>
+<pre><code>// NOT identical to this-&gt;ISA() when this is a metaclass
+Class getMeta() {
+    if (isMetaClass()) return (Class)this;
+    else return this-&gt;ISA();
+}
+</code></pre><p>getMeta 返回的是 MetaClass，如果已经是 MetaClass 了直接返回本身，那么我们只要调用 class_getInstanceMethod 传递 metaClass，即 Class class = object_getClass(self) 作为参数，就等同于调用 class_getClassMethod 了。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://xiongzenghuidegithub.github.io/blog/2014/02/23/nil-nsnull-null-kcfnull/" target="_blank" rel="external">Nil NSNull NULL KCFNull</a><br><a href="https://developer.apple.com/library/prerelease/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html" target="_blank" rel="external">Copying Collections</a><br><a href="http://lists.apple.com/archives/cocoa-dev/2009/Jul/msg00181.html" target="_blank" rel="external">NSKeyedUnarchiver crash</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>请我喝汽水儿</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/SourceCode/" rel="tag">#SourceCode</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/04/Source-Code-Learning-SDWebImage/" rel="next" title="Source Code Learning - SDWebImage">
+                <i class="fa fa-chevron-left"></i> Source Code Learning - SDWebImage
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/" rel="prev" title="Source Code Learning - UITableView-FDTemplateLayoutCell">
+                Source Code Learning - UITableView-FDTemplateLayoutCell <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Alicia" />
+          <p class="site-author-name" itemprop="name">Alicia</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:alicialy@qq.com" target="_blank" title="mail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  mail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kCFNull"><span class="nav-number">1.</span> <span class="nav-text">kCFNull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深拷贝"><span class="nav-number">2.</span> <span class="nav-text">深拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-Swizzling"><span class="nav-number">3.</span> <span class="nav-text">Method Swizzling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alicia</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

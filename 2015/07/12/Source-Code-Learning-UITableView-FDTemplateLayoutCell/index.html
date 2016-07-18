@@ -1,0 +1,688 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,SourceCode," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="actionSheet 避开 switch case 写法- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    SEL selectors[] = {
+        @selector(insertRow),
+        @selector(inse">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Source Code Learning - UITableView-FDTemplateLayoutCell">
+<meta property="og:url" content="http://yoursite.com/2015/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/index.html">
+<meta property="og:site_name" content="Alicia's Blog">
+<meta property="og:description" content="actionSheet 避开 switch case 写法- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    SEL selectors[] = {
+        @selector(insertRow),
+        @selector(inse">
+<meta property="og:updated_time" content="2016-07-18T06:48:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Source Code Learning - UITableView-FDTemplateLayoutCell">
+<meta name="twitter:description" content="actionSheet 避开 switch case 写法- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    SEL selectors[] = {
+        @selector(insertRow),
+        @selector(inse">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6267334170712737000,
+      author: 'Alicia'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/"/>
+
+  <title> Source Code Learning - UITableView-FDTemplateLayoutCell | Alicia's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Alicia's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">［LEAF Photo］作者</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Source Code Learning - UITableView-FDTemplateLayoutCell
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2015-07-12T13:51:12+08:00" content="2015-07-12">
+              2015-07-12
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="actionSheet-避开-switch-case-写法"><a href="#actionSheet-避开-switch-case-写法" class="headerlink" title="actionSheet 避开 switch case 写法"></a>actionSheet 避开 switch case 写法</h2><pre><code>- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    SEL selectors[] = {
+        @selector(insertRow),
+        @selector(insertSection),
+        @selector(deleteSection)
+    };
+
+    if (buttonIndex &lt; sizeof(selectors) / sizeof(SEL)) {
+        void(*imp)(id, SEL) = (typeof(imp))[self methodForSelector:selectors[buttonIndex]];
+        imp(self, selectors[buttonIndex]);
+    }
+}
+</code></pre><p>利用判断条件或者在循环中调用某个方法的方式如上</p>
+<p>已知函数名，有两种方式调用函数，之前在 <a href="http://alicialy.github.io/2016/07/04/Source-Code-Learning-SDWebImage/" target="_blank" rel="external">SDWebImage 解析</a> 中总结过可以使用 performSelector 或者 methodForSelector 两个函数。</p>
+<h2 id="do-while-0-在宏定义中的使用"><a href="#do-while-0-在宏定义中的使用" class="headerlink" title="do {} while(0) 在宏定义中的使用"></a>do {} while(0) 在宏定义中的使用</h2><pre><code>static void __FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(void (^callout)(void)) {
+    callout();
+}
+#define FDPrimaryCall(...) do {__FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(^{__VA_ARGS__});} while(0)
+</code></pre><a id="more"></a>
+<p>do{} while(0) 构造后宏的定义不会受到大括号、分号等影响。上面的使用方法展示了大括号问题，下面看看分号的影响。</p>
+<pre><code>#define foo(x) a(x); b(x)
+</code></pre><p>这段代码本义是调用 foo 函数时指行 a 方法和 b 方法。但是如果你这样使用</p>
+<pre><code>if (isTrue) 
+    foo(x);
+</code></pre><p>那么宏扩展后变为</p>
+<pre><code>if (isTrue)
+    a(x);
+b(x);
+</code></pre><p>那么改为下面这样呢</p>
+<pre><code>#define foo(x) { a(x); b(x); }
+</code></pre><p>扩展后变为</p>
+<pre><code>if (isTrue) {
+    a(x);
+    b(x);
+};
+</code></pre><p>上面的方式又出现语法错误，所以修改为以下方式即可</p>
+<pre><code>#define foo(x) do { a(x); a(x); } while (0)
+</code></pre><h2 id="实现-NSCopying-协议限定"><a href="#实现-NSCopying-协议限定" class="headerlink" title="实现 NSCopying 协议限定"></a>实现 NSCopying 协议限定</h2><pre><code>- (BOOL)existsHeightForKey:(id&lt;NSCopying&gt;)key;
+</code></pre><p>id<nscopying> 限定参数 Key 必须实现了 NSCopying 协议</nscopying></p>
+<h2 id="kindof-返回一个子类实例"><a href="#kindof-返回一个子类实例" class="headerlink" title="__kindof 返回一个子类实例"></a>__kindof 返回一个子类实例</h2><pre><code>- (__kindof UITableViewHeaderFooterView *)fd_templateHeaderFooterViewForReuseIdentifier:(NSString *)identifier {
+    // ...
+}
+
+ UITableViewHeaderFooterView *templateHeaderFooterView = [self fd_templateHeaderFooterViewForReuseIdentifier:identifier];
+</code></pre><p>用 __kindof UITableViewHeaderFooterView 替换 id，明确表明了返回值的类型，又不需要调用的时候进行强制转换，只要 templateHeaderFooterView 是 UITableViewHeaderFooterView 的子类即可，不会出现警告，不再需要强制类型转换。</p>
+<h2 id="用枚举和数组设置变量"><a href="#用枚举和数组设置变量" class="headerlink" title="用枚举和数组设置变量"></a>用枚举和数组设置变量</h2><pre><code>static const CGFloat systemAccessoryWidths[] = {
+        [UITableViewCellAccessoryNone] = 0,
+        [UITableViewCellAccessoryDisclosureIndicator] = 34,
+        [UITableViewCellAccessoryDetailDisclosureButton] = 68,
+        [UITableViewCellAccessoryCheckmark] = 40,
+        [UITableViewCellAccessoryDetailButton] = 48
+    };
+contentViewWidth -= systemAccessoryWidths[cell.accessoryType];
+</code></pre><h2 id="给-Category-添加属性"><a href="#给-Category-添加属性" class="headerlink" title="给 Category 添加属性"></a>给 Category 添加属性</h2><p>_cmd 表示当前方法的selector</p>
+<pre><code>- (BOOL)fd_debugLogEnabled {
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
+}
+</code></pre><p>可以注意下 <a href="http://nshipster.com/associated-objects/" target="_blank" rel="external">Associated-objects</a> 中有排小字：</p>
+<blockquote>
+<p>Since SELs are guaranteed to be unique and constant, you can use _cmd as the key for objc_setAssociatedObject(). #objective-c #snowleopard</p>
+</blockquote>
+<h2 id="32-位和-64-位"><a href="#32-位和-64-位" class="headerlink" title="32 位和 64 位"></a>32 位和 64 位</h2><pre><code>#if CGFLOAT_IS_DOUBLE
+    return number.doubleValue;
+#else
+    return number.floatValue;
+#endif
+</code></pre><p>NSNumber 中的浮点型变量取 double 还是 float 值，使用 CGFLOAT_IS_DOUBLE 判断，64 位的话则使用 double, 32 位的话则使用 float</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-TPXREF163" target="_blank" rel="external">Runtime Programming Guide</a>、<br><a href="http://www.pixelstech.net/article/1390482950-do-%7B-%7D-while-%280%29-in-macros" target="_blank" rel="external">do while in macros</a><br><a href="http://blog.sunnyxx.com/2015/06/12/objc-new-features-in-2015/" target="_blank" rel="external">Objectice - C 特性</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>请我喝汽水儿</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/SourceCode/" rel="tag">#SourceCode</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/04/Source-Code-Learning-SDWebImage/" rel="next" title="Source Code Learning - SDWebImage">
+                <i class="fa fa-chevron-left"></i> Source Code Learning - SDWebImage
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/12/How-To-Record-Your-App-With-QuickTime/" rel="prev" title="How To Record Your App With QuickTime">
+                How To Record Your App With QuickTime <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Alicia" />
+          <p class="site-author-name" itemprop="name">Alicia</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:alicialy@qq.com" target="_blank" title="mail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  mail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#actionSheet-避开-switch-case-写法"><span class="nav-number">1.</span> <span class="nav-text">actionSheet 避开 switch case 写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#do-while-0-在宏定义中的使用"><span class="nav-number">2.</span> <span class="nav-text">do {} while(0) 在宏定义中的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现-NSCopying-协议限定"><span class="nav-number">3.</span> <span class="nav-text">实现 NSCopying 协议限定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kindof-返回一个子类实例"><span class="nav-number">4.</span> <span class="nav-text">__kindof 返回一个子类实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用枚举和数组设置变量"><span class="nav-number">5.</span> <span class="nav-text">用枚举和数组设置变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#给-Category-添加属性"><span class="nav-number">6.</span> <span class="nav-text">给 Category 添加属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#32-位和-64-位"><span class="nav-number">7.</span> <span class="nav-text">32 位和 64 位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">8.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alicia</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

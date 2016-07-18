@@ -248,8 +248,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/07/15/Mobile-Client-Development-Notice/" itemprop="url">
-                  Mobile Client Development Notice
+                <a class="post-title-link" href="/2016/07/18/Source-Code-Learning-AsyncDisplayKit/" itemprop="url">
+                  Source Code Learning - AsyncDisplayKit
                 </a>
               
             
@@ -262,8 +262,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-07-15T11:48:01+08:00" content="2016-07-15">
-              2016-07-15
+            <time itemprop="dateCreated" datetime="2016-07-18T14:41:09+08:00" content="2016-07-18">
+              2016-07-18
             </time>
           </span>
 
@@ -292,514 +292,14 @@
       
         
           
-            <p>这是一篇关于移动客户端开发中容易出现的Bug及问题以及产品方面的大杂烩。</p>
-<h2 id="写代码前应当注意的问题"><a href="#写代码前应当注意的问题" class="headerlink" title="写代码前应当注意的问题"></a>写代码前应当注意的问题</h2><ol>
-<li>进度条、提示框的处理。在需要超过 2s 的地方添加进度条或等待提示框。出错时要使用提示框提示用户能看得懂的提示语句。</li>
-<li>删除、放弃等操作需要添加确认提示。</li>
-<li>当设计稿只给定了一种文字样式，这种样式正好文字不是很长时，需要确认文字过多、过长时的显示方式。文字过多时是省略(使用…)还是截取，是否支持多行显示。</li>
-<li>图片的显示方式，图片显示时是要进行裁剪还是等比缩放。</li>
-<li>小屏手机上的显示效果。例如出现键盘显示时，如果设计给出的效果在小屏手机上出现键盘遮挡控件时，需要确认如何处理。</li>
-<li>列表点击后是否需要设置选中色。</li>
-<li>需要使用数据库存放数据时，图片、文件、 二进制数据不要存放到数据库中。</li>
-</ol>
-<h2 id="提交测试前应确认的问题"><a href="#提交测试前应确认的问题" class="headerlink" title="提交测试前应确认的问题"></a>提交测试前应确认的问题</h2><ol>
-<li>网络异常时程序是否出现异常。</li>
-<li>带输入框的地方没有输入或输入过长时的处理，是否使用了合适的键盘，纯数字或者文本？能否正确地触发键盘的弹出和收起。</li>
-<li>如果调用系统 API 获取了时间，当本地时间发生变动时是否会造成影响。</li>
-<li>按钮是否支持连续点击。</li>
-<li>列表为空时展示成何种样式，网络出现问题时是否需要支持重新加载。</li>
-<li>Tab 切换是否正常刷新。</li>
-</ol>
-<h2 id="产品相关方面应当考虑的问题"><a href="#产品相关方面应当考虑的问题" class="headerlink" title="产品相关方面应当考虑的问题"></a>产品相关方面应当考虑的问题</h2><ol>
-<li>想不清楚一个功能点时宁可不做，或者突发奇想觉得某个功能很好玩时，先要三思。</li>
-<li>不要期待你的客户帮你想如何改进，他不是你的产品经理。</li>
-<li>如果大家都在为老板做产品，“哎，大家都觉得这里很别扭，大家都觉得这样很难看，但是改吧，老板说要这个功能，老板说要做成这样”，这个时候就要想想是否能试图改变这种状况，否则考虑考虑离开这家公司吧。</li>
-<li>同一个页面有多个入口，同一个功能有多种展现方式？你让用户选择，不如你为用户选择好一个最佳的方式。</li>
-<li>保持产品主干清晰，一个产品应该主要关注一件事情，如果分支太多，或者喧宾夺主，你以为你留存了用户，但是那样的用户大多情况下不是你想要的用户，如果你拉投资需要算人头除外。</li>
-</ol>
+            <h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>Pinterest 为了 1 亿用户的目标对其 iOS app 进行了重构。这次重构进行的主要改变是使用 AsyncDisplayKit。</p>
+<p>AsycnDisplayKit 是用来保证 UIs 的流畅性和可响应性的一个开源库。它可以将图片的解码、文字大小调整及渲染，和其他比较耗时的 UI 处理放到后台线程中进行。除了异步处理这个亮点，它还提供了一种类似 <a href="http://www.w3schools.com/css/css_boxmodel.asp" target="_blank" rel="external">CSS Box Model</a> 的系统，让你能够像使用 UIView 一样容易的使用 CALayers (无需注册触摸事件)。另外，它还提供了滚动视图移动差值的计算，它可以在获取网络数据后，计算出用户滚动位置的 Cell 区域，提前渲染出一小部分 Cell。</p>
+<h2 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h2><p>UIView 的展现内容在于 CALayer 的 contents 属性，contents 属性对应着一个 Backing Image<br>可以将其理解为内存视图。</p>
+<p>AsyncDisplayKit 就是通过 CALayer 的 delegate 控制 Backing Image 的生成，并通过 Core Graphic 方式在工作线程上，将视图及其子节点绘制到 Backing Image 上，绘制好后在 UI 线程上将这个 Backing Image 传递给 CALayer 的 contents。虽然这个过程主要依赖 Core Graphic 进行绘制，但是因为在后台线程中之行，绘制以组的方式执行减少了 Graphic Context 的切换，对于性能和流畅性没有什么影响。绘制好后再通过 Transaction 方式管理 dispatch_group 之间的关系。</p>
+<h2 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h2><p>AsyncDisplayKit 可以在工作线程中分批次计算 row 及其子元素布局，计算好后通过 dispatch_group_notify 通知 UI 线程将 row 插入到视图中。这里 AsyncDisplayKit 会根据设备 CPU 核数来分批次计算 row 的大小。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://engineering.pinterest.com/blog/re-architecting-pinterests-ios-app" target="_blank" rel="external">Re-architecting Pinterest’s iOS app</a></p>
 
           
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/15/Things-you-should-do-before-writing-an-iOS-app/" itemprop="url">
-                  Things you should do before writing an iOS app
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-07-15T10:42:39+08:00" content="2016-07-15">
-              2016-07-15
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>创建 iOS 项目之前不要忘记做好以下事情</p>
-<h2 id="设置编码规范"><a href="#设置编码规范" class="headerlink" title="设置编码规范"></a>设置编码规范</h2><p>一些编码规范推荐</p>
-<p>ObjC</p>
-<p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html">Apple 的 Cocoa 编码规范</a><br><a href="https://github.com/github/objective-c-style-guide">GitHub 基于 Apple Cocoa 的编码规范</a><br><a href="https://google.github.io/styleguide/objcguide.xml">Google 的 ObjC 编码规范(需翻墙)</a><br><a href="https://github.com/NYTimes/objective-c-style-guide">纽约时报的编码规范</a></p>
-<p>Swift</p>
-<p><a href="https://github.com/raywenderlich/swift-style-guide">Raywenderlich 官方编码规范</a><br><a href="https://github.com/github/swift-style-guide">GithHub 的编码规范</a></p>
-<h2 id="确定架构"><a href="#确定架构" class="headerlink" title="确定架构"></a>确定架构</h2><p>使用传统的 MVC 还是 MVVM 亦或是 VIPER</p>
-<h2 id="为项目命名，使用公司及项目名作为前缀，最好是-3-个字母，避免类名冲突"><a href="#为项目命名，使用公司及项目名作为前缀，最好是-3-个字母，避免类名冲突" class="headerlink" title="为项目命名，使用公司及项目名作为前缀，最好是 3 个字母，避免类名冲突"></a>为项目命名，使用公司及项目名作为前缀，最好是 3 个字母，避免类名冲突</h2><h2 id="为项目添加-gitignore"><a href="#为项目添加-gitignore" class="headerlink" title="为项目添加 .gitignore"></a>为项目添加 .gitignore</h2><pre><code># Xcode
-## Build generated
-build/
-DerivedData/
-## Various settings
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata/
-## Other
-*.xcuserstate
-# CocoaPods
-Pods
-Podfile.lock
-</code></pre>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/15/Things-you-should-do-before-writing-an-iOS-app/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/" itemprop="url">
-                  Source Code Learning - UITableView-FDTemplateLayoutCell
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-07-12T13:51:12+08:00" content="2016-07-12">
-              2016-07-12
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="actionSheet-避开-switch-case-写法"><a href="#actionSheet-避开-switch-case-写法" class="headerlink" title="actionSheet 避开 switch case 写法"></a>actionSheet 避开 switch case 写法</h2><pre><code>- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    SEL selectors[] = {
-        @selector(insertRow),
-        @selector(insertSection),
-        @selector(deleteSection)
-    };
-
-    if (buttonIndex &lt; sizeof(selectors) / sizeof(SEL)) {
-        void(*imp)(id, SEL) = (typeof(imp))[self methodForSelector:selectors[buttonIndex]];
-        imp(self, selectors[buttonIndex]);
-    }
-}
-</code></pre><p>利用判断条件或者在循环中调用某个方法的方式如上</p>
-<p>已知函数名，有两种方式调用函数，之前在 <a href="http://alicialy.github.io/2016/07/04/Source-Code-Learning-SDWebImage/">SDWebImage 解析</a> 中总结过可以使用 performSelector 或者 methodForSelector 两个函数。</p>
-<h2 id="do-while-0-在宏定义中的使用"><a href="#do-while-0-在宏定义中的使用" class="headerlink" title="do {} while(0) 在宏定义中的使用"></a>do {} while(0) 在宏定义中的使用</h2><pre><code>static void __FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(void (^callout)(void)) {
-    callout();
-}
-#define FDPrimaryCall(...) do {__FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(^{__VA_ARGS__});} while(0)
-</code></pre>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/05/Source-Code-Learning-YYModel/" itemprop="url">
-                  Source Code Learning - YYModel
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-07-05T13:04:51+08:00" content="2016-07-05">
-              2016-07-05
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>源码看的是 YYKit，因为内容太多所以还是按照功能分开</p>
-<h2 id="kCFNull"><a href="#kCFNull" class="headerlink" title="kCFNull"></a>kCFNull</h2><p>NSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典</p>
-<pre><code>NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
-mutableDictionary[@&quot;someKey&quot;] = [NSNull null]; // Sets value of NSNull singleton for `someKey`
-NSLog(@&quot;Keys: %@&quot;, [mutableDictionary allKeys]); // @[@&quot;someKey&quot;]
-</code></pre><p>kCFNull 这个是什么呢，看定义可以知道</p>
-<pre><code>typedef const struct CF_BRIDGED_TYPE(NSNull) __CFNull * CFNullRef;
-const CFNullRef kCFNull;    // the singleton null instance
-</code></pre><p>看个栗子</p>
-<pre><code>NSNull *null1 = (id)kCFNull;
-NSNull *null2 = [NSNull null];
-</code></pre><p>输出信息</p>
-<pre><code>(NSNull *) null1 = 0x0000000107b10af0
-(NSNull *) null2 = 0x0000000107b10af0
-</code></pre><p>说明 (id)kCFNull 就是 [NSNull null]</p>
-<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><pre><code>- (id)deepCopy {
-    id obj = nil;
-    @try {
-        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
-    }
-    @catch (NSException *exception) {
-         NSLog(@&quot;%@&quot;, exception);
-    }
-    return obj;
-}
-</code></pre><p>下面说说浅拷贝和深拷贝。集合类的拷贝分为浅拷贝和深拷贝<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/05/Source-Code-Learning-YYModel/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/04/Source-Code-Learning-SDWebImage/" itemprop="url">
-                  Source Code Learning - SDWebImage
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-07-04T11:16:24+08:00" content="2016-07-04">
-              2016-07-04
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下</p>
-<h2 id="NSURLSession-工作模式"><a href="#NSURLSession-工作模式" class="headerlink" title="NSURLSession 工作模式"></a>NSURLSession 工作模式</h2><p>NSURLSessionConfiguration 分为三种工作模式<br>default: 可以使用磁盘缓存、身份认证、Cookie<br>ephemeral(及时模式): 数据只能保存到内存，无法存储到磁盘。<br>background: 可以在后台执行上传或下载任务</p>
-<h2 id="后进先出"><a href="#后进先出" class="headerlink" title="后进先出"></a>后进先出</h2><p>后进先出通过 NSOperation 的依赖实现</p>
-<pre><code>if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
-        // Emulate LIFO execution order by systematically adding new operations as last operation&apos;s dependency
-        [wself.lastAddedOperation addDependency:operation];
-        wself.lastAddedOperation = operation;
-}
-</code></pre><h2 id="GCD-barrier"><a href="#GCD-barrier" class="headerlink" title="GCD barrier"></a>GCD barrier</h2><p>dispatch_barrier_async 比较常见，那么 dispatch_barrier_sync 又是做什么的，区别是什么呢？看文档可知 dispatch_barrier_async 不用执行完内部方法即可返回，dispatch_barrier_sync 需要等到执行完内部方法才会返回</p>
-<pre><code>dispatch_aync(queue, ^{
-    NSLog(@&quot;In 1&quot;);
-});
-dispatch_barrier_sync(queue,^{
-    for (int i = 0; i &lt; 100000; i++) {
-        // ...
-    }
-    NSLog(@&quot;In barrier&quot;);
-});
-NSLog(@&quot;In 2&quot;);
-</code></pre><p>输出结果为</p>
-<pre><code>In 1
-In barrier
-In 2
-</code></pre><p>如果 dispatch_barrier_sync 改为 dispatch_barrier_async</p>
-<p>输出结果为</p>
-<pre><code>In 1
-In 2
-In barrier
-</code></pre><h2 id="Macros-宏"><a href="#Macros-宏" class="headerlink" title="Macros 宏"></a>Macros 宏</h2>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/04/Source-Code-Learning-SDWebImage/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
         
       
     </div>
@@ -1289,6 +789,128 @@ if ([theLock lock]) {
             
               
                 
+                <a class="post-title-link" href="/2016/05/15/Things-you-should-do-before-writing-an-iOS-app/" itemprop="url">
+                  Things you should do before writing an iOS app
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-05-15T10:42:39+08:00" content="2016-05-15">
+              2016-05-15
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>创建 iOS 项目之前不要忘记做好以下事情</p>
+<h2 id="设置编码规范"><a href="#设置编码规范" class="headerlink" title="设置编码规范"></a>设置编码规范</h2><p>一些编码规范推荐</p>
+<p>ObjC</p>
+<p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html">Apple 的 Cocoa 编码规范</a><br><a href="https://github.com/github/objective-c-style-guide">GitHub 基于 Apple Cocoa 的编码规范</a><br><a href="https://google.github.io/styleguide/objcguide.xml">Google 的 ObjC 编码规范(需翻墙)</a><br><a href="https://github.com/NYTimes/objective-c-style-guide">纽约时报的编码规范</a></p>
+<p>Swift</p>
+<p><a href="https://github.com/raywenderlich/swift-style-guide">Raywenderlich 官方编码规范</a><br><a href="https://github.com/github/swift-style-guide">GithHub 的编码规范</a></p>
+<h2 id="确定架构"><a href="#确定架构" class="headerlink" title="确定架构"></a>确定架构</h2><p>使用传统的 MVC 还是 MVVM 亦或是 VIPER</p>
+<h2 id="为项目命名，使用公司及项目名作为前缀，最好是-3-个字母，避免类名冲突"><a href="#为项目命名，使用公司及项目名作为前缀，最好是-3-个字母，避免类名冲突" class="headerlink" title="为项目命名，使用公司及项目名作为前缀，最好是 3 个字母，避免类名冲突"></a>为项目命名，使用公司及项目名作为前缀，最好是 3 个字母，避免类名冲突</h2><h2 id="为项目添加-gitignore"><a href="#为项目添加-gitignore" class="headerlink" title="为项目添加 .gitignore"></a>为项目添加 .gitignore</h2><pre><code># Xcode
+## Build generated
+build/
+DerivedData/
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+## Other
+*.xcuserstate
+# CocoaPods
+Pods
+Podfile.lock
+</code></pre>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/05/15/Things-you-should-do-before-writing-an-iOS-app/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/05/What-can-make-Core-Graphics-coding-easy/" itemprop="url">
                   What can make Core Graphics coding easy
                 </a>
@@ -1367,6 +989,369 @@ if ([theLock lock]) {
 
 
     
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/" itemprop="url">
+                  What I Talk About When I Talk About Leaks
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-04-01T11:42:09+08:00" content="2016-04-01">
+              2016-04-01
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。</p>
+<h2 id="一种麻烦的检查内存泄漏方式"><a href="#一种麻烦的检查内存泄漏方式" class="headerlink" title="一种麻烦的检查内存泄漏方式"></a>一种麻烦的检查内存泄漏方式</h2><p>为什么麻烦还要介绍呢，因为看到有人这样调试的。这种方式需要写些代码，这些代码完全是调试用的，而且只能让你知道是否存在泄漏，但是无法定位，看看这种方式如何操作。</p>
+<p>在 dealloc 方法中写一个日志，如果退出页面的时候能够打印出日志内容，说明该页面没有问题，如果没有打印，那么就是有问题的。</p>
+<pre><code>- (void)dealloc {
+     DLog(@&quot;release&quot;);
+ }
+</code></pre><p>DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
+<pre><code>#ifdef DEBUG
+#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+</code></pre><p>插一句题外话，如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/">喵神的代码</a></p>
+<pre><code>#define NSLog(format, ...) do { \
+    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
+    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
+    __LINE__, __func__);  \
+   (NSLog)((format), ##__VA_ARGS__);   \
+   fprintf(stderr, &quot;-------\n&quot;);       \
+} while (0)
+</code></pre><p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
+<pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
+</code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
+<pre><code>self.paperSizeView.paperSizeBlock = ^(PaperSizeModel *sizeModel) {
+    self.paperSize = sizeModel.paperSize;
+}
+</code></pre><p>要把 self 改为 WeakSelf。</p>
+<p>下面说说 Instrument 中如何检查这个问题并定位的。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" itemprop="url">
+                  What I Talk About When I Talk About Performance
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-03-30T12:12:34+08:00" content="2016-03-30">
+              2016-03-30
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
+<p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
+<p>另外，由于最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
+<p>自己设计和编码的项目［LEAF Photo］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。 </p>
+<h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
+<p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
+<pre><code>NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+[toImageView setImage:scaledImage];
+</code></pre><p>将上面的方法放到线程中，另外由于 imageWithContentsOfFile 方法不会进行缓存，所以加载图片后将其加到缓存 (类型是 NSCache )中。</p>
+<pre><code>UIImage *tplImage = [self.cache objectForKey:indexPath];
+if (tplImage) {
+    [toImageView setImage:tplImage];
+}
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+    UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+    UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+    [self.cache setObject:scaledImage forKey:indexPath];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [toImageView setImage:scaledImage];
+    });
+});
+</code></pre><p>这样优化后，setTplCoverModel 方法由原来的 32ms 降低到了 2ms。</p>
+<p>通过 Time Profiler 找到最耗时的调用，不影响主线程的操作放到应当线程中；需要优化算法的通过算法降低时间复杂度；经常访问的数据放到缓存中，通过以上方法做调整。</p>
+<p>看完 Timer Profiler 接下来看看 Allocations 和 Leaks 的使用。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/12/18/Source-Code-Learning-YYKit/" itemprop="url">
+                  Source Code Learning - YYKit
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2015-12-18T21:44:20+08:00" content="2015-12-18">
+              2015-12-18
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="好用的-YYFPSLabel"><a href="#好用的-YYFPSLabel" class="headerlink" title="好用的 YYFPSLabel"></a>好用的 YYFPSLabel</h2><p>使用 Instruments 查看帧率不如直接在应用中查看来的直接，YYFPSLabel 可以直接显示帧率。</p>
+<pre><code>CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWithTarget:self] selector:@selector(tick:)];
+[_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+// CADisplayLink 刷新执行的函数
+- (void)tick:(CADisplayLink *)link {
+    if (_lastTime == 0) {
+        _lastTime = link.timestamp;
+        return;
+    }
+    // 计算 fps
+    _count++;
+    NSTimeInterval delta = link.timestamp - _lastTime;
+    // 不够 1s 不处理
+    if (delta &lt; 1) return;
+    _lastTime = link.timestamp;
+    float fps = _count / delta;
+    _count = 0;
+    // 显示 fps 的值 ...
+}
+</code></pre><h4 id="CADisplayLink-和-NSTimer-的区别"><a href="#CADisplayLink-和-NSTimer-的区别" class="headerlink" title="CADisplayLink 和 NSTimer 的区别"></a>CADisplayLink 和 NSTimer 的区别</h4><p>CADisplayLink 可以以屏幕刷新率相同的频率将内容绘制到屏幕上的定时器，精确度相当高，但是如果调用的方法比较耗时，超过了屏幕刷新周期，就会导致跳过若干次回调调用机会。</p>
+<p>NSTimer 的精确度稍低，比如 NSTimer 触发时间到的时候，如果 runloop 出在阻塞状态，触发时间就会被延迟到下一个 runloop 周期。</p>
+<p>CADisplayLink 适合 UI 不停重绘，比如自定义动画引擎或者视频播放的渲染。NSTimer 适合需要单次或循环定时处理的任务。</p>
+<h4 id="CADisplayLink-的重要属性："><a href="#CADisplayLink-的重要属性：" class="headerlink" title="CADisplayLink 的重要属性："></a>CADisplayLink 的重要属性：</h4><p>timestamp：当前时间的时间戳</p>
+<p>frameInterval：NSInteger类型的值，用来设置间隔多少帧调用一次 selector方法 ，默认值是1，即每帧都调用一次。</p>
+<p>duration：readOnly 的 CFTimeInterval 值，表示两次屏幕刷新之间的时间间隔。需要注意的是，该属性在 target 的 selector 被首次调用以后才会被赋值。selector 的调用间隔时间计算方式是：调用间隔时间 = duration × frameInterval</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
@@ -1412,7 +1397,7 @@ if ([theLock lock]) {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

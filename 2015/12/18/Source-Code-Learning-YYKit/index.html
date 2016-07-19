@@ -94,7 +94,7 @@ CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWit
 <meta property="og:description" content="好用的 YYFPSLabel使用 Instruments 查看帧率不如直接在应用中查看来的直接，YYFPSLabel 可以直接显示帧率。
 CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWithTarget:self] selector:@selector(tick:)];
 [_link ad">
-<meta property="og:updated_time" content="2016-07-18T13:59:22.000Z">
+<meta property="og:updated_time" content="2016-07-19T02:32:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - YYKit">
 <meta name="twitter:description" content="好用的 YYFPSLabel使用 Instruments 查看帧率不如直接在应用中查看来的直接，YYFPSLabel 可以直接显示帧率。
@@ -314,10 +314,20 @@ CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWit
 </code></pre><h4 id="CADisplayLink-和-NSTimer-的区别"><a href="#CADisplayLink-和-NSTimer-的区别" class="headerlink" title="CADisplayLink 和 NSTimer 的区别"></a>CADisplayLink 和 NSTimer 的区别</h4><p>CADisplayLink 可以以屏幕刷新率相同的频率将内容绘制到屏幕上的定时器，精确度相当高，但是如果调用的方法比较耗时，超过了屏幕刷新周期，就会导致跳过若干次回调调用机会。</p>
 <p>NSTimer 的精确度稍低，比如 NSTimer 触发时间到的时候，如果 runloop 出在阻塞状态，触发时间就会被延迟到下一个 runloop 周期。</p>
 <p>CADisplayLink 适合 UI 不停重绘，比如自定义动画引擎或者视频播放的渲染。NSTimer 适合需要单次或循环定时处理的任务。</p>
-<h4 id="CADisplayLink-的重要属性："><a href="#CADisplayLink-的重要属性：" class="headerlink" title="CADisplayLink 的重要属性："></a>CADisplayLink 的重要属性：</h4><p>timestamp：当前时间的时间戳</p>
+<h4 id="CADisplayLink-的重要属性："><a href="#CADisplayLink-的重要属性：" class="headerlink" title="CADisplayLink 的重要属性："></a>CADisplayLink 的重要属性：</h4><a id="more"></a>
+<p>timestamp：当前时间的时间戳</p>
 <p>frameInterval：NSInteger类型的值，用来设置间隔多少帧调用一次 selector方法 ，默认值是1，即每帧都调用一次。</p>
 <p>duration：readOnly 的 CFTimeInterval 值，表示两次屏幕刷新之间的时间间隔。需要注意的是，该属性在 target 的 selector 被首次调用以后才会被赋值。selector 的调用间隔时间计算方式是：调用间隔时间 = duration × frameInterval</p>
-
+<h2 id="奇技淫巧"><a href="#奇技淫巧" class="headerlink" title="奇技淫巧"></a>奇技淫巧</h2><p>人都趋向于犯懒的，只是有的人偷懒是靠动脑子的  </p>
+<pre><code>{
+    NSMutableAttributedString *one = [[NSMutableAttributedString alloc] initWithString:@&quot;Shadow&quot;];
+    // ...
+}
+{
+    NSMutableAttributedString *one = [[NSMutableAttributedString alloc] initWithString:@&quot;Inner Shadow&quot;];
+    // ...
+}
+</code></pre>
       
     </div>
 
@@ -449,7 +459,7 @@ CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWit
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -508,7 +518,7 @@ CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWit
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#好用的-YYFPSLabel"><span class="nav-number">1.</span> <span class="nav-text">好用的 YYFPSLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CADisplayLink-和-NSTimer-的区别"><span class="nav-number">1.0.1.</span> <span class="nav-text">CADisplayLink 和 NSTimer 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CADisplayLink-的重要属性："><span class="nav-number">1.0.2.</span> <span class="nav-text">CADisplayLink 的重要属性：</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#好用的-YYFPSLabel"><span class="nav-number">1.</span> <span class="nav-text">好用的 YYFPSLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CADisplayLink-和-NSTimer-的区别"><span class="nav-number">1.0.1.</span> <span class="nav-text">CADisplayLink 和 NSTimer 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CADisplayLink-的重要属性："><span class="nav-number">1.0.2.</span> <span class="nav-text">CADisplayLink 的重要属性：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#奇技淫巧"><span class="nav-number">2.</span> <span class="nav-text">奇技淫巧</span></a></li></ol></div>
             
           </div>
         </section>

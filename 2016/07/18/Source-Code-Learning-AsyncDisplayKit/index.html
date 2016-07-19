@@ -92,7 +92,7 @@ AsycnDisplayKit 是用来保证 UIs 的流畅性和可响应性的一个开源�
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="特性Pinterest 为了 1 亿用户的目标对其 iOS app 进行了重构。这次重构进行的主要改变是使用 AsyncDisplayKit。
 AsycnDisplayKit 是用来保证 UIs 的流畅性和可响应性的一个开源库。它可以将图片的解码、文字大小调整及渲染，和其他比较耗时的 UI 处理放到后台线程中进行。除了异步处理这个亮点，它还提供了一种类似 CSS Box Model 的系统，让你能">
-<meta property="og:updated_time" content="2016-07-18T10:33:40.000Z">
+<meta property="og:updated_time" content="2016-07-18T14:04:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - AsyncDisplayKit">
 <meta name="twitter:description" content="特性Pinterest 为了 1 亿用户的目标对其 iOS app 进行了重构。这次重构进行的主要改变是使用 AsyncDisplayKit。
@@ -294,6 +294,7 @@ AsycnDisplayKit 是用来保证 UIs 的流畅性和可响应性的一个开源�
 <h2 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h2><p>UIView 的展现内容在于 CALayer 的 contents 属性，contents 属性对应着一个 Backing Image<br>可以将其理解为内存视图。</p>
 <p>AsyncDisplayKit 就是通过 CALayer 的 delegate 控制 Backing Image 的生成，并通过 Core Graphic 方式在工作线程上，将视图及其子节点绘制到 Backing Image 上，绘制好后在 UI 线程上将这个 Backing Image 传递给 CALayer 的 contents。虽然这个过程主要依赖 Core Graphic 进行绘制，但是因为在后台线程中之行，绘制以组的方式执行减少了 Graphic Context 的切换，对于性能和流畅性没有什么影响。绘制好后再通过 Transaction 方式管理 dispatch_group 之间的关系。</p>
 <h2 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h2><p>AsyncDisplayKit 可以在工作线程中分批次计算 row 及其子元素布局，计算好后通过 dispatch_group_notify 通知 UI 线程将 row 插入到视图中。这里 AsyncDisplayKit 会根据设备 CPU 核数来分批次计算 row 的大小。</p>
+<p>// … 待续</p>
 <h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://engineering.pinterest.com/blog/re-architecting-pinterests-ios-app" target="_blank" rel="external">Re-architecting Pinterest’s iOS app</a></p>
 
       
@@ -423,7 +424,7 @@ AsycnDisplayKit 是用来保证 UIs 的流畅性和可响应性的一个开源�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

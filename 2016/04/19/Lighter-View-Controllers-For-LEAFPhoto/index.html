@@ -1,0 +1,760 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="[LEAF Photo] 整个 app 的大部分功能都是在 LPCollageViewController 中实现的，随着时间的推移，这个 Controller 开始变得臃肿代码很长，记录下瘦身的各种策略。
+ViewModel 及组合模式的使用[LEAF Photo] 为用户提供了拼接图片的不同模板，模板中包含了选择照片的视图、文字视图以及线条等，模板以 json 文件方式保存，将这些元素显示到视">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lighter View Controllers For LEAFPhoto">
+<meta property="og:url" content="http://yoursite.com/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/index.html">
+<meta property="og:site_name" content="Alicia's Blog">
+<meta property="og:description" content="[LEAF Photo] 整个 app 的大部分功能都是在 LPCollageViewController 中实现的，随着时间的推移，这个 Controller 开始变得臃肿代码很长，记录下瘦身的各种策略。
+ViewModel 及组合模式的使用[LEAF Photo] 为用户提供了拼接图片的不同模板，模板中包含了选择照片的视图、文字视图以及线条等，模板以 json 文件方式保存，将这些元素显示到视">
+<meta property="og:updated_time" content="2016-07-19T03:17:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lighter View Controllers For LEAFPhoto">
+<meta name="twitter:description" content="[LEAF Photo] 整个 app 的大部分功能都是在 LPCollageViewController 中实现的，随着时间的推移，这个 Controller 开始变得臃肿代码很长，记录下瘦身的各种策略。
+ViewModel 及组合模式的使用[LEAF Photo] 为用户提供了拼接图片的不同模板，模板中包含了选择照片的视图、文字视图以及线条等，模板以 json 文件方式保存，将这些元素显示到视">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6267334170712737000,
+      author: 'Alicia'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/"/>
+
+  <title> Lighter View Controllers For LEAFPhoto | Alicia's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Alicia's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">［LEAF Photo］作者</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Lighter View Controllers For LEAFPhoto
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-04-19T19:15:52+08:00" content="2016-04-19">
+              2016-04-19
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>[LEAF Photo] 整个 app 的大部分功能都是在 LPCollageViewController 中实现的，随着时间的推移，这个 Controller 开始变得臃肿代码很长，记录下瘦身的各种策略。</p>
+<h2 id="ViewModel-及组合模式的使用"><a href="#ViewModel-及组合模式的使用" class="headerlink" title="ViewModel 及组合模式的使用"></a>ViewModel 及组合模式的使用</h2><p>[LEAF Photo] 为用户提供了拼接图片的不同模板，模板中包含了选择照片的视图、文字视图以及线条等，模板以 json 文件方式保存，将这些元素显示到视图上简单的逻辑就是判断 json 中是否存在节点，如果存在则创建对应的元素，这样创建模板的过程就会变的臃肿。</p>
+<p>借鉴下 MVVM 的方式，将 MVC 中的 C 拆分成 VM，使用 ViewModel 的方式处理展示，在利用组合的方式将每种元素的展示方法拆分到各自类中实现，这样创建元素的这个冗长的过程就可以被分散到每个元素的 ViewModel 类中了。</p>
+<pre><code>@interface CollageComponentViewModel : NSObject
+- (void)showToView:(CollageContainerView *)view target:(id)target;
+@end
+@interface CollageViewModel : CollageComponentViewModel
+@end
+@implementation CollageViewModel
+- (instancetype)initWithCollageModel:(CollageModel *)collageModel {
+    self = [super init];
+    if (self) {
+        _collageModel = collageModel;
+    }
+    return self;
+}
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    NSArray *textDecArray = self.collageModel.textDec;
+    if (textDecArray) {
+        [self showToView:view target:target array:textDecArray];
+    }
+    // ...
+}
+@end
+@interface CollageTextDecViewModel : CollageComponentViewModel
+@end
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    CollageLabel *textLabel = [[CollageLabel alloc] initWithFrame:frame];
+    textLabel.text = self.collageTextDecModel.text;
+    textLabel.font = [UIFont fontWithName:self.collageTextDecModel.fontName size:fontSize];
+    // ...
+    [view addSubview:textLabel];
+}
+</code></pre><p>原本在 Controller 和 View 中的很多代码，被分散到 CollageTextDecViewModel 等 ViewModel 中去。</p>
+<p>除了此例外，通常的应用中一些网络请求的处理和页面设置也可以使用 ViewModel 的方式。</p>
+<h2 id="将子视图独立成单独的类"><a href="#将子视图独立成单独的类" class="headerlink" title="将子视图独立成单独的类"></a>将子视图独立成单独的类</h2><p>子视图独立成一个类，并使用懒加载的方式创建。<br><a id="more"></a></p>
+<pre><code>@interface CollageViewController () 
+@property (strong, nonatomic) CollageTextToolbar *textToolbar;
+@end
+@implementation CollageViewController
+- (CollageTextToolbar *)textToolbar {
+    if (_textToolbar) {
+        return _textToolbar;
+    }
+    _textToolbar = [[CollageTextToolbar alloc] init];
+    [self.view addSubview:_textToolbar];
+}
+// somewhere call self.textToolbar to set its frame
+@end
+@implementation CollageTextToolbar
+- (UIView *)editOuterView {
+    if (_editOuterView) {
+        return _editOuterView;
+    }
+    _editOuterView = [[UIView alloc] init];
+    [_editOuterView setBackgroundColor:[UIColor whiteColor]];
+    [self addSubview:_editOuterView];
+    return _editOuterView;
+}
+- (UITextView *)editingTextView {
+    if (_editingTextView) {
+        return _editingTextView;
+    }
+    _editingTextView = [[UITextView alloc] init];
+    _editingTextView.delegate = self;
+    [self.editOuterView addSubview:_editingTextView];
+    return _editingTextView;
+}
+@end
+</code></pre><p>将视图的处理抽离出来，Controller 只负责初始化设置属性，这样 CollageTextToolbar 中大量的视图设置代码可以从 Controller 中移除。</p>
+<p>CollageTextToolbar 中存在的按钮，如果只需要和本视图中的控件打交道最好，如果还需要 Controller 中的视图进行交互，使用协议即可。</p>
+<h2 id="Keyboard-Manager"><a href="#Keyboard-Manager" class="headerlink" title="Keyboard Manager"></a>Keyboard Manager</h2><p>除了视图，一些功能也可以抽离成一个单独的处理类。</p>
+<pre><code>@implementation LPCollageKeyboardManager : NSObject
+- (instancetype)initWithTextToolBar:(CollageTextToolbar *)textToolBar {
+    self = [super init];
+    if (self) {
+        _textToolBar = textToolBar;
+    }
+    return self;
+}
+- (void)addKeyboardObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector( keyboardWillHide:)  
+                                                 name:UIKeyboardWillHideNotification 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(keyboardWillShow:) 
+                                                 name:UIKeyboardWillShowNotification 
+                                               object:nil];
+}
+- (void)removeKeyboardObserver {
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:UIKeyboardWillHideNotification 
+                                                    object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification 
+                                                    object:nil];
+}
+- (void)keyboardWillShow:(NSNotification *)notification {
+    // ... 设置 self.textToolBar
+}
+- (void)keyboardWillShow:(NSNotification *)notification {
+    // ... 设置 self.textToolBar
+}
+@end
+</code></pre><h2 id="Navigator"><a href="#Navigator" class="headerlink" title="Navigator"></a>Navigator</h2><p>另外在页面中很多按钮触发跳转逻辑，可以将 NavigationController 的跳转逻辑独立成一个类</p>
+<pre><code>@interface LPCollageNavigator
+- (void)navigateToDoneController:(UIImage *)savedImage;
+@end
+@implementation LPCollageNavigator : NSObject
+- (instancetype)initWithNavigationController:(UINavigationController *)navigationController {
+    self = [super init];
+    if (self) {
+       _navigationController = navigationController; 
+    }
+    return self;
+}
+- (void)navigateToDoneController:(UIImage *)savedImage {
+    LPCollageDoneController *doneController = [[LPCollageDoneController alloc] initWithSavedImage:savedImage];
+    [self.navigationController pushViewController:doneController  animated:YES];
+}
+@end
+</code></pre><h2 id="将-DataSource-和其他-Protocols-分离"><a href="#将-DataSource-和其他-Protocols-分离" class="headerlink" title="将 DataSource 和其他 Protocols 分离"></a>将 DataSource 和其他 Protocols 分离</h2><p>另外可以参见 <a href="https://www.objc.io/issues/1-view-controllers/lighter-view-controllers/" target="_blank" rel="external">objc.ic 的 Controller 瘦身</a> 文章为其瘦身</p>
+<pre><code>@implementation ArrayDataSource
+- (id)itemAtIndexPath:(NSIndexPath*)indexPath {
+    return items[(NSUInteger)indexPath.row];
+}
+- (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
+    return items.count;
+}
+- (UITableViewCell*)tableView:(UITableView*)tableView 
+    cellForRowAtIndexPath:(NSIndexPath*)indexPath {
+    id cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier
+                                          forIndexPath:indexPath];
+    id item = [self itemAtIndexPath:indexPath];
+    configureCellBlock(cell,item);
+    return cell;
+}
+@end
+@implementation CustomTableViewController
+void (^configureCell)(PhotoCell*, Photo*) = ^(PhotoCell* cell, Photo* photo) {
+    cell.label.text = photo.name;
+};
+photosArrayDataSource = [[ArrayDataSource alloc] initWithItems:photos
+                                            cellIdentifier:PhotoCellIdentifier
+                                        configureCellBlock:configureCell];
+self.tableView.dataSource = photosArrayDataSource;
+@end
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>请我喝汽水儿</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/" rel="next" title="What I Talk About When I Talk About Leaks">
+                <i class="fa fa-chevron-left"></i> What I Talk About When I Talk About Leaks
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/05/What-can-make-Core-Graphics-coding-easy/" rel="prev" title="What can make Core Graphics coding easy">
+                What can make Core Graphics coding easy <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Alicia" />
+          <p class="site-author-name" itemprop="name">Alicia</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:alicialy@qq.com" target="_blank" title="mail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  mail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewModel-及组合模式的使用"><span class="nav-number">1.</span> <span class="nav-text">ViewModel 及组合模式的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将子视图独立成单独的类"><span class="nav-number">2.</span> <span class="nav-text">将子视图独立成单独的类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keyboard-Manager"><span class="nav-number">3.</span> <span class="nav-text">Keyboard Manager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Navigator"><span class="nav-number">4.</span> <span class="nav-text">Navigator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-DataSource-和其他-Protocols-分离"><span class="nav-number">5.</span> <span class="nav-text">将 DataSource 和其他 Protocols 分离</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alicia</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

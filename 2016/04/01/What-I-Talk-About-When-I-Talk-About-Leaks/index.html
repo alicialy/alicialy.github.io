@@ -94,7 +94,7 @@
 一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
 <meta property="og:image" content="http://yoursite.com/post_images/leak1.jpg">
 <meta property="og:image" content="http://yoursite.com/post_images/leak2.jpg">
-<meta property="og:updated_time" content="2016-07-14T09:41:47.000Z">
+<meta property="og:updated_time" content="2016-07-19T03:20:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Leaks">
 <meta name="twitter:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
@@ -264,7 +264,7 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-04-01T11:42:09+08:00" content="2016-04-01">
+            <time itemprop="dateCreated" datetime="2016-04-01T21:42:09+08:00" content="2016-04-01">
               2016-04-01
             </time>
           </span>
@@ -298,20 +298,6 @@
 <pre><code>- (void)dealloc {
      DLog(@&quot;release&quot;);
  }
-</code></pre><p>DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
-<pre><code>#ifdef DEBUG
-#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#   define DLog(...)
-#endif
-</code></pre><p>插一句题外话，如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">喵神的代码</a></p>
-<pre><code>#define NSLog(format, ...) do { \
-    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
-    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
-    __LINE__, __func__);  \
-   (NSLog)((format), ##__VA_ARGS__);   \
-   fprintf(stderr, &quot;-------\n&quot;);       \
-} while (0)
 </code></pre><p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
 <pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
 </code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
@@ -319,8 +305,22 @@
     self.paperSize = sizeModel.paperSize;
 }
 </code></pre><p>要把 self 改为 WeakSelf。</p>
-<p>下面说说 Instrument 中如何检查这个问题并定位的。<br><a id="more"></a></p>
-<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
+<p>上面的 DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
+<pre><code>#ifdef DEBUG
+#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+</code></pre><p>如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">喵神的代码</a></p>
+<pre><code>#define NSLog(format, ...) do { \
+    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
+    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
+    __LINE__, __func__);  \
+   (NSLog)((format), ##__VA_ARGS__);   \
+   fprintf(stderr, &quot;-------\n&quot;);       \
+} while (0)
+</code></pre><h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
+<a id="more"></a>
 <p>运行后，将所有的页面都跑一遍，会看到内存一直增长，当返回页面后内存应该是下降趋势的。如果内存没有返回到初始状态，说明在某个页面是有内存泄漏的。这时可以在搜索框搜索自己写的类名。</p>
 <p><img src="/post_images/leak1.jpg" alt="img"></p>
 <p>看，这是进入 CollageViewController 后退出后可以发现内存不断增长，在内存中搜索类名能看到这个视图控制器没有被释放，还有一些其他相关的类。这样就能知道是否有泄漏存在了。当然了，这个代码很容易查到原因，只需要点击进入每行对应的代码查看，查看到 CollagePaperSizeView 时会指引到 paperSizeView 的 Block 中有循环引用。</p>
@@ -395,8 +395,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/05/05/What-can-make-Core-Graphics-coding-easy/" rel="prev" title="What can make Core Graphics coding easy">
-                What can make Core Graphics coding easy <i class="fa fa-chevron-right"></i>
+              <a href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/" rel="prev" title="Lighter View Controllers For LEAFPhoto">
+                Lighter View Controllers For LEAFPhoto <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -465,7 +465,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

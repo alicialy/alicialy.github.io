@@ -297,6 +297,7 @@
 <h2 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h2><p>UIView 的展现内容在于 CALayer 的 contents 属性，contents 属性对应着一个 Backing Image<br>可以将其理解为内存视图。</p>
 <p>AsyncDisplayKit 就是通过 CALayer 的 delegate 控制 Backing Image 的生成，并通过 Core Graphic 方式在工作线程上，将视图及其子节点绘制到 Backing Image 上，绘制好后在 UI 线程上将这个 Backing Image 传递给 CALayer 的 contents。虽然这个过程主要依赖 Core Graphic 进行绘制，但是因为在后台线程中之行，绘制以组的方式执行减少了 Graphic Context 的切换，对于性能和流畅性没有什么影响。绘制好后再通过 Transaction 方式管理 dispatch_group 之间的关系。</p>
 <h2 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h2><p>AsyncDisplayKit 可以在工作线程中分批次计算 row 及其子元素布局，计算好后通过 dispatch_group_notify 通知 UI 线程将 row 插入到视图中。这里 AsyncDisplayKit 会根据设备 CPU 核数来分批次计算 row 的大小。</p>
+<p>// … 待续</p>
 <h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://engineering.pinterest.com/blog/re-architecting-pinterests-ios-app" target="_blank" rel="external">Re-architecting Pinterest’s iOS app</a></p>
 
           
@@ -361,7 +362,7 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-06-24T09:26:35+08:00" content="2016-06-24">
+            <time itemprop="dateCreated" datetime="2016-06-24T19:26:35+08:00" content="2016-06-24">
               2016-06-24
             </time>
           </span>
@@ -691,7 +692,7 @@ if ([theLock lock]) {
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-20T13:48:50+08:00" content="2016-05-20">
+            <time itemprop="dateCreated" datetime="2016-05-20T23:48:50+08:00" content="2016-05-20">
               2016-05-20
             </time>
           </span>
@@ -1010,6 +1011,137 @@ Podfile.lock
             
               
                 
+                <a class="post-title-link" href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/" itemprop="url">
+                  Lighter View Controllers For LEAFPhoto
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-04-19T19:15:52+08:00" content="2016-04-19">
+              2016-04-19
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>[LEAF Photo] 整个 app 的大部分功能都是在 LPCollageViewController 中实现的，随着时间的推移，这个 Controller 开始变得臃肿代码很长，记录下瘦身的各种策略。</p>
+<h2 id="ViewModel-及组合模式的使用"><a href="#ViewModel-及组合模式的使用" class="headerlink" title="ViewModel 及组合模式的使用"></a>ViewModel 及组合模式的使用</h2><p>[LEAF Photo] 为用户提供了拼接图片的不同模板，模板中包含了选择照片的视图、文字视图以及线条等，模板以 json 文件方式保存，将这些元素显示到视图上简单的逻辑就是判断 json 中是否存在节点，如果存在则创建对应的元素，这样创建模板的过程就会变的臃肿。</p>
+<p>借鉴下 MVVM 的方式，将 MVC 中的 C 拆分成 VM，使用 ViewModel 的方式处理展示，在利用组合的方式将每种元素的展示方法拆分到各自类中实现，这样创建元素的这个冗长的过程就可以被分散到每个元素的 ViewModel 类中了。</p>
+<pre><code>@interface CollageComponentViewModel : NSObject
+- (void)showToView:(CollageContainerView *)view target:(id)target;
+@end
+@interface CollageViewModel : CollageComponentViewModel
+@end
+@implementation CollageViewModel
+- (instancetype)initWithCollageModel:(CollageModel *)collageModel {
+    self = [super init];
+    if (self) {
+        _collageModel = collageModel;
+    }
+    return self;
+}
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    NSArray *textDecArray = self.collageModel.textDec;
+    if (textDecArray) {
+        [self showToView:view target:target array:textDecArray];
+    }
+    // ...
+}
+@end
+@interface CollageTextDecViewModel : CollageComponentViewModel
+@end
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    CollageLabel *textLabel = [[CollageLabel alloc] initWithFrame:frame];
+    textLabel.text = self.collageTextDecModel.text;
+    textLabel.font = [UIFont fontWithName:self.collageTextDecModel.fontName size:fontSize];
+    // ...
+    [view addSubview:textLabel];
+}
+</code></pre><p>原本在 Controller 和 View 中的很多代码，被分散到 CollageTextDecViewModel 等 ViewModel 中去。</p>
+<p>除了此例外，通常的应用中一些网络请求的处理和页面设置也可以使用 ViewModel 的方式。</p>
+<h2 id="将子视图独立成单独的类"><a href="#将子视图独立成单独的类" class="headerlink" title="将子视图独立成单独的类"></a>将子视图独立成单独的类</h2><p>子视图独立成一个类，并使用懒加载的方式创建。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/" itemprop="url">
                   What I Talk About When I Talk About Leaks
                 </a>
@@ -1024,7 +1156,7 @@ Podfile.lock
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-04-01T11:42:09+08:00" content="2016-04-01">
+            <time itemprop="dateCreated" datetime="2016-04-01T21:42:09+08:00" content="2016-04-01">
               2016-04-01
             </time>
           </span>
@@ -1059,20 +1191,6 @@ Podfile.lock
 <pre><code>- (void)dealloc {
      DLog(@&quot;release&quot;);
  }
-</code></pre><p>DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
-<pre><code>#ifdef DEBUG
-#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#   define DLog(...)
-#endif
-</code></pre><p>插一句题外话，如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/">喵神的代码</a></p>
-<pre><code>#define NSLog(format, ...) do { \
-    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
-    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
-    __LINE__, __func__);  \
-   (NSLog)((format), ##__VA_ARGS__);   \
-   fprintf(stderr, &quot;-------\n&quot;);       \
-} while (0)
 </code></pre><p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
 <pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
 </code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
@@ -1080,7 +1198,21 @@ Podfile.lock
     self.paperSize = sizeModel.paperSize;
 }
 </code></pre><p>要把 self 改为 WeakSelf。</p>
-<p>下面说说 Instrument 中如何检查这个问题并定位的。<br>
+<p>上面的 DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
+<pre><code>#ifdef DEBUG
+#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+</code></pre><p>如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/">喵神的代码</a></p>
+<pre><code>#define NSLog(format, ...) do { \
+    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
+    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
+    __LINE__, __func__);  \
+   (NSLog)((format), ##__VA_ARGS__);   \
+   fprintf(stderr, &quot;-------\n&quot;);       \
+} while (0)
+</code></pre><h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/#more" rel="contents">
               Read more &raquo;
@@ -1147,7 +1279,7 @@ Podfile.lock
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-03-30T12:12:34+08:00" content="2016-03-30">
+            <time itemprop="dateCreated" datetime="2016-03-30T22:12:34+08:00" content="2016-03-30">
               2016-03-30
             </time>
           </span>
@@ -1234,124 +1366,6 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/12/18/Source-Code-Learning-YYKit/" itemprop="url">
-                  Source Code Learning - YYKit
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2015-12-18T21:44:20+08:00" content="2015-12-18">
-              2015-12-18
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="好用的-YYFPSLabel"><a href="#好用的-YYFPSLabel" class="headerlink" title="好用的 YYFPSLabel"></a>好用的 YYFPSLabel</h2><p>使用 Instruments 查看帧率不如直接在应用中查看来的直接，YYFPSLabel 可以直接显示帧率。</p>
-<pre><code>CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWithTarget:self] selector:@selector(tick:)];
-[_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-// CADisplayLink 刷新执行的函数
-- (void)tick:(CADisplayLink *)link {
-    if (_lastTime == 0) {
-        _lastTime = link.timestamp;
-        return;
-    }
-    // 计算 fps
-    _count++;
-    NSTimeInterval delta = link.timestamp - _lastTime;
-    // 不够 1s 不处理
-    if (delta &lt; 1) return;
-    _lastTime = link.timestamp;
-    float fps = _count / delta;
-    _count = 0;
-    // 显示 fps 的值 ...
-}
-</code></pre><h4 id="CADisplayLink-和-NSTimer-的区别"><a href="#CADisplayLink-和-NSTimer-的区别" class="headerlink" title="CADisplayLink 和 NSTimer 的区别"></a>CADisplayLink 和 NSTimer 的区别</h4><p>CADisplayLink 可以以屏幕刷新率相同的频率将内容绘制到屏幕上的定时器，精确度相当高，但是如果调用的方法比较耗时，超过了屏幕刷新周期，就会导致跳过若干次回调调用机会。</p>
-<p>NSTimer 的精确度稍低，比如 NSTimer 触发时间到的时候，如果 runloop 出在阻塞状态，触发时间就会被延迟到下一个 runloop 周期。</p>
-<p>CADisplayLink 适合 UI 不停重绘，比如自定义动画引擎或者视频播放的渲染。NSTimer 适合需要单次或循环定时处理的任务。</p>
-<h4 id="CADisplayLink-的重要属性："><a href="#CADisplayLink-的重要属性：" class="headerlink" title="CADisplayLink 的重要属性："></a>CADisplayLink 的重要属性：</h4><p>timestamp：当前时间的时间戳</p>
-<p>frameInterval：NSInteger类型的值，用来设置间隔多少帧调用一次 selector方法 ，默认值是1，即每帧都调用一次。</p>
-<p>duration：readOnly 的 CFTimeInterval 值，表示两次屏幕刷新之间的时间间隔。需要注意的是，该属性在 target 的 selector 被首次调用以后才会被赋值。selector 的调用间隔时间计算方式是：调用间隔时间 = duration × frameInterval</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1397,7 +1411,7 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

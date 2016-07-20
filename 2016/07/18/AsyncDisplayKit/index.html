@@ -94,7 +94,7 @@ ASDK 是用来保证 UIs 的流畅性和可响应性的一个开源库。它可�
 ASDK 是用来保证 UIs 的流畅性和可响应性的一个开源库。它可以将图片的解码、文字大小调整及渲染，和其他比较耗时的 UI 处理放到后台线程中进行。除了异步处理这个亮点，它还提供了一种类似 CSS Box Model 的系统，让你能够像使用 UIView">
 <meta property="og:image" content="http://asyncdisplaykit.org/static/images/intelligent-preloading.png">
 <meta property="og:image" content="http://asyncdisplaykit.org/static/images/node-hierarchy.png">
-<meta property="og:updated_time" content="2016-07-20T13:48:33.000Z">
+<meta property="og:updated_time" content="2016-07-20T13:58:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AsyncDisplayKit">
 <meta name="twitter:description" content="特性Pinterest 为了 1 亿用户的目标对其 iOS app 进行了重构。这次重构进行的主要改变是使用 AsyncDisplayKit。
@@ -295,9 +295,9 @@ ASDK 是用来保证 UIs 的流畅性和可响应性的一个开源库。它可�
         <h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>Pinterest 为了 1 亿用户的目标对其 iOS app 进行了重构。这次重构进行的主要改变是使用 AsyncDisplayKit。</p>
 <p>ASDK 是用来保证 UIs 的流畅性和可响应性的一个开源库。它可以将图片的解码、文字大小调整及渲染，和其他比较耗时的 UI 处理放到后台线程中进行。除了异步处理这个亮点，它还提供了一种类似 <a href="http://www.w3schools.com/css/css_boxmodel.asp" target="_blank" rel="external">CSS Box Model</a> 的系统，让你能够像使用 UIView 一样容易的使用 CALayers (无需注册触摸事件)。另外，它还提供了滚动视图移动差值的计算，它可以在获取网络数据后，计算出用户滚动位置的 Cell 区域，提前渲染出一小部分 Cell。</p>
 <h2 id="Node-介绍"><a href="#Node-介绍" class="headerlink" title="Node 介绍"></a>Node 介绍</h2><p>UIView 和 CALayer 不是线程安全的，所以无法做到在非主线程中进行操作，所以 ASDK 创建了以 node 为基本单位的对象，需要使用各种 node 来代替之前的各种控件。</p>
-<p>ASDK 中的 node 和 UIKit 的 view 对应关系举例<br>ASDisplayNode       代替 UIKit 的 UIView （AsyncDisplayKit 的根 node）<br>ASCellNode          代替 UIKit 的 UITableViewCell 和 UICollectionViewCell</p>
+<p>node 和 UIKit 的 view 对应关系（摘要）<br>ASDisplayNode       代替 UIKit 的 UIView （AsyncDisplayKit 的根 node）<br>ASCellNode          代替 UIKit 的 UITableViewCell 和 UICollectionViewCell</p>
+<p>node containers 和 viewController 的对应关系（摘要）<br>ASViewController    代替 UIKit 的 UIViewController</p>
 <p>ASDK 中除了 node 外，还有很多 node containers，不建议单独使用 node，而是应当将其添加到 node containers 中。</p>
-<p>ASViewController    代替 UIKit 的 UIViewController</p>
 <h2 id="智能预加载"><a href="#智能预加载" class="headerlink" title="智能预加载"></a>智能预加载</h2><p>要将 node 添加到 node containers 中主要是因为所有的 node 都有它们当前接口状态的概念，这个接口状态的属性名称是 interfaceState，由所有容器创建和内部维护的 ASRangeController 进行更新。未添加到容器中的 node 不会收到该状态的更新。</p>
 <p>例如当 nodes 被添加到可滚动或者分页的页面中，nodes 通常会在以下的范围内：<br>Fetch Data Range：可见的最远范围。它的内容需要从 API 或者本地磁盘中获取。<br>Display Range：显示任务例如文本栅格化和图片解码。<br>Visible Range：Node 正在屏幕上被显示的</p>
 <a id="more"></a>

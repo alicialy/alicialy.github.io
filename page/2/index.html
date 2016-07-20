@@ -291,29 +291,42 @@
 
       
         
-          <h2 id="好用的-YYFPSLabel"><a href="#好用的-YYFPSLabel" class="headerlink" title="好用的 YYFPSLabel"></a>好用的 YYFPSLabel</h2><p>使用 Instruments 查看帧率不如直接在应用中查看来的直接，YYFPSLabel 可以直接显示帧率。</p>
-<pre><code>CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWithTarget:self] selector:@selector(tick:)];
-[_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-// CADisplayLink 刷新执行的函数
-- (void)tick:(CADisplayLink *)link {
-    if (_lastTime == 0) {
-        _lastTime = link.timestamp;
-        return;
-    }
-    // 计算 fps
-    _count++;
-    NSTimeInterval delta = link.timestamp - _lastTime;
-    // 不够 1s 不处理
-    if (delta &lt; 1) return;
-    _lastTime = link.timestamp;
-    float fps = _count / delta;
-    _count = 0;
-    // 显示 fps 的值 ...
+          <h2 id="微博-Demo-性能的优化"><a href="#微博-Demo-性能的优化" class="headerlink" title="微博 Demo 性能的优化"></a>微博 Demo 性能的优化</h2><p>抛弃了以往在 Controller 中保存 Model 数组的传统方法，而是添加了用于存放布局和数据对象的数组，其中的布局是从 API 获取到数据后，在后台线程中计算后并保存的，这样当 Cell 需要显示时直接从内存中获取，不需要再进行计算。优点显而易见，缺点是 UIKit 的控件不是线程安全的，所以依赖 YYText 中的控件实现。</p>
+<p>头像图片的圆角实现方式是在图片下载后，使用 Core Graphic 将图片用贝塞尔路径切成圆角后放到内存中使用。YYKit 的 Base 下有常用的 Category 实现，其中包括了切圆角的实现。</p>
+<h2 id="Macros-宏"><a href="#Macros-宏" class="headerlink" title="Macros 宏"></a>Macros 宏</h2><p>TARGET_INTERFACE_BUILDER 宏用于区分代码是否需要在 IB 中执行</p>
+<pre><code>#if !TARGET_INTERFACE_BUILDER
+    // this code will run in the app itself
+#else
+    // this code will execute only in IB
+#endif
+</code></pre><h2 id="事务机制"><a href="#事务机制" class="headerlink" title="事务机制"></a>事务机制</h2><p>在非 IB 中设置的 YYTextView 需要更新布局时使用了事务机制</p>
+<pre><code>[[YYTransaction transactionWithTarget:self selector:@selector(_updateIfNeeded)] commit];
+</code></pre><p>事务提交时调用 YYTransactionSetup </p>
+<pre><code>static void YYTransactionSetup() {
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        transactionSet = [NSMutableSet new];
+        CFRunLoopRef runloop = CFRunLoopGetMain();
+        CFRunLoopObserverRef observer;
+
+        observer = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
+                                           kCFRunLoopBeforeWaiting | kCFRunLoopExit,
+                                           true,      // repeat
+                                           0xFFFFFF,  // after CATransaction(2000000)
+                                           YYRunLoopObserverCallBack, NULL);
+        CFRunLoopAddObserver(runloop, observer, kCFRunLoopCommonModes);
+        CFRelease(observer);
+    });
 }
-</code></pre><h4 id="CADisplayLink-和-NSTimer-的区别"><a href="#CADisplayLink-和-NSTimer-的区别" class="headerlink" title="CADisplayLink 和 NSTimer 的区别"></a>CADisplayLink 和 NSTimer 的区别</h4><p>CADisplayLink 可以以屏幕刷新率相同的频率将内容绘制到屏幕上的定时器，精确度相当高，但是如果调用的方法比较耗时，超过了屏幕刷新周期，就会导致跳过若干次回调调用机会。</p>
-<p>NSTimer 的精确度稍低，比如 NSTimer 触发时间到的时候，如果 runloop 出在阻塞状态，触发时间就会被延迟到下一个 runloop 周期。</p>
-<p>CADisplayLink 适合 UI 不停重绘，比如自定义动画引擎或者视频播放的渲染。NSTimer 适合需要单次或循环定时处理的任务。</p>
-<h4 id="CADisplayLink-的重要属性："><a href="#CADisplayLink-的重要属性：" class="headerlink" title="CADisplayLink 的重要属性："></a>CADisplayLink 的重要属性：</h4>
+static void YYRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
+    if (transactionSet.count == 0) return;
+    NSSet *currentSet = transactionSet;
+    transactionSet = [NSMutableSet new];
+    [currentSet enumerateObjectsUsingBlock:^(YYTransaction *transaction, BOOL *stop) {
+        [transaction.target performSelector:transaction.selector];
+    }];
+}
+</code></pre>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/12/18/Source-Code-Learning-YYKit/#more" rel="contents">
               Read more &raquo;

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,SourceCode,YYModel," />
+  <meta name="keywords" content="iOS,Memory Leaks," />
 
 
 
@@ -84,25 +84,22 @@
 
 
 
-<meta name="description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
-kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
-NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
-mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
+<meta name="description" content="GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。
+GCD Timer 通过 Dispatch Source 实现，调用方法如：
+dispatch_queue_t queue = di">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Source Code Learning - YYModel">
-<meta property="og:url" content="http://yoursite.com/2015/12/05/Source-Code-Learning-YYModel/index.html">
+<meta property="og:title" content="GCD Timer and Leaks">
+<meta property="og:url" content="http://yoursite.com/2016/08/24/GCD-Timer-and-Leaks/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
-kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
-NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
-mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
-<meta property="og:updated_time" content="2016-07-21T03:56:51.000Z">
+<meta property="og:description" content="GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。
+GCD Timer 通过 Dispatch Source 实现，调用方法如：
+dispatch_queue_t queue = di">
+<meta property="og:updated_time" content="2016-08-24T14:33:29.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Source Code Learning - YYModel">
-<meta name="twitter:description" content="源码看的是 YYKit，因为内容太多所以还是按照功能分开
-kCFNullNSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典
-NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
-mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
+<meta name="twitter:title" content="GCD Timer and Leaks">
+<meta name="twitter:description" content="GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。
+GCD Timer 通过 Dispatch Source 实现，调用方法如：
+dispatch_queue_t queue = di">
 
 
 
@@ -123,9 +120,9 @@ mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2015/12/05/Source-Code-Learning-YYModel/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/08/24/GCD-Timer-and-Leaks/"/>
 
-  <title> Source Code Learning - YYModel | Alicia's Blog </title>
+  <title> GCD Timer and Leaks | Alicia's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -255,7 +252,7 @@ mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
             
             
               
-                Source Code Learning - YYModel
+                GCD Timer and Leaks
               
             
           </h1>
@@ -267,8 +264,8 @@ mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2015-12-05T13:04:51+08:00" content="2015-12-05">
-              2015-12-05
+            <time itemprop="dateCreated" datetime="2016-08-24T21:11:18+08:00" content="2016-08-24">
+              2016-08-24
             </time>
           </span>
 
@@ -295,107 +292,28 @@ mutableDictionary[@&amp;quot;someKey&amp;quot;] = [NSNul">
       
 
       
-        <p>源码看的是 YYKit，因为内容太多所以还是按照功能分开</p>
-<h2 id="kCFNull"><a href="#kCFNull" class="headerlink" title="kCFNull"></a>kCFNull</h2><p>NSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典</p>
-<pre><code>NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
-mutableDictionary[@&quot;someKey&quot;] = [NSNull null]; // Sets value of NSNull singleton for `someKey`
-NSLog(@&quot;Keys: %@&quot;, [mutableDictionary allKeys]); // @[@&quot;someKey&quot;]
-</code></pre><p>kCFNull 这个是什么呢，看定义可以知道</p>
-<pre><code>typedef const struct CF_BRIDGED_TYPE(NSNull) __CFNull * CFNullRef;
-const CFNullRef kCFNull;    // the singleton null instance
-</code></pre><p>看个栗子</p>
-<pre><code>NSNull *null1 = (id)kCFNull;
-NSNull *null2 = [NSNull null];
-</code></pre><p>输出信息</p>
-<pre><code>(NSNull *) null1 = 0x0000000107b10af0
-(NSNull *) null2 = 0x0000000107b10af0
-</code></pre><p>说明 (id)kCFNull 就是 [NSNull null]</p>
-<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><pre><code>- (id)deepCopy {
-    id obj = nil;
-    @try {
-        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
-    }
-    @catch (NSException *exception) {
-         NSLog(@&quot;%@&quot;, exception);
-    }
-    return obj;
-}
-</code></pre><p>下面说说浅拷贝和深拷贝。集合类的拷贝分为浅拷贝和深拷贝<br><a id="more"></a><br>浅拷贝</p>
-<pre><code>NSArray *shallowCopyArray = [someArray copyWithZone:nil];
-
-NSDictionary *shallowCopyDict = [[NSDictionary alloc] initWithDictionary:someDictionary copyItems:NO];
-</code></pre><p>完全深拷贝</p>
-<pre><code>NSArray *deepCopyArray = [[NSArray alloc] initWithArray:someArray copyItems:YES];
-
-NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:
-      [NSKeyedArchiver archivedDataWithRootObject:oldArray]];
-</code></pre><p>这里的深拷贝是完全深拷贝(real-deep copy)，如果使用 mutableCopy 是单层深拷贝 (one-level-deep copy)</p>
-<pre><code>NSMutableArray *array = [NSMutableArray arrayWithObjects:[NSMutableString stringWithString:@&quot;one&quot;],[NSMutableString stringWithString:@&quot;two&quot;],[NSMutableString stringWithString:@&quot;three&quot;],nil];
-
-NSMutableArray *copyArray = [array mutableCopy];
-
-NSMutableString *str = [array objectAtIndex:0];
-[str appendString:@&quot; One&quot;];
-
-NSLog(@&quot;array:&quot;);
-[self printArray:array];
-NSLog(@&quot;copyArray:&quot;);
-[self printArray:copyArray];
-
-[copyArray removeObjectAtIndex:0];
-
-NSLog(@&quot;array:&quot;);
-[self printArray:array];
-NSLog(@&quot;copyArray:&quot;);
-[self printArray:copyArray];
-</code></pre><p>输出结果</p>
-<pre><code>array:
-one One
-two
-three
-
-copyArray:
-one One
-two
-three
-
-array:
-one One
-two
-three
-
-copyArray:
-two
-three
-</code></pre><p>copyArray 通过 array 的 mutableCopy 方法进行了拷贝，该方法进行一层深拷贝，在内存中为新的数组对象分配了空间，并且将元素复制到另一个数组元素（仅将引用从一个数组元素复制到另一个数元素），这样的结果就是两个数组中的元素指向内存中的同一个字符。要实现完全深拷贝则要使用上面的完全深拷贝中的两种方式。</p>
-<p>另外在使用 NSKeyedUnarchiver 时，如果解压数据为 nil 或者数据中有异常时，可能会导致崩溃，所以调用该方法时放到 try catch 中，保证程序不会崩溃。</p>
-<h2 id="Method-Swizzling"><a href="#Method-Swizzling" class="headerlink" title="Method Swizzling"></a>Method Swizzling</h2><p>Mattt Thompson 说 Method Swizzling 影响全局状态，所以降低资源竞争的可能性是非常重要的，因此 Method Swizzling 应当写到 load 方法中，并且应当只执行一次。好吧，看习惯 load 方法中调用的话，以为只能在初始化的时候使用，再看看 YYModel 就知道了，其实在哪里执行都可以，只是从效率的方面讲建议在 load 方法中执行。</p>
-<pre><code>- (void)viewDidLoad {
-    // ...
-    [YYTest swizzleClassMethod:@selector(printDZ) with:@selector(changePrintDZ)];
-</code></pre><p>}</p>
-<p>继续来讨论下这个黑魔法 swizzleClassMethod 的实现</p>
-<pre><code>+ (BOOL)swizzleClassMethod:(SEL)originalSel with:(SEL)newSel {
-    Class class = object_getClass(self);
-    Method originalMethod = class_getInstanceMethod(class, originalSel);
-    Method newMethod = class_getInstanceMethod(class, newSel);
-    if (!originalMethod || !newMethod) return NO;
-    method_exchangeImplementations(originalMethod, newMethod);
-    return YES;
-}
-</code></pre><p>这段代码大家都很熟悉了，但是需要注意的是，这是交换类方法，我们通常看到的 class_getInstanceMethod 的调用都是交换实例方法，为什么这个地方它也可用来交换类方法呢？答案只能在源码找了。看下 class_getClassMethod 的定义</p>
-<pre><code>Method class_getClassMethod(Class cls, SEL sel) {
-    if (!cls  ||  !sel) return nil;
-    return class_getInstanceMethod(cls-&gt;getMeta(), sel);
-}
-</code></pre><p>原来 class_getClassMethod 调用的就是 class_getInstanceMethod，只是参数传递的是 cls-&gt;getMeta()。</p>
-<pre><code>// NOT identical to this-&gt;ISA() when this is a metaclass
-Class getMeta() {
-    if (isMetaClass()) return (Class)this;
-    else return this-&gt;ISA();
-}
-</code></pre><p>getMeta 返回的是 MetaClass，如果已经是 MetaClass 了直接返回本身，那么我们只要调用 class_getInstanceMethod 传递 metaClass，即 Class class = object_getClass(self) 作为参数，就等同于调用 class_getClassMethod 了。</p>
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://xiongzenghuidegithub.github.io/blog/2014/02/23/nil-nsnull-null-kcfnull/" target="_blank" rel="external">Nil NSNull NULL KCFNull</a><br><a href="https://developer.apple.com/library/prerelease/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html" target="_blank" rel="external">Copying Collections</a><br><a href="http://lists.apple.com/archives/cocoa-dev/2009/Jul/msg00181.html" target="_blank" rel="external">NSKeyedUnarchiver crash</a></p>
+        <p>GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。</p>
+<p>GCD Timer 通过 Dispatch Source 实现，调用方法如：</p>
+<pre><code>dispatch_queue_t queue = dispatch_get_main_queue();
+dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC, 0.1 * NSEC_PER_SEC);
+dispatch_source_set_event_handler(timer, ^() {
+    // do something
+});
+dispatch_resume(timer);
+</code></pre><p>如果需要暂停定时器调用</p>
+<pre><code>dispatch_suspend(timer);
+</code></pre><p>dispatch_suspend 和 dispatch_resume 应该是成对出现的。两者分别会减少和增加 dispatch 对象的挂起计数，但是没有 API 获取当前是挂起还是执行状态，所以需要自己记录。</p>
+<h3 id="注意一"><a href="#注意一" class="headerlink" title="注意一"></a>注意一</h3><p>当暂停派发队列时需要注意，调用 dispatch_suspend 暂停一个队列，并不意味着暂停当前正在执行的 block，而是 block 可以执行完，但是接下来的 block 会被暂停，直到 dispatch_resume 被调用。</p>
+<p>如果添加 dispatch_suspend 的调用后 timer 是无法被释放的。一般情况下会发生崩溃并报“EXC_BAD_INSTRUCTION”错误，看下 <a href="http://opensource.apple.com/source/libdispatch/libdispatch-187.7/src/source.c" target="_blank" rel="external">GCD 源码</a> dispatch source release 的时候判断了当前是否是在暂停状态。</p>
+<h3 id="注意二"><a href="#注意二" class="headerlink" title="注意二"></a>注意二</h3><p>但是还有不一般的情况，如果暂停的代码加到 dispatch_source_set_event_handler 的 block 中，并不会发生崩溃，但是这个时候页面会无法释放造成内存泄漏！内存泄漏！内存泄漏！。</p>
+<pre><code>dispatch_source_set_event_handler(timer, ^() {
+    // do something
+    dispatch_suspend(timer);
+});
+</code></pre><p>怎么破？如果有需求按照上面这种方式写的话，添加个变量记录下 dispatch_suspend 是否被调用的状态，在 dealloc 时判断下，调用过 dispatch_suspend 则再调用下 dispatch_resume。或者暂停后不需要重新运行 timer 的话，取消 timer，一旦取消则不能再重新运行 timer，只能重建。</p>
+<pre><code>dispatch_source_cancel(timer);
+</code></pre><h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="https://www.mikeash.com/pyblog/friday-qa-2009-09-18-intro-to-grand-central-dispatch-part-iv-odds-and-ends.html" target="_blank" rel="external">Mikeash GCD 介绍</a></p>
 
       
     </div>
@@ -441,9 +359,7 @@ Class getMeta() {
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
-            <a href="/tags/SourceCode/" rel="tag">#SourceCode</a>
-          
-            <a href="/tags/YYModel/" rel="tag">#YYModel</a>
+            <a href="/tags/Memory-Leaks/" rel="tag">#Memory Leaks</a>
           
         </div>
       
@@ -452,17 +368,13 @@ Class getMeta() {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/12/How-To-Record-Your-App-With-QuickTime/" rel="next" title="How To Record Your App With QuickTime">
-                <i class="fa fa-chevron-left"></i> How To Record Your App With QuickTime
+              <a href="/2016/07/18/AsyncDisplayKit/" rel="next" title="AsyncDisplayKit">
+                <i class="fa fa-chevron-left"></i> AsyncDisplayKit
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/12/18/Source-Code-Learning-YYKit/" rel="prev" title="Source Code Learning - YYKit">
-                Source Code Learning - YYKit <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -589,7 +501,7 @@ Class getMeta() {
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kCFNull"><span class="nav-number">1.</span> <span class="nav-text">kCFNull</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深拷贝"><span class="nav-number">2.</span> <span class="nav-text">深拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-Swizzling"><span class="nav-number">3.</span> <span class="nav-text">Method Swizzling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意一"><span class="nav-number">1.</span> <span class="nav-text">注意一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意二"><span class="nav-number">2.</span> <span class="nav-text">注意二</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考内容"><span class="nav-number">3.</span> <span class="nav-text">参考内容</span></a></li></ol></div>
             
           </div>
         </section>

@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="[LEAF Photo] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。
 处理内存警告处理所有 ViewController 中的 didReceiveMemoryWarning 方法didReceiveMemoryWarning 方法中应当把缓存的变量都清空，这些变量最好都是通过懒加载的方式创建，这样收到内存警">
-<meta property="og:updated_time" content="2016-07-19T01:20:39.000Z">
+<meta property="og:updated_time" content="2016-08-24T13:11:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Memory Warning">
 <meta name="twitter:description" content="[LEAF Photo] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。
@@ -351,7 +351,7 @@ UIImage *img = [UIImage imageWithCGImage:[[asset defaultRepresentation] fullScre
    // }
 }
 dispatch_resume(timer);
-</code></pre><p>发现在 dispatch_source_set_event_handler 中加上 dispatch_suspend，该页面无法被释放，看来不能在内部暂停自己</p>
+</code></pre><p>发现在 dispatch_source_set_event_handler 中加上 dispatch_suspend，该页面无法被释放。</p>
 <h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="https://www.raywenderlich.com/31166/25-ios-app-performance-tips-tricks" target="_blank" rel="external">25 iOS App Performance Tips Tricks</a></p>
 
       
@@ -483,7 +483,7 @@ dispatch_resume(timer);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

@@ -94,7 +94,7 @@ dispatch_queue_t queue = di">
 <meta property="og:description" content="GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。
 GCD Timer 通过 Dispatch Source 实现，调用方法如：
 dispatch_queue_t queue = di">
-<meta property="og:updated_time" content="2016-08-24T14:34:44.000Z">
+<meta property="og:updated_time" content="2016-08-30T03:55:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GCD Timer and Leaks">
 <meta name="twitter:description" content="GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。
@@ -312,7 +312,8 @@ dispatch_resume(timer);
     // do something
     dispatch_suspend(timer);
 });
-</code></pre><p>怎么破？如果有需求按照上面这种方式写的话，添加个变量记录下 dispatch_suspend 是否被调用的状态，在 dealloc 时判断下，调用过 dispatch_suspend 则再调用下 dispatch_resume。或者暂停后不需要重新运行 timer 的话，取消 timer，一旦取消则不能再重新运行 timer，只能重建。</p>
+</code></pre><p><a href="https://github.com/alicialy/MemoryLeaks" target="_blank" rel="external">Demo 代码点击这里</a>，Demo 中进入“GCD Timer” 页面再退出，通过 Allocations 工具可以发现 GCDTimerViewController 没有释放，dealloc 无法执行。</p>
+<p>怎么破？如果有需求按照上面这种方式写的话，添加个变量记录下 dispatch_suspend 是否被调用的状态，在 dealloc 时判断下，调用过 dispatch_suspend 则再调用下 dispatch_resume。或者暂停后不需要重新运行 timer 的话，取消 timer，一旦取消则不能再重新运行 timer，只能重建。</p>
 <pre><code>dispatch_source_cancel(timer);
 </code></pre><h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="https://www.mikeash.com/pyblog/friday-qa-2009-09-18-intro-to-grand-central-dispatch-part-iv-odds-and-ends.html" target="_blank" rel="external">Mikeash GCD 介绍</a></p>
 

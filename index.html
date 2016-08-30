@@ -312,7 +312,8 @@ dispatch_resume(timer);
     // do something
     dispatch_suspend(timer);
 });
-</code></pre><p>怎么破？如果有需求按照上面这种方式写的话，添加个变量记录下 dispatch_suspend 是否被调用的状态，在 dealloc 时判断下，调用过 dispatch_suspend 则再调用下 dispatch_resume。或者暂停后不需要重新运行 timer 的话，取消 timer，一旦取消则不能再重新运行 timer，只能重建。</p>
+</code></pre><p><a href="https://github.com/alicialy/MemoryLeaks" target="_blank" rel="external">Demo 代码点击这里</a>，Demo 中进入“GCD Timer” 页面再退出，通过 Allocations 工具可以发现 GCDTimerViewController 没有释放，dealloc 无法执行。</p>
+<p>怎么破？如果有需求按照上面这种方式写的话，添加个变量记录下 dispatch_suspend 是否被调用的状态，在 dealloc 时判断下，调用过 dispatch_suspend 则再调用下 dispatch_resume。或者暂停后不需要重新运行 timer 的话，取消 timer，一旦取消则不能再重新运行 timer，只能重建。</p>
 <pre><code>dispatch_source_cancel(timer);
 </code></pre><h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="https://www.mikeash.com/pyblog/friday-qa-2009-09-18-intro-to-grand-central-dispatch-part-iv-odds-and-ends.html" target="_blank" rel="external">Mikeash GCD 介绍</a></p>
 
@@ -1331,7 +1332,19 @@ Podfile.lock
    (NSLog)((format), ##__VA_ARGS__);   \
    fprintf(stderr, &quot;-------\n&quot;);       \
 } while (0)
-</code></pre><h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
+</code></pre><p>注意，这种方式在某些情况下仍然能执行 dealloc，并不是十分可靠，还要确认 Instruments 的 Leaks 下没有报错才可以，例如以下这种比较常见的循环引用，需要使用 Leaks 查看。</p>
+<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a>常见的循环引用</h2><pre><code>@interface RetainCycleModel : NSObject
+@property (strong, nonatomic) id obj;
+@end
+
+
+RetainCycleModel *model1 = [[RetainCycleModel alloc] init];
+RetainCycleModel *model2 = [[RetainCycleModel alloc] init];
+
+[model1 setObj:model2];
+[model2 setObj:model1];
+</code></pre><p>上例中 model1 强引用了 model2，model2 又强引用了 model1。<a href="https://github.com/alicialy/MemoryLeaks">Demo 代码点击这里</a></p>
+<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/#more" rel="contents">
               Read more &raquo;

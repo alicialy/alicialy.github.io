@@ -94,7 +94,7 @@
 一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
 <meta property="og:image" content="http://yoursite.com/post_images/leak1.jpg">
 <meta property="og:image" content="http://yoursite.com/post_images/leak2.jpg">
-<meta property="og:updated_time" content="2016-07-21T03:53:03.000Z">
+<meta property="og:updated_time" content="2016-08-30T03:50:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Leaks">
 <meta name="twitter:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
@@ -319,7 +319,19 @@
    (NSLog)((format), ##__VA_ARGS__);   \
    fprintf(stderr, &quot;-------\n&quot;);       \
 } while (0)
-</code></pre><h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
+</code></pre><p>注意，这种方式在某些情况下仍然能执行 dealloc，并不是十分可靠，还要确认 Instruments 的 Leaks 下没有报错才可以，例如以下这种比较常见的循环引用，需要使用 Leaks 查看。</p>
+<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a>常见的循环引用</h2><pre><code>@interface RetainCycleModel : NSObject
+@property (strong, nonatomic) id obj;
+@end
+
+
+RetainCycleModel *model1 = [[RetainCycleModel alloc] init];
+RetainCycleModel *model2 = [[RetainCycleModel alloc] init];
+
+[model1 setObj:model2];
+[model2 setObj:model1];
+</code></pre><p>上例中 model1 强引用了 model2，model2 又强引用了 model1。<a href="https://github.com/alicialy/MemoryLeaks" target="_blank" rel="external">Demo 代码点击这里</a></p>
+<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
 <a id="more"></a>
 <p>运行后，将所有的页面都跑一遍，会看到内存一直增长，当返回页面后内存应该是下降趋势的。如果内存没有返回到初始状态，说明在某个页面是有内存泄漏的。这时可以在搜索框搜索自己写的类名。</p>
 <p><img src="/post_images/leak1.jpg" alt="img"></p>
@@ -526,7 +538,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一种麻烦的检查内存泄漏方式"><span class="nav-number">2.</span> <span class="nav-text">一种麻烦的检查内存泄漏方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何用-Instrument-定位隐蔽的循环引用"><span class="nav-number">3.</span> <span class="nav-text">如何用 Instrument 定位隐蔽的循环引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mark-Generation"><span class="nav-number">4.</span> <span class="nav-text">Mark Generation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存"><span class="nav-number">5.</span> <span class="nav-text">缓存</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一种麻烦的检查内存泄漏方式"><span class="nav-number">2.</span> <span class="nav-text">一种麻烦的检查内存泄漏方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的循环引用"><span class="nav-number">3.</span> <span class="nav-text">常见的循环引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何用-Instrument-定位隐蔽的循环引用"><span class="nav-number">4.</span> <span class="nav-text">如何用 Instrument 定位隐蔽的循环引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mark-Generation"><span class="nav-number">5.</span> <span class="nav-text">Mark Generation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存"><span class="nav-number">6.</span> <span class="nav-text">缓存</span></a></li></ol></div>
             
           </div>
         </section>

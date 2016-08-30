@@ -94,7 +94,7 @@
 一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
 <meta property="og:image" content="http://yoursite.com/post_images/leak1.jpg">
 <meta property="og:image" content="http://yoursite.com/post_images/leak2.jpg">
-<meta property="og:updated_time" content="2016-08-30T03:50:25.000Z">
+<meta property="og:updated_time" content="2016-08-30T04:08:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Leaks">
 <meta name="twitter:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
@@ -320,7 +320,7 @@
    fprintf(stderr, &quot;-------\n&quot;);       \
 } while (0)
 </code></pre><p>注意，这种方式在某些情况下仍然能执行 dealloc，并不是十分可靠，还要确认 Instruments 的 Leaks 下没有报错才可以，例如以下这种比较常见的循环引用，需要使用 Leaks 查看。</p>
-<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a>常见的循环引用</h2><pre><code>@interface RetainCycleModel : NSObject
+<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a><span id="retain_cylce">常见的循环引用</span></h2><pre><code>@interface RetainCycleModel : NSObject
 @property (strong, nonatomic) id obj;
 @end
 

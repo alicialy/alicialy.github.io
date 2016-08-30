@@ -305,9 +305,9 @@ dispatch_resume(timer);
 </code></pre><p>如果需要暂停定时器调用</p>
 <pre><code>dispatch_suspend(timer);
 </code></pre><p>dispatch_suspend 和 dispatch_resume 应该是成对出现的。两者分别会减少和增加 dispatch 对象的挂起计数，但是没有 API 获取当前是挂起还是执行状态，所以需要自己记录。</p>
-<h3 id="注意一"><a href="#注意一" class="headerlink" title="注意一"></a>注意一</h3><p>当暂停派发队列时需要注意，调用 dispatch_suspend 暂停一个队列，并不意味着暂停当前正在执行的 block，而是 block 可以执行完，但是接下来的 block 会被暂停，直到 dispatch_resume 被调用。</p>
+<h3 id="dispatch-suspend-暂停队列并不意味着当前执行的-block-暂停"><a href="#dispatch-suspend-暂停队列并不意味着当前执行的-block-暂停" class="headerlink" title="dispatch_suspend 暂停队列并不意味着当前执行的 block 暂停"></a>dispatch_suspend 暂停队列并不意味着当前执行的 block 暂停</h3><p>当暂停派发队列时需要注意，调用 dispatch_suspend 暂停一个队列，并不意味着暂停当前正在执行的 block，而是 block 可以执行完，但是接下来的 block 会被暂停，直到 dispatch_resume 被调用。</p>
 <p>如果添加 dispatch_suspend 的调用后 timer 是无法被释放的。一般情况下会发生崩溃并报“EXC_BAD_INSTRUCTION”错误，看下 <a href="http://opensource.apple.com/source/libdispatch/libdispatch-187.7/src/source.c" target="_blank" rel="external">GCD 源码</a> dispatch source release 的时候判断了当前是否是在暂停状态。</p>
-<h3 id="注意二"><a href="#注意二" class="headerlink" title="注意二"></a>注意二</h3><p>但是还有不一般的情况，如果暂停的代码加到 dispatch_source_set_event_handler 的 block 中，并不会发生崩溃，但是这个时候页面会无法释放造成内存泄漏！内存泄漏！内存泄漏！。</p>
+<h3 id="dispatch-suspend-状态下无法释放"><a href="#dispatch-suspend-状态下无法释放" class="headerlink" title="dispatch_suspend 状态下无法释放"></a><span id="dispatch_suspend_dealloc">dispatch_suspend 状态下无法释放</span></h3><p>但是还有不一般的情况，如果暂停的代码加到 dispatch_source_set_event_handler 的 block 中，并不会发生崩溃，但是这个时候页面会无法释放造成内存泄漏！内存泄漏！内存泄漏！。</p>
 <pre><code>dispatch_source_set_event_handler(timer, ^() {
     // do something
     dispatch_suspend(timer);
@@ -1333,7 +1333,7 @@ Podfile.lock
    fprintf(stderr, &quot;-------\n&quot;);       \
 } while (0)
 </code></pre><p>注意，这种方式在某些情况下仍然能执行 dealloc，并不是十分可靠，还要确认 Instruments 的 Leaks 下没有报错才可以，例如以下这种比较常见的循环引用，需要使用 Leaks 查看。</p>
-<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a>常见的循环引用</h2><pre><code>@interface RetainCycleModel : NSObject
+<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a><span id="retain_cylce">常见的循环引用</span></h2><pre><code>@interface RetainCycleModel : NSObject
 @property (strong, nonatomic) id obj;
 @end
 

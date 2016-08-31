@@ -248,6 +248,272 @@
             
               
                 
+                <a class="post-title-link" href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/" itemprop="url">
+                  Lighter View Controllers For LEAFPhoto
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-04-19T19:15:52+08:00" content="2016-04-19">
+              2016-04-19
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>[LEAF Photo] 整个 app 的大部分功能都是在 LPCollageViewController 中实现的，随着时间的推移，这个 Controller 开始变得臃肿代码很长，记录下瘦身的各种策略。</p>
+<h2 id="ViewModel-及组合模式的使用"><a href="#ViewModel-及组合模式的使用" class="headerlink" title="ViewModel 及组合模式的使用"></a>ViewModel 及组合模式的使用</h2><p>[LEAF Photo] 为用户提供了拼接图片的不同模板，模板中包含了选择照片的视图、文字视图以及线条等，模板以 json 文件方式保存，将这些元素显示到视图上简单的逻辑就是判断 json 中是否存在节点，如果存在则创建对应的元素，这样创建模板的过程就会变的臃肿。</p>
+<p>借鉴下 MVVM 的方式，将 MVC 中的 C 拆分成 VM，使用 ViewModel 的方式处理展示，在利用组合的方式将每种元素的展示方法拆分到各自类中实现，这样创建元素的这个冗长的过程就可以被分散到每个元素的 ViewModel 类中了。</p>
+<pre><code>@interface CollageComponentViewModel : NSObject
+- (void)showToView:(CollageContainerView *)view target:(id)target;
+@end
+@interface CollageViewModel : CollageComponentViewModel
+@end
+@implementation CollageViewModel
+- (instancetype)initWithCollageModel:(CollageModel *)collageModel {
+    self = [super init];
+    if (self) {
+        _collageModel = collageModel;
+    }
+    return self;
+}
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    NSArray *textDecArray = self.collageModel.textDec;
+    if (textDecArray) {
+        [self showToView:view target:target array:textDecArray];
+    }
+    // ...
+}
+@end
+@interface CollageTextDecViewModel : CollageComponentViewModel
+@end
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    CollageLabel *textLabel = [[CollageLabel alloc] initWithFrame:frame];
+    textLabel.text = self.collageTextDecModel.text;
+    textLabel.font = [UIFont fontWithName:self.collageTextDecModel.fontName size:fontSize];
+    // ...
+    [view addSubview:textLabel];
+}
+</code></pre><p>原本在 Controller 和 View 中的很多代码，被分散到 CollageTextDecViewModel 等 ViewModel 中去。</p>
+<p>除了此例外，通常的应用中一些网络请求的处理和页面设置也可以使用 ViewModel 的方式。</p>
+<h2 id="将子视图独立成单独的类"><a href="#将子视图独立成单独的类" class="headerlink" title="将子视图独立成单独的类"></a>将子视图独立成单独的类</h2><p>子视图独立成一个类，并使用懒加载的方式创建。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/" itemprop="url">
+                  What I Talk About When I Talk About Leaks
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-04-01T21:42:09+08:00" content="2016-04-01">
+              2016-04-01
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。</p>
+<h2 id="一种麻烦的检查内存泄漏方式"><a href="#一种麻烦的检查内存泄漏方式" class="headerlink" title="一种麻烦的检查内存泄漏方式"></a>一种麻烦的检查内存泄漏方式</h2><p>为什么麻烦还要介绍呢，因为看到有人这样调试的。这种方式需要写些代码，这些代码完全是调试用的，而且只能让你知道是否存在泄漏，但是无法定位，看看这种方式如何操作。</p>
+<p>在 dealloc 方法中写一个日志，如果退出页面的时候能够打印出日志内容，说明该页面没有问题，如果没有打印，那么就是有问题的。</p>
+<pre><code>- (void)dealloc {
+     DLog(@&quot;release&quot;);
+ }
+</code></pre><p>这样如果页面中有输出 release，说明该页面 CollageViewController 是没有内存泄漏的</p>
+<pre><code>2016-04-01 12:51:56.992 [267:19048] -[CollageViewController dealloc] - [Line 88] -- release
+</code></pre><p>但是如果故意把循环引用引入，这个时候会有 Warning 警告，同时 release 也不会打印了</p>
+<pre><code>self.paperSizeView.paperSizeBlock = ^(PaperSizeModel *sizeModel) {
+    self.paperSize = sizeModel.paperSize;
+}
+</code></pre><p>要把 self 改为 WeakSelf。</p>
+<p>上面的 DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
+<pre><code>#ifdef DEBUG
+#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+</code></pre><p>如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/">喵神的代码</a></p>
+<pre><code>#define NSLog(format, ...) do { \
+    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
+    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
+    __LINE__, __func__);  \
+   (NSLog)((format), ##__VA_ARGS__);   \
+   fprintf(stderr, &quot;-------\n&quot;);       \
+} while (0)
+</code></pre><p>注意，这种方式在某些情况下仍然能执行 dealloc，并不是十分可靠，还要确认 Instruments 的 Leaks 下没有报错才可以，例如以下这种比较常见的循环引用，需要使用 Leaks 查看。</p>
+<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a><span id="retain_cylce">常见的循环引用</span></h2><pre><code>@interface RetainCycleModel : NSObject
+@property (strong, nonatomic) id obj;
+@end
+
+
+RetainCycleModel *model1 = [[RetainCycleModel alloc] init];
+RetainCycleModel *model2 = [[RetainCycleModel alloc] init];
+
+[model1 setObj:model2];
+[model2 setObj:model1];
+</code></pre><p>上例中 model1 强引用了 model2，model2 又强引用了 model1。<a href="https://github.com/alicialy/MemoryLeaks">Demo 代码点击这里</a></p>
+<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" itemprop="url">
                   What I Talk About When I Talk About Performance
                 </a>
@@ -1104,7 +1370,7 @@ In barrier
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-count">19</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1114,7 +1380,7 @@ In barrier
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

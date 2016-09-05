@@ -248,6 +248,138 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/05/Writing-Crash-Free-Code/" itemprop="url">
+                  Writing Crash-Free Code
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-09-05T17:03:07+08:00" content="2016-09-05">
+              2016-09-05
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>面试的时候经常会被问到“程序崩溃都有哪些原因造成”，突然想的话想不到那么全面， 总结一下以备不时之需，也可以在写代码时注意下。另外，“如何处理崩溃”也是面试官喜欢问的问题，也做个总结。</p>
+<h3 id="程序崩溃都有哪些原因造成"><a href="#程序崩溃都有哪些原因造成" class="headerlink" title="程序崩溃都有哪些原因造成"></a>程序崩溃都有哪些原因造成</h3><ul>
+<li>可变数组的操作<ol>
+<li>使用 (for in) 或迭代器遍历可变数组时删除数组元素，改为逆序遍历或者添加个数组副本</li>
+<li>可变数组声明属性为 copy<br> // .h 文件<br> @property (nonatomic, copy) NSMutableArray <em>mutableArray;<br> // .m 文件<br> NSMutableArray </em>array = @[@1,@2];<br> self.mutableArray = array;<br> // 下句崩溃，因为 NSArray 中找不到 removeObjectAtIndex 方法<br> [self.mutableArray removeObjectAtIndex:0];  </li>
+</ol>
+</li>
+<li>NSNotification addObserver 使用后没有（在 dealloc 中） removeObserver，或者 delegate 使用后没有置为 nil</li>
+<li>多线程中访问同一块资源时，没有为数据加锁，数据错误可能会导致崩溃。另外在多线程中，UI 等操作需要放到主线程操作，否则会导致崩溃</li>
+<li>操作野指针，或者对空进行操作，可以使用 NSParameterAssert 等进行判断</li>
+<li>数组越界</li>
+<li>调用对象不存在的方法</li>
+<li>低内存终止，看门狗结束程序，大多是内存泄漏等导致。</li>
+</ul>
+<h3 id="修复线上崩溃的方法"><a href="#修复线上崩溃的方法" class="headerlink" title="修复线上崩溃的方法"></a>修复线上崩溃的方法</h3><h4 id="使用-symbolicatecrash-工具将崩溃堆栈符号化"><a href="#使用-symbolicatecrash-工具将崩溃堆栈符号化" class="headerlink" title="使用 symbolicatecrash 工具将崩溃堆栈符号化"></a>使用 symbolicatecrash 工具将崩溃堆栈符号化</h4><p>创建新的文件夹，将 symbolicatecrash、.crash 和 .dSYM 文件放到该文件夹下执行下面命令，生成新的 symbol.crash 文件，该文件中可以显示崩溃函数名及位置。</p>
+<pre><code>./symbolicatecrash ./*.crash ./*.app.dSYM &gt; symbol.crash
+</code></pre><p>发生 Error: “DEVELOPER_DIR” is not defined 错误可在终端继续输入以下指令设置环境变量</p>
+<pre><code>export DEVELOPER_DIR=/Applications/XCode.app/Contents/Developer
+</code></pre><p>以上三个文件的位置：</p>
+<p>symbolicatecrash 可以在终端输入下面命令查找其所在位置</p>
+<pre><code>find /Applications/Xcode6.1.app -name symbolicatecrash -type f
+</code></pre><p>.crash 文件在 Xcode -&gt; Window -&gt; Organizer -&gt; 选中 App 的 Crashes ，选中需要解决的问题，右键 -&gt; Show in Finder，找到 .xccrashpoint 文件，右键 -&gt; Show Package Content 后打开的目录中包含 .crash 文件</p>
+<p>.dSYM 文件在 Xcode -&gt; Window -&gt; Organizer -&gt; 选中 App 的 Archives，右侧面板中 Download dSYMs 后 .xcarchive 中包含 .dSYM 文件</p>
+<p>用 Console 工具打开新生成的 .crash 文件，除了能看到崩溃调用堆栈外，还可以看到崩溃的机型、系统等，另外 Exception Type 会显示崩溃原因如 Exception Type:  EXC_CRASH (SIGABRT)</p>
+<p>以下列出信号类型，<a href="https://en.wikipedia.org/wiki/C_signal_handling" target="_blank" rel="external">更多点击这里</a></p>
+<p>SIGABRT – 程序中止命令中止信号 (通常指由于某个对象接收到未实现的消息引起的)<br>SIGALRM – 程序超时信号<br>SIGFPE – 程序浮点异常信号<br>SIGILL – 程序非法指令信号<br>SIGHUP – 程序终端中止信号<br>SIGINT – 程序键盘中断信号<br>SIGKILL – 程序结束接收中止信号<br>SIGTERM – 程序kill中止信号<br>SIGSTOP – 程序键盘中止信号<br>SIGSEGV – 程序无效内存中止信号 （一般是表示内存不合法）<br>SIGBUS – 程序内存字节未对齐中止信号<br>SIGPIPE – 程序Socket发送失败中止信号</p>
+<h4 id="使用-atos"><a href="#使用-atos" class="headerlink" title="使用 atos"></a>使用 atos</h4><p>atos 比较适用于当你把应用发布到多个渠道，需要对不同渠道的 crash 文件进行分析时，或者不确定哪个 dSYM 对应哪个归档文件时使用。</p>
+<p>获取崩溃 Build 的唯一标识 UUID<br>如输入</p>
+<pre><code>xcrun dwarfdump --uuid appName.app/appName    
+</code></pre><p>获取 dSYM 文件的 UUID</p>
+<pre><code>xcrun dwarfdump -–uuid appName.app.dSYM
+</code></pre><p>如果 .crash、dSYM 以及 app 中的 UUID 都一致说明这三个文件是对应的。</p>
+<p>接下来获取崩溃文件的崩溃函数地址</p>
+<pre><code>atos [-o AppName.app/AppName] [-l loadAddress] [-arch architecture]
+</code></pre><p>如输入</p>
+<pre><code>xcrun atos -o appName.app.dSYM/Contents/Resources/DWARF/appName -l 0x1000 -arch armv7
+</code></pre><p>则会打印崩溃地址指向的函数名和所在行数</p>
+<h4 id="使用友盟"><a href="#使用友盟" class="headerlink" title="使用友盟"></a>使用友盟</h4><p>友盟的崩溃文件下载后使用它自己的工具将崩溃文件生成 cvs 文件</p>
+<h4 id="使用第三方工具-BugHd"><a href="#使用第三方工具-BugHd" class="headerlink" title="使用第三方工具 BugHd"></a>使用第三方工具 BugHd</h4><p>该工具可以将崩溃信息和 dSYM 结合查看，<a href="http://bughd.com" target="_blank" rel="external">点击此处查看详情</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/08/31/Reading-The-Solution-Tango/" itemprop="url">
                   Reading The Solution Tango
                 </a>
@@ -312,6 +444,9 @@
 <p>确保你建立了一个积极且互相尊重的工作关系。还是以郎平为例，训练的时候要严格，但是生活中可以和队员多沟通、照顾，以她的年龄像妈妈一样的关怀队员，做到“威而不怒，亲而不犯”。</p>
 <blockquote>
 <p>调节员工的情绪，让员工从积极的角度看问题，找到合理的解决办法；</p>
+</blockquote>
+<p>.</p>
+<blockquote>
 <p>帮员工把目标分解成一个个动作，让目标清晰有效；</p>
 </blockquote>
 <p>目标要细化分成小目标，而且目标要清晰，不能是模棱两可的。</p>
@@ -325,6 +460,9 @@
 <p>当其他人让你感觉很好时，你会在自己正在做的事情上表现的更好，所以不要吝惜你的赞美。</p>
 <blockquote>
 <p>让员工对工作进度做自我评估，让员工找到完成剩余工作的办法； </p>
+</blockquote>
+<p>.</p>
+<blockquote>
 <p>引导员工“向前看”，少问“为什么”，多问“怎么办”。</p>
 </blockquote>
 <p>领导这门艺术不是看一本书就能学会的，想到更多事例的时候再来更新感受，看到更好的书籍还是会来写感受，今天听到马云说要多看书，看书还要多思考。</p>
@@ -1245,105 +1383,6 @@ Podfile.lock
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/05/What-can-make-Core-Graphics-coding-easy/" itemprop="url">
-                  What can make Core Graphics coding easy
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-05T10:35:01+08:00" content="2016-05-05">
-              2016-05-05
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>[LEAF Photo] 这个项目用到太多图形绘制，少不了使用 Core Graphics，因为用法简单所以之前也没什么困扰，但是这个项目中复杂图形和曲线绘制的频繁使用导致查询 API 和计算弧度的时间消耗，如果绘制贝塞尔曲线用 Sketch 画好后再计算控制点太费劲了。今天找到一个好工具 ［PaintCode］，可谓是射鸡屎和程序猿通吃的神器。</p>
-<p><img src="http://image.woshipm.com/wp-files/2015/05/3aa286544500.jpg" alt="img"></p>
-<p>这个工具最大的好处就是可以像操作［Sketch］一样，可视化的方式操作各种图形，OC 代码就直接生成了，大大滴提高了效率。</p>
-<p><img src="http://image.woshipm.com/wp-files/2015/05/123123123-1024x640.png" alt="img"></p>
-<p>［Sketch］ 设计好的矢量图形可以导出 SVG 格式，直接拖到［PaintCode］代码就生成了。</p>
-<p>它的操作也很简单，常用的功能在顶部，属性设置在右方，不学就能会。摸不到头脑的话可以看看 <a href="http://www.paintcodeapp.com" target="_blank" rel="external">官方文档</a> 或者这个系列的 <a href="http://www.woshipm.com/ucd/154006.html" target="_blank" rel="external">使用介绍</a> 。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1389,7 +1428,7 @@ Podfile.lock
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-count">20</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

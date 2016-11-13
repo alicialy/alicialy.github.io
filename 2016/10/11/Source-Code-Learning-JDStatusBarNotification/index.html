@@ -1,0 +1,659 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,SourceCode," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="RunLoop 和 NSTimer每次显示时先要将之前设置过的 timer 取消
+// cancel previous dismissing &amp;amp; remove animations
+[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
+timer 的设置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Source Code Learning JDStatusBarNotification">
+<meta property="og:url" content="http://yoursite.com/2016/10/11/Source-Code-Learning-JDStatusBarNotification/index.html">
+<meta property="og:site_name" content="Alicia's Blog">
+<meta property="og:description" content="RunLoop 和 NSTimer每次显示时先要将之前设置过的 timer 取消
+// cancel previous dismissing &amp;amp; remove animations
+[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
+timer 的设置">
+<meta property="og:updated_time" content="2016-11-13T11:49:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Source Code Learning JDStatusBarNotification">
+<meta name="twitter:description" content="RunLoop 和 NSTimer每次显示时先要将之前设置过的 timer 取消
+// cancel previous dismissing &amp;amp; remove animations
+[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
+timer 的设置">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6267334170712737000,
+      author: 'Alicia'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/11/Source-Code-Learning-JDStatusBarNotification/"/>
+
+  <title> Source Code Learning JDStatusBarNotification | Alicia's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Alicia's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">［LEAF Photo］作者</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Source Code Learning JDStatusBarNotification
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-10-11T19:41:33+08:00" content="2016-10-11">
+              2016-10-11
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="RunLoop-和-NSTimer"><a href="#RunLoop-和-NSTimer" class="headerlink" title="RunLoop 和 NSTimer"></a>RunLoop 和 NSTimer</h3><p>每次显示时先要将之前设置过的 timer 取消</p>
+<pre><code>// cancel previous dismissing &amp; remove animations
+[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
+</code></pre><p>timer 的设置代码如下：</p>
+<pre><code>- (void)setDismissTimerWithInterval:(NSTimeInterval)interval; {
+    [self.dismissTimer invalidate];             // 重新赋值时先要使其无效
+    self.dismissTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval]
+                                             interval:0 target:self selector:@selector(dismiss:) userInfo:nil repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:self.dismissTimer forMode:NSRunLoopCommonModes];
+}
+</code></pre><p>为了能在用户拖拽页面的时候 timer 正确计时，将 timer 添加到 NSRunLoopCommonModes 模式下</p>
+<h3 id="UIWindowLevel"><a href="#UIWindowLevel" class="headerlink" title="UIWindowLevel"></a>UIWindowLevel</h3><p>每个应用都有一个主 window，通常在 AppDelegate 中设置</p>
+<pre><code>self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+self.window.backgroundColor = [UIColor whiteColor];
+self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:
+                                  [[SBExampleViewController alloc] initWithStyle:UITableViewStyleGrouped]];
+
+[self.window makeKeyAndVisible];
+</code></pre><p>makeKeyAndVisible 方法是将某个 window 设置为主窗口并设置为可见，这个窗口的级别使用默认值 UIWindowLevelNormal，UIWindowLevel 的级别如下</p>
+<pre><code>UIKIT_EXTERN const UIWindowLevel UIWindowLevelNormal;
+UIKIT_EXTERN const UIWindowLevel UIWindowLevelAlert;
+UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
+</code></pre><p>其级别顺序是 Normal &lt; StatusBar &lt; Alert，也就是说 Alert 级别的 window 会在最前端显示。</p>
+<p>其中 UIKIT_EXTERN 的定义如下</p>
+<pre><code>#ifdef __cplusplus
+#define UIKIT_EXTERN        extern &quot;C&quot; __attribute__((visibility (&quot;default&quot;)))
+#else
+#define UIKIT_EXTERN            extern __attribute__((visibility (&quot;default&quot;)))
+#endif
+</code></pre><p>这几个变量的定义在该文件中可见</p>
+<p>extern “C”是连接申明(linkage declaration),被extern “C”修饰的变量和函数是按照C语言方式编译和连接的</p>
+<p>所以我们如果用 AppDelegate 中创建的这个最低级别作为显示状态栏的窗口的话，很可能会被遮盖，所以首先要创建一个状态栏级别的窗口，创建窗口的代码见 - (UIWindow *)overlayWindow; 方法。</p>
+<pre><code>self.overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+self.overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+self.overlayWindow.backgroundColor = [UIColor redColor];
+self.overlayWindow.userInteractionEnabled = NO;
+self.overlayWindow.windowLevel = UIWindowLevelStatusBar;
+self.overlayWindow.rootViewController = [[UIViewController alloc] init];
+self.overlayWindow.rootViewController.view.backgroundColor = [UIColor clearColor];
+self.overlayWindow.hidden = NO;
+</code></pre><p>需要注意的是，窗口创建后默认是不显示的，设置 hidden 为 NO 即可显示，如上我们创建了一个红色的窗口，它可以和 AppDelegate 中设置的主窗口并存，由于它的级别高，所以完全覆盖了主窗口显示红色。</p>
+<h3 id="屏幕旋转"><a href="#屏幕旋转" class="headerlink" title="屏幕旋转"></a>屏幕旋转</h3><p>当屏幕旋转时，我们创建的 overlayWindow 也要处理旋转，它的旋转 transform 应当和主窗口相同，mainApplicationWindowIgnoringWindow 方法用来获取主窗口，之后将 overlayWindow 的 transform 和 frame 设置为主窗口一致即可，overlayWindow 中的 topBar 的 frame 也需要重新设置。</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="http://www.cnblogs.com/smileEvday/archive/2012/11/16/UIWindow.html" target="_blank" rel="external">UIWindow的一点儿思考</a><br><a href="http://www.cnblogs.com/smileEvday/archive/2013/05/30/statusBarTips.html" target="_blank" rel="external">状态栏提示控件的实现原理</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>请我喝汽水儿</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/SourceCode/" rel="tag">#SourceCode</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/23/Clang-Attributes-in-Open-Source/" rel="next" title="Clang Attributes in Open Source">
+                <i class="fa fa-chevron-left"></i> Clang Attributes in Open Source
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Alicia" />
+          <p class="site-author-name" itemprop="name">Alicia</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:alicialy@qq.com" target="_blank" title="mail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  mail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RunLoop-和-NSTimer"><span class="nav-number">1.</span> <span class="nav-text">RunLoop 和 NSTimer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UIWindowLevel"><span class="nav-number">2.</span> <span class="nav-text">UIWindowLevel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#屏幕旋转"><span class="nav-number">3.</span> <span class="nav-text">屏幕旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alicia</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

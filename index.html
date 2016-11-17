@@ -248,6 +248,148 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/17/About-Message-send-to-dealloc-instance/" itemprop="url">
+                  About Message send to dealloc instance
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-11-17T21:43:04+08:00" content="2016-11-17">
+              2016-11-17
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。</p>
+<p>话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看下下面代码有什么问题。</p>
+<p>上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没有升级所以还是在 MRC 下。这次有需求要改动这个库，在手生的情况下，一不小心就写错导致崩溃了，先来描述下问题。</p>
+<h3 id="崩溃代码"><a href="#崩溃代码" class="headerlink" title="崩溃代码"></a>崩溃代码</h3><p>重要的事情说三遍，MRC 下，MRC 下，MRC 下</p>
+<pre><code>//.h 头文件中定义了一个变量
+NSString *_title;
+//.m 实现文件中
+- (id)initWithTitle:(NSString *)title {
+    _title = [title copy];
+    // … 
+}
+- (void)dealloc  {
+    [_title release];
+    [super dealloc];
+}
+// 另一个调用文件中是这样子的
+[[xxClass alloc] initWithTitle:nil];
+</code></pre><p>最近的一次修改导致崩溃是被改成了下面的样子，当 title 为 nil 时把它定义为默认字符串，于是上面的 initWithTitle 改为</p>
+<pre><code>- (id)initWithTitle:(NSString *)title {
+    if (title) {
+        _title = [title copy];
+    } else {
+        _title = NSLocalizedString(@&quot;提示&quot;, nil);
+    }
+}
+</code></pre><p>接下来的事情是这样的，某个页面在多次调用 initWithTitle 的时候会发生崩溃，错误信息是这样子的：</p>
+<pre><code>UncaughtExceptionHandlerAddressesKey = (
+4   CoreFoundation                      0x1b9ca81c &lt;redacted&gt; + 2124,
+5   CoreFoundation                      0x1b9c9f8f CFDictionaryGetValue + 126,
+6   CoreFoundation                      0x1bb1446b &lt;redacted&gt; + 142,
+7   CoreFoundation                      0x1bb14111 CFBundleCopyLocalizedStringForLocalization + 94,
+8   CoreFoundation                      0x1ba0f6bb CFBundleCopyLocalizedString + 18,
+</code></pre><p>调试的话，崩溃的位置就在 _title = NSLocalizedString(@”提示”, nil); 这一行。</p>
+<p>不知道各位看官是否一眼发现了问题，控制台还有这样的输出</p>
+<p>message sent to deallocated instance 0x6d564f0</p>
+<p>一时没想到 NSLocalizedString 会有什么问题，因为好久不用 MRC，武功已经全废，所以关注上了这个 message sent to deallocated instance，想通过这条信息查找到问题。</p>
+<h3 id="malloc-history-的使用"><a href="#malloc-history-的使用" class="headerlink" title="malloc_history 的使用"></a>malloc_history 的使用</h3><p>网上一通搜索，发现果然能查到 0x6d564f0 这个地址对应的代码，只要在 Xcode -&gt; Scheme -&gt; Arguments 设置中添加环境变量 MallocStackLogging 为 YES，在终端输入下列命令即可</p>
+<p>malloc_history 32009 0x6d564f0</p>
+<p>其中 32009 是 pid，pid 在 Xcode 的控制台会打印（这个方法只能检测模拟器上的问题），如下</p>
+<p>2016-11-17 16:19:57:837 MyProject[32009:304745]</p>
+<p>命令执行后输出，终端输出</p>
+<p>Invalid connection: com.apple.coresymbolicationd<br>malloc_history Report Version:  2.0<br>ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplicationMain | -[UIApplication _run] | CFRunLoopRunInMode | CFRunLoopRunSpecific | <strong>CFRunLoopDoObservers | </strong>CFRUNLOOP_IS_CALLING_OUT_TO_AN_OBSERVER_CALLBACK_FUNCTION<strong> | CA::Transaction::observer_callback(</strong>CFRunLoopObserver<em>, unsigned long, void</em>) | CA::Transaction::commit() | CA::Context::commit_transaction(CA::Transaction<em>) | CA::Layer::layout_and_display_if_needed(CA::Transaction</em>) | CA::Layer::layout_if_needed(CA::Transaction*) | -[CALayer layoutSublayers] | -[NSObject performSelector:withObject:] | -[UIView(CALayerDelegate) layoutSublayersOfLayer:] | -[UILayoutContainerView layoutSubviews] | -[UINavigationController <strong>viewWillLayoutSubviews] | -[UINavigationController _startDeferredTransitionIfNeeded:] | -[UINavigationController _startTransition:fromViewController:toViewController:] | -[UINavigationController _updateScrollViewFromViewController:toViewController:] | -[UINavigationController _layoutViewController:] | -[UIViewController loadViewIfRequired] | -[UIViewController _sendViewDidLoadWithAppearanceProxyObjectTaggingEnabled] | -[WSLoginViewController viewDidLoad] | -[WSLoginViewController createLoginBoxView] | -[WSLoginViewController createTextField] | -[NSBundle localizedStringForKey:value:table:] | CFBundleCopyLocalizedString | CFBundleCopyLocalizedStringForLocalization | _copyStringFromTable | CFPropertyListCreateWithData | _CFPropertyListCreateWithData | </strong>CFTryParseBinaryPlist | <strong>CFBinaryPlistCreateObjectFiltered | </strong>CFBinaryPlistCreateObjectFiltered | CFStringCreateWithCharacters | <strong>CFStringCreateImmutableFunnel3 | _CFRuntimeCreateInstance | CFAllocatorAllocate | </strong>CFAllocatorSystemAllocate</p>
+<p>哇，这么长，怎么看，其实只要关注最后面的几句</p>
+<pre><code>[WSLoginViewController createTextField] | -[NSBundle localizedStringForKey:value:table:] | CFBundleCopyLocalizedString
+</code></pre><p>这里能</p>
+<h3 id="揭秘崩溃原因"><a href="#揭秘崩溃原因" class="headerlink" title="揭秘崩溃原因"></a>揭秘崩溃原因</h3><p>还是回到原始吧，就看 _title = NSLocalizedString(@”提示”, nil); 再想想是在 MRC 下啊，突然脑袋一开窍就想到了，直接赋值静态字符串是不需要释放的，dealloc 的时候会有 release 调用，所以改成了如下方式</p>
+<pre><code>_title = [[NSString alloc] initWithString:NSLocalizedString(@&quot;提示&quot;, nil)];
+</code></pre><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>虽然平时已经好久不用 MRC 了，但是发现个 malloc_history 也还不错。</p>
+<h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="http://blog.csdn.net/lgm252008/article/details/17436177" target="_blank" rel="external">message sent to deallocated instance问题的解决方法</a><br><a href="http://blog.csdn.net/u013247242/article/details/43491467" target="_blank" rel="external">内存管理的简单总结</a><br><a href="http://blog.csdn.net/freewaywalker/article/details/45623433" target="_blank" rel="external">Xcode 调试</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/11/Source-Code-Learning-JDStatusBarNotification/" itemprop="url">
                   Source Code Learning JDStatusBarNotification
                 </a>
@@ -1312,105 +1454,6 @@ if ([theLock lock]) {
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/26/iOS-Localization/" itemprop="url">
-                  iOS Localization
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-26T20:26:21+08:00" content="2016-05-26">
-              2016-05-26
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。</p>
-<p>其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，写到这里备忘。</p>
-<p>Product -&gt; Scheme -&gt; Edit Scheme -&gt; Options -&gt; Application Language 中设置语言</p>
-<p><img src="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg" alt="img"></p>
-<p>另外，介绍个工具 <a href="http://www.peerassembly.com/linguan.html" target="_blank" rel="external">Linguan</a>，这个工具可以把本地化的 String 显示在一个画面上，这样编辑的时候省去切换的苦恼，如果有漏掉没有翻译的文字还会有提示。</p>
-<p><img src="http://www.peerassembly.com/images/LinguanScreenShot01.png" alt="img"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1456,7 +1499,7 @@ if ([theLock lock]) {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

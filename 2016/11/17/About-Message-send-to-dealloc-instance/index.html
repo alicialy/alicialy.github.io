@@ -94,7 +94,7 @@
 <meta property="og:description" content="前言最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。
 话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。
 上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没">
-<meta property="og:updated_time" content="2016-11-17T14:50:37.000Z">
+<meta property="og:updated_time" content="2016-12-31T12:22:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="About Message send to dealloc instance">
 <meta name="twitter:description" content="前言最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。
@@ -328,6 +328,7 @@ NSString *_title;
 <p>不知道各位看官是否一眼发现了问题，控制台还有这样的输出</p>
 <p>message sent to deallocated instance 0x6d564f0</p>
 <p>一时没想到 NSLocalizedString 会有什么问题，因为好久不用 MRC，武功已经全废，所以关注上了这个 message sent to deallocated instance，想通过这条信息查找到问题。</p>
+<a id="more"></a>
 <h3 id="malloc-history-的使用"><a href="#malloc-history-的使用" class="headerlink" title="malloc_history 的使用"></a>malloc_history 的使用</h3><p>网上一通搜索，发现果然能查到 0x6d564f0 这个地址对应的代码，只要在 Xcode -&gt; Scheme -&gt; Arguments 设置中添加环境变量 MallocStackLogging 为 YES，在终端输入下列命令即可</p>
 <pre><code>malloc_history 32009 0x6d564f0
 </code></pre><p>其中 32009 是 pid，pid 在 Xcode 的控制台会打印（这个方法只能检测模拟器上的问题），如下</p>
@@ -407,6 +408,10 @@ ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplica
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2016/12/31/2016-book-list/" rel="prev" title="2016 book list">
+                2016 book list <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -473,7 +478,7 @@ ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplica
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

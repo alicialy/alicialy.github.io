@@ -248,6 +248,127 @@
             
               
                 
+                <a class="post-title-link" href="/2015/12/05/Source-Code-Learning-YYModel/" itemprop="url">
+                  Source Code Learning - YYModel
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2015-12-05T13:04:51+08:00" content="2015-12-05">
+              2015-12-05
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>源码看的是 YYKit，因为内容太多所以还是按照功能分开</p>
+<h2 id="kCFNull"><a href="#kCFNull" class="headerlink" title="kCFNull"></a>kCFNull</h2><p>NSNull 的用法 Mattt Thompson 说过是将空值存到数组或者字典</p>
+<pre><code>NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionary];
+mutableDictionary[@&quot;someKey&quot;] = [NSNull null]; // Sets value of NSNull singleton for `someKey`
+NSLog(@&quot;Keys: %@&quot;, [mutableDictionary allKeys]); // @[@&quot;someKey&quot;]
+</code></pre><p>kCFNull 这个是什么呢，看定义可以知道</p>
+<pre><code>typedef const struct CF_BRIDGED_TYPE(NSNull) __CFNull * CFNullRef;
+const CFNullRef kCFNull;    // the singleton null instance
+</code></pre><p>看个栗子</p>
+<pre><code>NSNull *null1 = (id)kCFNull;
+NSNull *null2 = [NSNull null];
+</code></pre><p>输出信息</p>
+<pre><code>(NSNull *) null1 = 0x0000000107b10af0
+(NSNull *) null2 = 0x0000000107b10af0
+</code></pre><p>说明 (id)kCFNull 就是 [NSNull null]</p>
+<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><pre><code>- (id)deepCopy {
+    id obj = nil;
+    @try {
+        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
+    }
+    @catch (NSException *exception) {
+         NSLog(@&quot;%@&quot;, exception);
+    }
+    return obj;
+}
+</code></pre><p>下面说说浅拷贝和深拷贝。集合类的拷贝分为浅拷贝和深拷贝<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/05/Source-Code-Learning-YYModel/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/11/12/How-To-Record-Your-App-With-QuickTime/" itemprop="url">
                   How To Record Your App With QuickTime
                 </a>
@@ -913,7 +1034,7 @@ return MAXFLOAT;\
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">26</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -980,7 +1101,7 @@ return MAXFLOAT;\
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

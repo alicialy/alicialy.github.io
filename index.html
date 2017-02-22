@@ -248,6 +248,118 @@
             
               
                 
+                <a class="post-title-link" href="/2017/02/22/Optimize-App-Startup-Time/" itemprop="url">
+                  Optimize App Startup Time
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-02-22T08:10:45+08:00" content="2017-02-22">
+              2017-02-22
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>启动时间包括 main 执行之前的时间，以及 main 执行之后的时间。</p>
+<p>main 执行之后的时间通过 Time Profiler 查看即可，之前写过文章，<a href="http://alicialy.github.io/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/">详情点击这里</a>。</p>
+<p>这篇文章主要讨论 main 执行之前的时间。</p>
+<h3 id="main-之前-的加载过程"><a href="#main-之前-的加载过程" class="headerlink" title="main 之前 的加载过程"></a>main 之前 的加载过程</h3><p>Load dylibs =&gt; Rebase =&gt; Binding =&gt; ObjC =&gt; Initializers</p>
+<p>在 Xcode 中 Edit scheme -&gt; Run -&gt; Auguments 中设置 DYLD_PRINT_STATICS 环境变量可以输出 main 之前执行的时间</p>
+<h3 id="Load-dylibs"><a href="#Load-dylibs" class="headerlink" title="Load dylibs"></a>Load dylibs</h3><p>要了解第一个阶段的 dylibs，先要介绍下 OS X 的可执行文件 Mach-O</p>
+<p>Mach-O 二进制格式</p>
+<p>系统判断一个文件是否可以执行，是通过将文件读入内存，然后寻找一个头签名，头签名通常被称为 魔数 magic，通过 magic 可以判断文件的二进制格式，如果是被支持的二进制格式，那么就可以执行该文件。</p>
+<p>在很多种可执行文件格式中， OS X 目前只支持：解释器脚本格式、通用二进制格式以及 Mach-O 格式。Mach-Object，简称 Mach-O，是苹果在 OS X 中维护的一种独有的二进制格式。</p>
+<p>Mach-O 的文件头 mach_header 中包含magic、CPU 类型和子类型等。mach_header 其后包含了很多指令，这些指令被调用时清晰地指导了如何设置并加载二进制数据，这些指令被称为“加载指令”。加载指令包括将文件中的段映射到进程地址空间、调用 dyld、开启线程、代码签名等。</p>
+<p>OS X 上几乎所有的程序都是动态链接的，仅有非常少量的进程只需要内核加载起就可以完成加载。通常情况下，使用 dyld 作为动态连接器。</p>
+<p>Loading Dylibs 的加载过程又分为</p>
+<p>Parse list of dependent dylibs =&gt; Find requested mach-o file =&gt; Open and read start of file =&gt; Validate mach-o =&gt; Register code signature =&gt; Call mmap() for each segment</p>
+<p>上面说过 mach_header 中包含很多指令，其中包含了 LC_CODE_SIGNATURE 用于数字签名，iOS 强制要求代码签名，且代码签名和沙盒机制是绑定在一起的，也就是说必须放到沙盒中经过签名才能运行，非越狱的机器无法自行下载一个动态库并执行。</p>
+<p>mmap的作用是将一个文件或者其他对象映射进内存，普通文件被映射到进程地址空间后，进程可以像访问普通内存一样对文件进行访问。</p>
+<p>通常一个 App 需要加载 100 - 400 个 dylibs，但是其中的系统库加载会被优化，能在很快的时间内加载完成</p>
+<h5 id="优化-Load-dylibs-过程"><a href="#优化-Load-dylibs-过程" class="headerlink" title="优化 Load dylibs 过程"></a>优化 Load dylibs 过程</h5>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/02/22/Optimize-App-Startup-Time/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/12/31/2016-book-list/" itemprop="url">
                   2016 book list
                 </a>
@@ -1272,137 +1384,6 @@ dispatch_resume(timer);
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/06/24/Concurrent-Programming-and-Synchronization/" itemprop="url">
-                  Concurrent Programming and Synchronization
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-06-24T19:26:35+08:00" content="2016-06-24">
-              2016-06-24
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。</p>
-<h2 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h2><p>原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 </p>
-<pre><code>void retain() {
-    OSAtomicIncrement64(&amp;retainCount);    // retainCount 为实例变量，相当于 retainCount++
-}
-void release() {
-    unit32_t originalValue;
-    orginalValue = OSAtomicDecrement64(&amp;retainCount); // 相当于 retainCount--
-    if (originalValue == 1) {
-        this-&gt;free();
-    }
-}
-</code></pre><p>查看支持原子操作的列表，参阅/user/include/libkern/OSAtomic.h头文件和参见 <a href="https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/OSAtomicTestAndSet.3.html">atomic主页</a>。</p>
-<h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。</p>
-<p>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为volatile变量。</p>
-<p>因为内存屏障和volatile变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
-<pre><code>// ...
-OSMemoryBarrier();
-// ...
-</code></pre><h2 id="锁-互斥锁"><a href="#锁-互斥锁" class="headerlink" title="锁 - 互斥锁"></a>锁 - 互斥锁</h2><p>被这个锁保护的临界区只允许一个线程进入，其他线程如果没有获取得到锁权限，只能等待</p>
-<h3 id="POSIX-互斥锁在很多程序里面很容易使用"><a href="#POSIX-互斥锁在很多程序里面很容易使用" class="headerlink" title="POSIX 互斥锁在很多程序里面很容易使用"></a>POSIX 互斥锁在很多程序里面很容易使用</h3><pre><code>pthread_mutex_t mutex;
-void MyInitFunction() {
-    pthread_mutex_init(&amp;mutex, NULL);
-}
-
-void MyLockingFunction() {
-    pthread_mutex_lock(&amp;mutex);
-    // do something ...
-    pthread_mutex_unlock(&amp;mutex);
-}
-</code></pre><h3 id="NSLock-中实现了一个简单的互斥锁"><a href="#NSLock-中实现了一个简单的互斥锁" class="headerlink" title="NSLock 中实现了一个简单的互斥锁"></a>NSLock 中实现了一个简单的互斥锁</h3><pre><code>NSLock *theLock = [[NSLock alloc] init];
-if ([theLock lock]) {
-    // do something ...
-    [theLock unlock];
-}
-</code></pre><p>除了标准的锁行为，NSLock 类还增加了 tryLock 和 lockBeforeDate: 方法。方法 tryLock 试图获取一个锁，但是如果锁不可用的时候，它不会阻塞线程。相反，它只是返回 NO。而 lockBeforeDate: 方法试图获取一个锁，但是如果锁没有在规定的时间内被获得，它会让线程从阻塞状态变为非阻塞状态（或者返回 NO ）。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/06/24/Concurrent-Programming-and-Synchronization/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1448,7 +1429,7 @@ if ([theLock lock]) {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">26</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1515,7 +1496,7 @@ if ([theLock lock]) {
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

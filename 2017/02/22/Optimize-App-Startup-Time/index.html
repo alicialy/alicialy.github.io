@@ -1,0 +1,655 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,Debug,Performance," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="前言启动时间包括 main 执行之前的时间，以及 main 执行之后的时间。
+main 执行之后的时间通过 Time Profiler 查看即可，之前写过文章，详情点击这里。
+这篇文章主要讨论 main 执行之前的时间。
+main 之前 的加载过程Load dylibs =&amp;gt; Rebase =&amp;gt; Binding =&amp;gt; ObjC =&amp;gt; Initializers
+在 Xcode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Optimize App Startup Time">
+<meta property="og:url" content="http://yoursite.com/2017/02/22/Optimize-App-Startup-Time/index.html">
+<meta property="og:site_name" content="Alicia's Blog">
+<meta property="og:description" content="前言启动时间包括 main 执行之前的时间，以及 main 执行之后的时间。
+main 执行之后的时间通过 Time Profiler 查看即可，之前写过文章，详情点击这里。
+这篇文章主要讨论 main 执行之前的时间。
+main 之前 的加载过程Load dylibs =&amp;gt; Rebase =&amp;gt; Binding =&amp;gt; ObjC =&amp;gt; Initializers
+在 Xcode">
+<meta property="og:updated_time" content="2017-02-22T00:12:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Optimize App Startup Time">
+<meta name="twitter:description" content="前言启动时间包括 main 执行之前的时间，以及 main 执行之后的时间。
+main 执行之后的时间通过 Time Profiler 查看即可，之前写过文章，详情点击这里。
+这篇文章主要讨论 main 执行之前的时间。
+main 之前 的加载过程Load dylibs =&amp;gt; Rebase =&amp;gt; Binding =&amp;gt; ObjC =&amp;gt; Initializers
+在 Xcode">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6267334170712737000,
+      author: 'Alicia'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/02/22/Optimize-App-Startup-Time/"/>
+
+  <title> Optimize App Startup Time | Alicia's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Alicia's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">［LEAF Photo］作者</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Optimize App Startup Time
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-02-22T08:10:45+08:00" content="2017-02-22">
+              2017-02-22
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>启动时间包括 main 执行之前的时间，以及 main 执行之后的时间。</p>
+<p>main 执行之后的时间通过 Time Profiler 查看即可，之前写过文章，<a href="http://alicialy.github.io/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" target="_blank" rel="external">详情点击这里</a>。</p>
+<p>这篇文章主要讨论 main 执行之前的时间。</p>
+<h3 id="main-之前-的加载过程"><a href="#main-之前-的加载过程" class="headerlink" title="main 之前 的加载过程"></a>main 之前 的加载过程</h3><p>Load dylibs =&gt; Rebase =&gt; Binding =&gt; ObjC =&gt; Initializers</p>
+<p>在 Xcode 中 Edit scheme -&gt; Run -&gt; Auguments 中设置 DYLD_PRINT_STATICS 环境变量可以输出 main 之前执行的时间</p>
+<h3 id="Load-dylibs"><a href="#Load-dylibs" class="headerlink" title="Load dylibs"></a>Load dylibs</h3><p>要了解第一个阶段的 dylibs，先要介绍下 OS X 的可执行文件 Mach-O</p>
+<p>Mach-O 二进制格式</p>
+<p>系统判断一个文件是否可以执行，是通过将文件读入内存，然后寻找一个头签名，头签名通常被称为 魔数 magic，通过 magic 可以判断文件的二进制格式，如果是被支持的二进制格式，那么就可以执行该文件。</p>
+<p>在很多种可执行文件格式中， OS X 目前只支持：解释器脚本格式、通用二进制格式以及 Mach-O 格式。Mach-Object，简称 Mach-O，是苹果在 OS X 中维护的一种独有的二进制格式。</p>
+<p>Mach-O 的文件头 mach_header 中包含magic、CPU 类型和子类型等。mach_header 其后包含了很多指令，这些指令被调用时清晰地指导了如何设置并加载二进制数据，这些指令被称为“加载指令”。加载指令包括将文件中的段映射到进程地址空间、调用 dyld、开启线程、代码签名等。</p>
+<p>OS X 上几乎所有的程序都是动态链接的，仅有非常少量的进程只需要内核加载起就可以完成加载。通常情况下，使用 dyld 作为动态连接器。</p>
+<p>Loading Dylibs 的加载过程又分为</p>
+<p>Parse list of dependent dylibs =&gt; Find requested mach-o file =&gt; Open and read start of file =&gt; Validate mach-o =&gt; Register code signature =&gt; Call mmap() for each segment</p>
+<p>上面说过 mach_header 中包含很多指令，其中包含了 LC_CODE_SIGNATURE 用于数字签名，iOS 强制要求代码签名，且代码签名和沙盒机制是绑定在一起的，也就是说必须放到沙盒中经过签名才能运行，非越狱的机器无法自行下载一个动态库并执行。</p>
+<p>mmap的作用是将一个文件或者其他对象映射进内存，普通文件被映射到进程地址空间后，进程可以像访问普通内存一样对文件进行访问。</p>
+<p>通常一个 App 需要加载 100 - 400 个 dylibs，但是其中的系统库加载会被优化，能在很快的时间内加载完成</p>
+<h5 id="优化-Load-dylibs-过程"><a href="#优化-Load-dylibs-过程" class="headerlink" title="优化 Load dylibs 过程"></a>优化 Load dylibs 过程</h5><a id="more"></a>
+<p>减少非系统库的依赖<br>合并非系统库</p>
+<h3 id="Rebase-Binding"><a href="#Rebase-Binding" class="headerlink" title="Rebase / Binding"></a>Rebase / Binding</h3><p>由于进程是在自己私有的虚拟地址空间中启动，按照传统方式，该地址是固定可预见的，这样黑客只要找到一段进程的地址，就很容易推算出整个程序的地址空间布局。所以大部分操作系统都采用了地址空间布局随机化 (ASLR) 的技术，避免攻击防护。</p>
+<p>Rebase 就是系统为了解决动态虚拟地址冲突，在加载动态库时进行的基地址重定位操作，Rebase 是如何工作呢？我们先看下内存中的段 (segment) 是什么样的。</p>
+<p>内存分为以下几个段</p>
+<pre><code>__PAGEZERO：32位系统中，这是内存中单独的一个页面 (4KB)。64位系统中，这个段对应了一个完整的 32 位地址空间，即前 4GB。这个段有助于捕捉空指针引用，或捕捉将整数当做指针引用。
+__TEXT：存放程序代码，只读可执行，由于该段数据是只读的，同一个程序的多个实例可以仅使用一份 __TEXT 副本，从而可以优化内存
+__LINKEDIT：由 dyld 使用，包含了字符串、符号表以及其他数据
+__DATA：可读可写的数据
+...
+</code></pre><p>LINKEDIT 段中保存了 Rebase 的相关信息，dylib 中的 LC_DYLD_INOF_ONLY 指定 rebase info 在文件中的偏移量。</p>
+<p>使用以下命令可以输出 rebase 信息<br>    xcrun dyldinfo -rebase -bind -lazy_bind myapp.app/myapp</p>
+<p>Mach-O 中包含了很多外部库和符号的引用，使用动态链接器加载外部库和符号的过程叫做符号绑定 binding。</p>
+<h5 id="优化-Rebase-Binding-过程"><a href="#优化-Rebase-Binding-过程" class="headerlink" title="优化 Rebase / Binding 过程"></a>优化 Rebase / Binding 过程</h5><p>减少 __DATA 指针<br>减少 OC 的 metadata，可以删除无用的 class/selector/category<br>减少 C++ 虚函数<br>使用 Swift 的 struct<br>为不需要写的属性添加 readonly</p>
+<h3 id="ObjC"><a href="#ObjC" class="headerlink" title="ObjC"></a>ObjC</h3><p>大部分 ObjC 的设置工作都在 Rebease 和 Binding 时做完<br>类的定义被注册<br>实例变量偏移的更新<br>Category 被插入到方法列表<br>Selector 的唯一性</p>
+<h3 id="Initializers"><a href="#Initializers" class="headerlink" title="Initializers"></a>Initializers</h3><p>C++ 为静态变量初始化<br>执行 +load 方法<br>执行 main()</p>
+<h5 id="优化-Initializers-过程"><a href="#优化-Initializers-过程" class="headerlink" title="优化 Initializers 过程"></a>优化 Initializers 过程</h5><p>减少 +load() 方法，尽量使用 +initialize() 代替<br>使用 dispatch_one() pthread_once() std::once() 代替 C/C++ <strong>attribute</strong>(constructor)<br>减少 静态构造函数<br>初始化方法中不要使用 dlopen()<br>初始化方法中不要创建线程</p>
+<h3 id="总结优化的点"><a href="#总结优化的点" class="headerlink" title="总结优化的点"></a>总结优化的点</h3><p>减少非系统的framework依赖，如果framework 在当前 App 支持的所有 iOS 系统版本中都存在则设为 required，否则设置为 optional，optional 会有额外检查<br>合并非系统库<br>可以删除无用的 class/selector/category，删除无用的方法调用、静态变量等<br>减少 C++ 虚函数（减少创建虚函数表时间）<br>使用 Swift 的 struct (从而减少符号数量)<br>为不需要写的属性添加 readonly<br>减少 +load() 方法，尽量使用 +initialize() 代替<br>使用 dispatch_one() pthread_once() std::once() 代替 C/C++ <strong>attribute</strong>(constructor)<br>减少 静态构造函数<br>初始化方法中不要使用 dlopen()</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>请我喝汽水儿</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/Debug/" rel="tag">#Debug</a>
+          
+            <a href="/tags/Performance/" rel="tag">#Performance</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/31/2016-book-list/" rel="next" title="2016 book list">
+                <i class="fa fa-chevron-left"></i> 2016 book list
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Alicia" />
+          <p class="site-author-name" itemprop="name">Alicia</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:alicialy@qq.com" target="_blank" title="mail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  mail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main-之前-的加载过程"><span class="nav-number">2.</span> <span class="nav-text">main 之前 的加载过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Load-dylibs"><span class="nav-number">3.</span> <span class="nav-text">Load dylibs</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优化-Load-dylibs-过程"><span class="nav-number">3.0.1.</span> <span class="nav-text">优化 Load dylibs 过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rebase-Binding"><span class="nav-number">4.</span> <span class="nav-text">Rebase / Binding</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优化-Rebase-Binding-过程"><span class="nav-number">4.0.1.</span> <span class="nav-text">优化 Rebase / Binding 过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjC"><span class="nav-number">5.</span> <span class="nav-text">ObjC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Initializers"><span class="nav-number">6.</span> <span class="nav-text">Initializers</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优化-Initializers-过程"><span class="nav-number">6.0.1.</span> <span class="nav-text">优化 Initializers 过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结优化的点"><span class="nav-number">7.</span> <span class="nav-text">总结优化的点</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alicia</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

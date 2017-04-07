@@ -248,6 +248,137 @@
             
               
                 
+                <a class="post-title-link" href="/2015/12/18/Source-Code-Learning-YYKit/" itemprop="url">
+                  Source Code Learning - YYKit
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2015-12-18T21:44:20+08:00" content="2015-12-18">
+              2015-12-18
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="微博-Demo-性能的优化"><a href="#微博-Demo-性能的优化" class="headerlink" title="微博 Demo 性能的优化"></a>微博 Demo 性能的优化</h2><p>抛弃了以往在 Controller 中保存 Model 数组的传统方法，而是添加了用于存放布局和数据对象的数组，其中的布局是从 API 获取到数据后，在后台线程中计算后并保存的，这样当 Cell 需要显示时直接从内存中获取，不需要再进行计算。优点显而易见，缺点是 UIKit 的控件不是线程安全的，所以依赖 YYText 中的控件实现。</p>
+<p>头像图片的圆角实现方式是在图片下载后，使用 Core Graphic 将图片用贝塞尔路径切成圆角后放到内存中使用。YYKit 的 Base 下有常用的 Category 实现，其中包括了切圆角的实现。</p>
+<h2 id="Macros-宏"><a href="#Macros-宏" class="headerlink" title="Macros 宏"></a>Macros 宏</h2><p>TARGET_INTERFACE_BUILDER 宏用于区分代码是否需要在 IB 中执行</p>
+<pre><code>#if !TARGET_INTERFACE_BUILDER
+    // this code will run in the app itself
+#else
+    // this code will execute only in IB
+#endif
+</code></pre><h2 id="事务机制"><a href="#事务机制" class="headerlink" title="事务机制"></a>事务机制</h2><p>在非 IB 中设置的 YYTextView 需要更新布局时使用了事务机制</p>
+<pre><code>[[YYTransaction transactionWithTarget:self selector:@selector(_updateIfNeeded)] commit];
+</code></pre><p>事务提交时调用 YYTransactionSetup </p>
+<pre><code>static void YYTransactionSetup() {
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        transactionSet = [NSMutableSet new];
+        CFRunLoopRef runloop = CFRunLoopGetMain();
+        CFRunLoopObserverRef observer;
+
+        observer = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
+                                           kCFRunLoopBeforeWaiting | kCFRunLoopExit,
+                                           true,      // repeat
+                                           0xFFFFFF,  // after CATransaction(2000000)
+                                           YYRunLoopObserverCallBack, NULL);
+        CFRunLoopAddObserver(runloop, observer, kCFRunLoopCommonModes);
+        CFRelease(observer);
+    });
+}
+static void YYRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
+    if (transactionSet.count == 0) return;
+    NSSet *currentSet = transactionSet;
+    transactionSet = [NSMutableSet new];
+    [currentSet enumerateObjectsUsingBlock:^(YYTransaction *transaction, BOOL *stop) {
+        [transaction.target performSelector:transaction.selector];
+    }];
+}
+</code></pre>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/18/Source-Code-Learning-YYKit/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/12/05/Source-Code-Learning-YYModel/" itemprop="url">
                   Source Code Learning - YYModel
                 </a>
@@ -1034,7 +1165,7 @@ return MAXFLOAT;\
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1044,7 +1175,7 @@ return MAXFLOAT;\
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,Debug," />
+  <meta name="keywords" content="iOS,Debug,Performance," />
 
 
 
@@ -84,22 +84,22 @@
 
 
 
-<meta name="description" content="前言最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。
-话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。
-上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没">
+<meta name="description" content="之前写过一篇关于性能的文章，最近又需要优化性能，所以在此基础上写一篇最近的优化总结
+性能优化的几个方面：内存问题、电量消耗、启动时间、执行与响应速度、网络条件等等，下面就从这几个方面讨论下如何优化
+内存问题内存问题，主要包括避免内存泄漏（使用 Leaks 等工具查找内存泄漏，使用 ARC，Block 中使用变量不要循环引用，可以借鉴以前的文章）、及时释放可以释放的无用内存（例如在一个循环中处理图片">
 <meta property="og:type" content="article">
-<meta property="og:title" content="About Message send to dealloc instance">
-<meta property="og:url" content="http://yoursite.com/2016/11/17/About-Message-send-to-dealloc-instance/index.html">
+<meta property="og:title" content="Optimize App Performance">
+<meta property="og:url" content="http://yoursite.com/2017/07/31/Optimize-App-Performance/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="前言最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。
-话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。
-上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没">
-<meta property="og:updated_time" content="2016-12-31T12:22:04.000Z">
+<meta property="og:description" content="之前写过一篇关于性能的文章，最近又需要优化性能，所以在此基础上写一篇最近的优化总结
+性能优化的几个方面：内存问题、电量消耗、启动时间、执行与响应速度、网络条件等等，下面就从这几个方面讨论下如何优化
+内存问题内存问题，主要包括避免内存泄漏（使用 Leaks 等工具查找内存泄漏，使用 ARC，Block 中使用变量不要循环引用，可以借鉴以前的文章）、及时释放可以释放的无用内存（例如在一个循环中处理图片">
+<meta property="og:updated_time" content="2017-07-31T14:29:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="About Message send to dealloc instance">
-<meta name="twitter:description" content="前言最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。
-话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。
-上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没">
+<meta name="twitter:title" content="Optimize App Performance">
+<meta name="twitter:description" content="之前写过一篇关于性能的文章，最近又需要优化性能，所以在此基础上写一篇最近的优化总结
+性能优化的几个方面：内存问题、电量消耗、启动时间、执行与响应速度、网络条件等等，下面就从这几个方面讨论下如何优化
+内存问题内存问题，主要包括避免内存泄漏（使用 Leaks 等工具查找内存泄漏，使用 ARC，Block 中使用变量不要循环引用，可以借鉴以前的文章）、及时释放可以释放的无用内存（例如在一个循环中处理图片">
 
 
 
@@ -120,9 +120,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/11/17/About-Message-send-to-dealloc-instance/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/07/31/Optimize-App-Performance/"/>
 
-  <title> About Message send to dealloc instance | Alicia's Blog </title>
+  <title> Optimize App Performance | Alicia's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -252,7 +252,7 @@
             
             
               
-                About Message send to dealloc instance
+                Optimize App Performance
               
             
           </h1>
@@ -264,8 +264,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-11-17T21:43:04+08:00" content="2016-11-17">
-              2016-11-17
+            <time itemprop="dateCreated" datetime="2017-07-31T22:25:28+08:00" content="2017-07-31">
+              2017-07-31
             </time>
           </span>
 
@@ -292,60 +292,35 @@
       
 
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。</p>
-<p>话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。</p>
-<p>上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没有升级所以还是在 MRC 下。先来描述下问题。</p>
-<h3 id="崩溃代码"><a href="#崩溃代码" class="headerlink" title="崩溃代码"></a>崩溃代码</h3><p>重要的事情说三遍，MRC 下，MRC 下，MRC 下</p>
-<pre><code>//.h 头文件中定义了一个变量
-NSString *_title;
-//.m 实现文件中
-- (id)initWithTitle:(NSString *)title {
-    _title = [title copy];
-    // … 
-}
-- (void)dealloc  {
-    [_title release];
-    [super dealloc];
-}
-// 另一个调用文件中是这样子的
-[[xxClass alloc] initWithTitle:nil];
-</code></pre><p>最近的一次修改导致崩溃是被改成了下面的样子，当 title 为 nil 时把它定义为默认字符串，于是上面的 initWithTitle 改为</p>
-<pre><code>- (id)initWithTitle:(NSString *)title {
-    if (title) {
-        _title = [title copy];
-    } else {
-        _title = NSLocalizedString(@&quot;提示&quot;, nil);
-    }
-}
-</code></pre><p>接下来的事情是这样的，某个页面在多次调用 initWithTitle 的时候会发生崩溃，错误信息是这样子的：</p>
-<pre><code>UncaughtExceptionHandlerAddressesKey = (
-4   CoreFoundation                      0x1b9ca81c &lt;redacted&gt; + 2124,
-5   CoreFoundation                      0x1b9c9f8f CFDictionaryGetValue + 126,
-6   CoreFoundation                      0x1bb1446b &lt;redacted&gt; + 142,
-7   CoreFoundation                      0x1bb14111 CFBundleCopyLocalizedStringForLocalization + 94,
-8   CoreFoundation                      0x1ba0f6bb CFBundleCopyLocalizedString + 18,
-</code></pre><p>调试的话，崩溃的位置就在 _title = NSLocalizedString(@”提示”, nil); 这一行。</p>
-<p>不知道各位看官是否一眼发现了问题，控制台还有这样的输出</p>
-<p>message sent to deallocated instance 0x6d564f0</p>
-<p>一时没想到 NSLocalizedString 会有什么问题，因为好久不用 MRC，武功已经全废，所以关注上了这个 message sent to deallocated instance，想通过这条信息查找到问题。</p>
-<a id="more"></a>
-<h3 id="malloc-history-的使用"><a href="#malloc-history-的使用" class="headerlink" title="malloc_history 的使用"></a>malloc_history 的使用</h3><p>网上一通搜索，发现果然能查到 0x6d564f0 这个地址对应的代码，只要在 Xcode -&gt; Scheme -&gt; Arguments 设置中添加环境变量 MallocStackLogging 为 YES，在终端输入下列命令即可</p>
-<pre><code>malloc_history 32009 0x6d564f0
-</code></pre><p>其中 32009 是 pid，pid 在 Xcode 的控制台会打印（这个方法只能检测模拟器上的问题），如下</p>
-<p>2016-11-17 16:19:57:837 MyProject[32009:304745]</p>
-<p>命令执行后输出，终端输出</p>
-<pre><code>Invalid connection: com.apple.coresymbolicationd
-malloc_history Report Version:  2.0
-ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplicationMain | -[UIApplication _run] | CFRunLoopRunInMode | CFRunLoopRunSpecific | _ CFRunLoopDoObservers | _ CFRUNLOOP_IS_CALLING_OUT_TO_AN_OBSERVER_CALLBACK_FUNCTION__ | CA::Transaction::observer_callback(__CFRunLoopObserver*, unsigned long, void*) | CA::Transaction::commit() | CA::Context::commit_transaction(CA::Transaction*) | CA::Layer::layout_and_display_if_needed(CA::Transaction*) | CA::Layer::layout_if_needed(CA::Transaction*) | -[CALayer layoutSublayers] | -[NSObject performSelector:withObject:] | -[UIView(CALayerDelegate) layoutSublayersOfLayer:] | -[UILayoutContainerView layoutSubviews] | -[UINavigationController __viewWillLayoutSubviews] | -[UINavigationController _startDeferredTransitionIfNeeded:] | -[UINavigationController _startTransition:fromViewController:toViewController:] | -[UINavigationController _updateScrollViewFromViewController:toViewController:] | -[UINavigationController _layoutViewController:] | -[UIViewController loadViewIfRequired] | -[UIViewController _sendViewDidLoadWithAppearanceProxyObjectTaggingEnabled] | -[WSLoginViewController viewDidLoad] | -[WSLoginViewController createLoginBoxView] | -[WSLoginViewController createTextField] | -[NSBundle localizedStringForKey:value:table:] | CFBundleCopyLocalizedString | CFBundleCopyLocalizedStringForLocalization | _copyStringFromTable | CFPropertyListCreateWithData | _CFPropertyListCreateWithData | __CFTryParseBinaryPlist | __CFBinaryPlistCreateObjectFiltered | __CFBinaryPlistCreateObjectFiltered | CFStringCreateWithCharacters | __CFStringCreateImmutableFunnel3 | _CFRuntimeCreateInstance | CFAllocatorAllocate | __CFAllocatorSystemAllocate
-</code></pre><p>哇，这么长，怎么看，其实只要关注最后面的几句</p>
-<pre><code>[WSLoginViewController createTextField]
- | -[NSBundle localizedStringForKey:value:table:] | 
- CFBundleCopyLocalizedString
-</code></pre><p>一般情况下问题就是最后的代码导致问题。</p>
-<h3 id="揭秘崩溃原因"><a href="#揭秘崩溃原因" class="headerlink" title="揭秘崩溃原因"></a>揭秘崩溃原因</h3><p>绕了一圈其实还是回到原始，就看 _title = NSLocalizedString(@”提示”, nil); 如果已经打开僵尸调试一般都是能断点进入到相应代码。万一没开，试试 malloc_histroy 还不错。看久一会突然就想到了，直接赋值静态字符串是不需要释放的，dealloc 的时候会有 release 调用，所以改成了如下方式</p>
-<pre><code>_title = [[NSString alloc] initWithString:NSLocalizedString(@&quot;提示&quot;, nil)];
-</code></pre><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>虽然平时已经好久不用 MRC 了，但是发现个 malloc_history 也还不错。</p>
-<h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="http://blog.csdn.net/lgm252008/article/details/17436177" target="_blank" rel="external">message sent to deallocated instance问题的解决方法</a><br><a href="http://blog.csdn.net/u013247242/article/details/43491467" target="_blank" rel="external">内存管理的简单总结</a><br><a href="http://blog.csdn.net/freewaywalker/article/details/45623433" target="_blank" rel="external">Xcode 调试</a></p>
+        <p>之前写过一篇关于性能的文章，最近又需要优化性能，所以在此基础上写一篇最近的优化总结</p>
+<p>性能优化的几个方面：内存问题、电量消耗、启动时间、执行与响应速度、网络条件等等，下面就从这几个方面讨论下如何优化</p>
+<h3 id="内存问题"><a href="#内存问题" class="headerlink" title="内存问题"></a>内存问题</h3><p>内存问题，主要包括避免内存泄漏（使用 Leaks 等工具查找内存泄漏，使用 ARC，Block 中使用变量不要循环引用，可以借鉴以前的文章）、及时释放可以释放的无用内存（例如在一个循环中处理图片，可以使用自动释放池）</p>
+<h3 id="电量消耗"><a href="#电量消耗" class="headerlink" title="电量消耗"></a>电量消耗</h3><p>当 CPU 占用率较高，使用网络/GPS 等情况下，电量会消耗较快。</p>
+<p>降低 CPU 使用率的方式是优化代码中的算法，能使用系统 API 的尽量使用系统 API，这要求我们对不常用的 API 要有所了解，另外多看别人的源代码，对于不了解的 API 要查询下用法，算法方面，除了好脑子就要靠平时多看算法类的书籍锻炼了。</p>
+<p>网络问题见下详述</p>
+<p>GPS检查，设置合适的处理精度和距离</p>
+<h3 id="启动时间"><a href="#启动时间" class="headerlink" title="启动时间"></a>启动时间</h3><p>见<a href="http://alicialy.github.io/2017/02/22/Optimize-App-Startup-Time/" target="_blank" rel="external">另一篇文章</a></p>
+<h3 id="执行与响应速度"><a href="#执行与响应速度" class="headerlink" title="执行与响应速度"></a>执行与响应速度</h3><p>通过 Time Profiler 可以找到调用时间较长的 API，对消耗时间较长的代码进行优化，找到可优化代码只是第一步，比较困难的可能是如何优化，下面就几个方面讨论下优化途径</p>
+<h5 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h5><a id="more"></a>
+<p>常用的小图片可以用内存的方式加载 [UIImage imageName:] 方法</p>
+<p>列表滚动需要缓存高度</p>
+<p>部分常用的数据也可以放到缓存中，需要考虑何时更新缓存以及删除缓存的时机</p>
+<h5 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h5><p>非 UI 操作是否可以放到线程中，例如大图片的解压，文件的保存（ GCD 创建 dispatch_queue 指定优先级的时候，有一个 DISPATCH_QUEUE_PRIORITY_BACKGROUND 级别，适合写文件），数据的处理等</p>
+<p>另外创建线程也是有开销的，成本主要是构造内核数据结构( 1KB 左右)，栈空间（主线程 1M 左右，子线程 512K）,创建线程大约需要消耗 90 毫秒</p>
+<h5 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h5><p>优化过程中如果发现相同代码被复制粘贴过多次的话，一定顺手将其改掉，合并为一处代码</p>
+<p>是否有不必要的循环语句在执行，是否有对象重复创建其实使用一个创建的对象即可；如果循环中查找到结果是否在必要的地方写了 break；</p>
+<h5 id="GPU-离屏渲染等优化"><a href="#GPU-离屏渲染等优化" class="headerlink" title="GPU 离屏渲染等优化"></a>GPU 离屏渲染等优化</h5><p>见<a href="http://alicialy.github.io/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" target="_blank" rel="external">另一篇文章</a></p>
+<h5 id="数据库查询优化"><a href="#数据库查询优化" class="headerlink" title="数据库查询优化"></a>数据库查询优化</h5><p>如果使用了数据库，那么数据库的操作是一个很容易导致响应时间问题的罪魁祸首</p>
+<p>看下经常查找的字段上是否建立了索引，注意的是建立索引的字段上是否使用了 BETWEEN OR LIKE NULL 等会导致全文查找的条件，索引失效</p>
+<p>WHERE 条件，过滤大数据的条件应写到最后<br>由于 SQL WHERE 分析和执行顺序是从右到左的，所以可以某个条件可以过滤掉大部分数据的话，这样的条件应该写在最后<br>例如 SELECT * FROM TABLE Where a = ‘1’ and b = ‘1’， 表中 b 列值为 1的数据比较少时 应当 b 写到最后，因为先执行 b = ‘1’ 的判断</p>
+<p>LIKE 可以使用 MATCH 替换<br><a href="http://www.jianshu.com/p/854f0d3fa240" target="_blank" rel="external">http://www.jianshu.com/p/854f0d3fa240</a></p>
+<p>另外要查找是否有地方使用了 SQL 查找和内存查找并存，但是可以都使用 SQL 替代实现的代码</p>
+<p>最后，应当对 SQL 执行时间超过 5ms 的操作予以记录，我们现在使用的日志库是 CocoaLumberjack，比较好用，并在这个库的基础上做了一些调整，专门用于记录需要优化的部分执行时间。</p>
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p>是否有不必要的读写文件过程，可以放到内存中即可</p>
+<p>重大开销对象，例如 NSDateFormatter和 NSCalendar，如果频繁使用，可以创建单例</p>
+<p>如有有些操作确实比较耗时，又无法优化，可以和 UI UE 商量下如何制作出一个动效，好的动效可以让用户察觉不到相应速度的问题</p>
+<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><p>请求网络时判断当前的网络状态，不同网络状态下获取不同数据，例如图片大小要不一样等。如果请求失败，可以记录下失败的请求地址，再尝试下载的时候应间隔时间长一些</p>
+<p>另外，手机 “设置 -&gt; 开发者 -&gt; NetWork Link Conditioner” 可以模拟网络环境很差的情况，便于调试。</p>
 
       
     </div>
@@ -393,6 +368,8 @@ ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplica
           
             <a href="/tags/Debug/" rel="tag">#Debug</a>
           
+            <a href="/tags/Performance/" rel="tag">#Performance</a>
+          
         </div>
       
 
@@ -400,17 +377,13 @@ ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplica
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/11/Source-Code-Learning-JDStatusBarNotification/" rel="next" title="Source Code Learning JDStatusBarNotification">
-                <i class="fa fa-chevron-left"></i> Source Code Learning JDStatusBarNotification
+              <a href="/2017/04/07/iOS-App-Thinning/" rel="next" title="iOS App Thinning">
+                <i class="fa fa-chevron-left"></i> iOS App Thinning
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/12/31/2016-book-list/" rel="prev" title="2016 book list">
-                2016 book list <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -537,7 +510,7 @@ ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplica
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#崩溃代码"><span class="nav-number">2.</span> <span class="nav-text">崩溃代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#malloc-history-的使用"><span class="nav-number">3.</span> <span class="nav-text">malloc_history 的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#揭秘崩溃原因"><span class="nav-number">4.</span> <span class="nav-text">揭秘崩溃原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考内容"><span class="nav-number">6.</span> <span class="nav-text">参考内容</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存问题"><span class="nav-number">1.</span> <span class="nav-text">内存问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#电量消耗"><span class="nav-number">2.</span> <span class="nav-text">电量消耗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动时间"><span class="nav-number">3.</span> <span class="nav-text">启动时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行与响应速度"><span class="nav-number">4.</span> <span class="nav-text">执行与响应速度</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存"><span class="nav-number">4.0.1.</span> <span class="nav-text">缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#多线程"><span class="nav-number">4.0.2.</span> <span class="nav-text">多线程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代码优化"><span class="nav-number">4.0.3.</span> <span class="nav-text">代码优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#GPU-离屏渲染等优化"><span class="nav-number">4.0.4.</span> <span class="nav-text">GPU 离屏渲染等优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据库查询优化"><span class="nav-number">4.0.5.</span> <span class="nav-text">数据库查询优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其他"><span class="nav-number">4.0.6.</span> <span class="nav-text">其他</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络"><span class="nav-number">5.</span> <span class="nav-text">网络</span></a></li></ol></div>
             
           </div>
         </section>

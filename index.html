@@ -248,6 +248,111 @@
             
               
                 
+                <a class="post-title-link" href="/2017/07/31/Optimize-App-Performance/" itemprop="url">
+                  Optimize App Performance
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-07-31T22:25:28+08:00" content="2017-07-31">
+              2017-07-31
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>之前写过一篇关于性能的文章，最近又需要优化性能，所以在此基础上写一篇最近的优化总结</p>
+<p>性能优化的几个方面：内存问题、电量消耗、启动时间、执行与响应速度、网络条件等等，下面就从这几个方面讨论下如何优化</p>
+<h3 id="内存问题"><a href="#内存问题" class="headerlink" title="内存问题"></a>内存问题</h3><p>内存问题，主要包括避免内存泄漏（使用 Leaks 等工具查找内存泄漏，使用 ARC，Block 中使用变量不要循环引用，可以借鉴以前的文章）、及时释放可以释放的无用内存（例如在一个循环中处理图片，可以使用自动释放池）</p>
+<h3 id="电量消耗"><a href="#电量消耗" class="headerlink" title="电量消耗"></a>电量消耗</h3><p>当 CPU 占用率较高，使用网络/GPS 等情况下，电量会消耗较快。</p>
+<p>降低 CPU 使用率的方式是优化代码中的算法，能使用系统 API 的尽量使用系统 API，这要求我们对不常用的 API 要有所了解，另外多看别人的源代码，对于不了解的 API 要查询下用法，算法方面，除了好脑子就要靠平时多看算法类的书籍锻炼了。</p>
+<p>网络问题见下详述</p>
+<p>GPS检查，设置合适的处理精度和距离</p>
+<h3 id="启动时间"><a href="#启动时间" class="headerlink" title="启动时间"></a>启动时间</h3><p>见<a href="http://alicialy.github.io/2017/02/22/Optimize-App-Startup-Time/">另一篇文章</a></p>
+<h3 id="执行与响应速度"><a href="#执行与响应速度" class="headerlink" title="执行与响应速度"></a>执行与响应速度</h3><p>通过 Time Profiler 可以找到调用时间较长的 API，对消耗时间较长的代码进行优化，找到可优化代码只是第一步，比较困难的可能是如何优化，下面就几个方面讨论下优化途径</p>
+<h5 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h5>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/07/31/Optimize-App-Performance/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/04/07/iOS-App-Thinning/" itemprop="url">
                   iOS App Thinning
                 </a>
@@ -1260,132 +1365,6 @@ self.bezelView.alpha = self.opacity;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/24/GCD-Timer-and-Leaks/" itemprop="url">
-                  GCD Timer and Leaks
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-08-24T21:11:18+08:00" content="2016-08-24">
-              2016-08-24
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。</p>
-<p>GCD Timer 通过 Dispatch Source 实现，调用方法如：</p>
-<pre><code>dispatch_queue_t queue = dispatch_get_main_queue();
-dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 
-    2.0 * NSEC_PER_SEC, 0.1 * NSEC_PER_SEC);
-dispatch_source_set_event_handler(timer, ^() {
-    // do something
-});
-dispatch_resume(timer);
-</code></pre><p>如果需要暂停定时器调用</p>
-<pre><code>dispatch_suspend(timer);
-</code></pre><p>dispatch_suspend 和 dispatch_resume 应该是成对出现的。两者分别会减少和增加 dispatch 对象的挂起计数，但是没有 API 获取当前是挂起还是执行状态，所以需要自己记录。</p>
-<h3 id="dispatch-suspend-暂停队列并不意味着当前执行的-block-暂停"><a href="#dispatch-suspend-暂停队列并不意味着当前执行的-block-暂停" class="headerlink" title="dispatch_suspend 暂停队列并不意味着当前执行的 block 暂停"></a>dispatch_suspend 暂停队列并不意味着当前执行的 block 暂停</h3><p>当暂停派发队列时需要注意，调用 dispatch_suspend 暂停一个队列，并不意味着暂停当前正在执行的 block，而是 block 可以执行完，但是接下来的 block 会被暂停，直到 dispatch_resume 被调用。</p>
-<p>如果添加 dispatch_suspend 的调用后 timer 是无法被释放的。一般情况下会发生崩溃并报“EXC_BAD_INSTRUCTION”错误，看下 <a href="http://opensource.apple.com/source/libdispatch/libdispatch-187.7/src/source.c" target="_blank" rel="external">GCD 源码 Source 释放的处理</a> dispatch source release 的时候判断了当前是否是在暂停状态。</p>
-<pre><code>void _dispatch_source_xref_release(dispatch_source_t ds) {
-    if (slowpath(DISPATCH_OBJECT_SUSPENDED(ds))) {
-        // Arguments for and against this assert are within 6705399
-        DISPATCH_CLIENT_CRASH(&quot;Release of a suspended object&quot;);
-    }
-    _dispatch_wakeup(ds);
-    _dispatch_release(ds);
-}
-</code></pre><p><a href="http://libdispatch.macosforge.org/" target="_blank" rel="external">GCD 完整源码点击这里</a></p>
-<h3 id="dispatch-suspend-状态下无法释放"><a href="#dispatch-suspend-状态下无法释放" class="headerlink" title="dispatch_suspend 状态下无法释放"></a><span id="dispatch_suspend_dealloc">dispatch_suspend 状态下无法释放</span></h3><p>但是还有不一般的情况，如果暂停的代码加到 dispatch_source_set_event_handler 的 block 中，并不会发生崩溃，但是这个时候页面会无法释放造成内存泄漏！内存泄漏！内存泄漏！。</p>
-<pre><code>dispatch_source_set_event_handler(timer, ^() {
-    // do something
-    dispatch_suspend(timer);
-});
-</code></pre><p><a href="https://github.com/alicialy/MemoryLeaks" target="_blank" rel="external">Demo 代码点击这里</a>，Demo 中进入“GCD Timer” 页面再退出，通过 Allocations 工具可以发现 GCDTimerViewController 没有释放，dealloc 无法执行。</p>
-<p>怎么破？如果有需求按照上面这种方式写的话，添加个变量记录下 dispatch_suspend 是否被调用的状态，在 dealloc 时判断下，调用过 dispatch_suspend 则再调用下 dispatch_resume。或者暂停后不需要重新运行 timer 的话，取消 timer，一旦取消则不能再重新运行 timer，只能重建。</p>
-<pre><code>dispatch_source_cancel(timer);
-</code></pre><h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="https://www.mikeash.com/pyblog/friday-qa-2009-09-18-intro-to-grand-central-dispatch-part-iv-odds-and-ends.html" target="_blank" rel="external">Mikeash GCD 介绍</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1431,7 +1410,7 @@ dispatch_resume(timer);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

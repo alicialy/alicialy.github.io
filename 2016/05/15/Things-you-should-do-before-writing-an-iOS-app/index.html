@@ -104,7 +104,7 @@ Swift
 Raywenderlich 官方编码规范GithHub 的编码规范
 确定架构使用传统的 MVC 还是 MVVM 亦或是 VIPER
 为项目命名，使用">
-<meta property="og:updated_time" content="2016-09-01T01:36:34.000Z">
+<meta property="og:updated_time" content="2017-07-31T14:39:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Things you should do before writing an iOS app">
 <meta name="twitter:description" content="创建 iOS 项目之前不要忘记做好以下事情
@@ -341,7 +341,7 @@ Podfile.lock
 <p>复杂的框架要解耦 Controller 之间的关联考虑是否要引入 Router 方式进行跳转，引入 Router 的库。</p>
 <p>数据统计和崩溃收集是否需要第三方库的支持，引入友盟、Fabric 等。</p>
 <h2 id="添加常用的宏定义文件"><a href="#添加常用的宏定义文件" class="headerlink" title="添加常用的宏定义文件"></a>添加常用的宏定义文件</h2><p>多人合作时避免大家添加重复冲突的宏文件，先将常用宏文件引入，例如定义 NSLog宏，单例宏，尺寸宏等</p>
-<h2 id="确定接口规范，封装接口调用"><a href="#确定接口规范，封装接口调用" class="headerlink" title="确定接口规范，封装接口调用"></a>确定接口规范，封装接口调用</h2><p>引入 AFNetworking 后，创建自己的 AFXXXAPIClient，将用于接口加密的参数字段以及 token 等字段进行封装。</p>
+<h2 id="确定接口规范，封装接口调用"><a href="#确定接口规范，封装接口调用" class="headerlink" title="确定接口规范，封装接口调用"></a>确定接口规范，封装接口调用</h2><p>引入 AFNetworking 后，创建自己的 AFXXXAPIClient，将用于接口加密的参数字段以及 token 等字段进行封装，另外可以统一处理网络请求的错误，请求网络的时候判断网络状态等。</p>
 <h2 id="设定应用目录"><a href="#设定应用目录" class="headerlink" title="设定应用目录"></a>设定应用目录</h2><p>一般情况下，为了他人查找方便，所以我习惯于按照功能设置目录，每个功能下面再按照 MVC / MVVM 的方式创建目录，如下</p>
 <p>|- Home<br>    |– Models<br>    |– Views<br>    |– Controllers (或者是 ViewModels)<br>    |– Stores<br>    |__ Helpers<br>|- Setting<br>    |– … (同上)<br>|- …</p>
 <h2 id="代码结构设定"><a href="#代码结构设定" class="headerlink" title="代码结构设定"></a>代码结构设定</h2><p>|- Life Cycle<br>|- Init<br>|- Public Method<br>|- (Event Response)<br>|- Actions<br>|- Gesture<br>|- Private Method<br>|- Delegate<br>|- Getters and Setters</p>
@@ -480,7 +480,7 @@ Podfile.lock
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-count">28</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

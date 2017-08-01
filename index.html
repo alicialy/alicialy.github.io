@@ -293,13 +293,22 @@
         
           <p>之前写过一篇关于性能的文章，最近又需要优化性能，所以在此基础上写一篇最近的优化总结</p>
 <p>性能优化的几个方面：内存问题、电量消耗、启动时间、执行与响应速度、网络条件等等，下面就从这几个方面讨论下如何优化</p>
-<h3 id="内存问题"><a href="#内存问题" class="headerlink" title="内存问题"></a>内存问题</h3><p>内存问题，主要包括避免内存泄漏（使用 Leaks 等工具查找内存泄漏，使用 ARC，Block 中使用变量不要循环引用，可以借鉴以前的文章）、及时释放可以释放的无用内存（例如在一个循环中处理图片，可以使用自动释放池）</p>
-<h3 id="电量消耗"><a href="#电量消耗" class="headerlink" title="电量消耗"></a>电量消耗</h3><p>当 CPU 占用率较高，使用网络/GPS 等情况下，电量会消耗较快。</p>
+<h3 id="内存问题"><a href="#内存问题" class="headerlink" title="内存问题"></a>内存问题</h3><p>可借助工具：Instruments -&gt; Leaks / Allocations / Zombies</p>
+<p>内存问题，主要包括避免内存泄漏（使用 ARC，Block 中使用变量不要循环引用，可以借鉴以前的文章）、及时释放可以释放的无用内存（例如在一个循环中处理图片，可以使用自动释放池）</p>
+<h3 id="电量消耗"><a href="#电量消耗" class="headerlink" title="电量消耗"></a>电量消耗</h3><p>可借助工具：Instruments -&gt; Energy Log</p>
+<p>当 CPU 占用率较高，使用网络/GPS 等情况下，电量会消耗较快。</p>
 <p>降低 CPU 使用率的方式是优化代码中的算法，能使用系统 API 的尽量使用系统 API，这要求我们对不常用的 API 要有所了解，另外多看别人的源代码，对于不了解的 API 要查询下用法，算法方面，除了好脑子就要靠平时多看算法类的书籍锻炼了。</p>
 <p>网络问题见下详述</p>
-<p>GPS检查，设置合适的处理精度和距离</p>
-<h3 id="启动时间"><a href="#启动时间" class="headerlink" title="启动时间"></a>启动时间</h3><p>见<a href="http://alicialy.github.io/2017/02/22/Optimize-App-Startup-Time/">另一篇文章</a></p>
-<h3 id="执行与响应速度"><a href="#执行与响应速度" class="headerlink" title="执行与响应速度"></a>执行与响应速度</h3><p>通过 Time Profiler 可以找到调用时间较长的 API，对消耗时间较长的代码进行优化，找到可优化代码只是第一步，比较困难的可能是如何优化，下面就几个方面讨论下优化途径</p>
+<p>GPS检查，设置合适的处理精度和距离，使用合适的 API 来更新位置。</p>
+<p>例如在非实时（追踪走路等）定位的场景下，调用如下方法延时获取数据</p>
+<pre><code>[locationManager allowDeferredLocationUpdatesUntilTraveled:timeout:]
+</code></pre><p>或者位置有重大变化（天气应用）时才需要获取数据，调用如下方法</p>
+<pre><code>[locationManager startMonitoringSignificantLocationChanges]
+</code></pre><p>再或者使用区域检测</p>
+<pre><code>[locationManager startMonitoringForRegion:]
+</code></pre><h3 id="启动时间"><a href="#启动时间" class="headerlink" title="启动时间"></a>启动时间</h3><p>见<a href="http://alicialy.github.io/2017/02/22/Optimize-App-Startup-Time/">另一篇文章</a></p>
+<h3 id="执行与响应速度"><a href="#执行与响应速度" class="headerlink" title="执行与响应速度"></a>执行与响应速度</h3><p>可借助工具：Instruments -&gt; Time Profiler</p>
+<p>通过 Time Profiler 可以找到调用时间较长的 API，对消耗时间较长的代码进行优化，找到可优化代码只是第一步，比较困难的可能是如何优化，下面就几个方面讨论下优化途径</p>
 <h5 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h5>
           <div class="post-more-link text-center">
             <a class="btn" href="/2017/07/31/Optimize-App-Performance/#more" rel="contents">

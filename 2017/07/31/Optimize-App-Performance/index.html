@@ -96,7 +96,7 @@
 性能优化的几个方面：内存问题、电量消耗、启动时间、执行与响应速度、网络条件等等，下面就从这几个方面讨论下如何优化
 内存问题可借助工具：Instruments -&amp;gt; Leaks / Allocations / Zombies
 内存问题，主要包括避免内存泄漏（使用 ARC，Block 中使用变量不要循环引用，可以">
-<meta property="og:updated_time" content="2017-08-01T12:57:58.000Z">
+<meta property="og:updated_time" content="2017-08-09T14:15:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Optimize App Performance">
 <meta name="twitter:description" content="之前写过一篇关于性能的文章，最近又需要优化性能，所以在此基础上写一篇最近的优化总结
@@ -329,6 +329,13 @@
 <p>LIKE 可以使用 MATCH 替换<br><a href="http://www.jianshu.com/p/854f0d3fa240" target="_blank" rel="external">http://www.jianshu.com/p/854f0d3fa240</a></p>
 <p>另外要查找是否有地方使用了 SQL 查找和内存查找并存，但是可以都使用 SQL 替代实现的代码</p>
 <p>最后，应当对 SQL 执行时间超过 5ms 的操作予以记录，我们现在使用的日志库是 CocoaLumberjack，比较好用，并在这个库的基础上做了一些调整，专门用于记录需要优化的部分执行时间。</p>
+<p>我写了一个调试工具，目前该工具含有以下功能</p>
+<ul>
+<li>专门将 CocoaLumberjack 中日志级别为警告和错误的信息显示到窗口上，可以随时知道哪里出错了</li>
+<li>将 addObserver 和 removeObserver 所有调用的打印，可以人工方式排查注册过但是没有被移除的通知</li>
+<li>为了解决接管他人项目找不到页面对应类的问题，而实现的显示当前 ViewController 名称到顶层窗口。</li>
+</ul>
+<p>对这个库感兴趣的话，<a href="https://github.com/alicialy/LTDebug" target="_blank" rel="external">请点击这里</a></p>
 <h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p>对常用的数据合理的使用缓存</p>
 <p>使用懒加载的方式处理非必要存在的变量，例如某个 View，只有在某个操作下才会显示，可以使用懒加载的方式创建</p>
 <p>是否有不必要的读写文件过程，可以放到内存中即可。如果需要读写文件，确认是否可以使用线程，是否可以使用缓存，是否可以将多次写入合并写入。</p>

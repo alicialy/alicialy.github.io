@@ -248,6 +248,109 @@
             
               
                 
+                <a class="post-title-link" href="/2017/12/14/Using-OpenCV/" itemprop="url">
+                  Using OpenCV
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-12-14T20:59:11+08:00" content="2017-12-14">
+              2017-12-14
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Using OpenCV</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>最近这几年人工智能大火，公司也想向现有产品（移动销售自动化管理软件）中加入些沾边的功能，于是想到现在销售填报数据时将现有的人工采集数据（超市货架中货品种类和数量统计）方式改用机器来做。让机器识别出货物首先要给机器大量的图片让它学习，然后通过图像识别技术来辨识超市货架的货物，并计算出数量。</p>
+<p>本来按着这个思路下去应该是先进行 CoreML 等方式的调研，然后线下人员采集大量产品图片，结果公司领导不知道是基于什么原因，要求移动端开发先做个图像分割的应用，将一张超市货架的图片拍照后，再手动将每层货架标识出来，然后手动分割每层货架的产品，显然这种方式太没有技术含量了，所以用业余时间研究了一下 OpenCV ，看看有什么方式能实现自动检测出货架，并分割出每个产品。</p>
+<p>经研究，通过直线检测方式能检测出货架位置，但是图像分割的效果由于光线以及产品摆放方式等原因会效果较差，趁着印象深刻的时候，把用到的知识点以及遇到的问题和解决方案总结一下。</p>
+<p><a href="https://github.com/alicialy/LTImageAnalysis">LTImageAnalysis - Demo地址</a></p>
+<p><img src="https://github.com/alicialy/LTImageAnalysis/raw/master/readme.gif" alt="img"></p>
+<h3 id="书籍推荐"><a href="#书籍推荐" class="headerlink" title="书籍推荐"></a>书籍推荐</h3><p>如果想用好 OpenCV，就要对 OpenCV 能做什么有非常清楚的了解，所以 《Learning OpenCV 3》 是个人感觉最有用的书，第三版好像还没有中文版，所以看了英文版，对比了下中文版的第一版，第三版内容更丰富目录结构更合理。另外推荐 《Mastering OpenCV with Practical Computer Vision Projects》，在没有思路的时候可以借鉴一下。</p>
+<h3 id="OpenCV-安装和使用"><a href="#OpenCV-安装和使用" class="headerlink" title="OpenCV 安装和使用"></a>OpenCV 安装和使用</h3><p>OpenCV 是 Open source computer vision 的缩写，它的目的是提供一种更简单的方式来快速处理复杂的视觉应用。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/12/14/Using-OpenCV/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/08/07/An-Organic-Problem-Solving-Approach/" itemprop="url">
                   An Organic Problem Solving Approach
                 </a>
@@ -1273,115 +1376,6 @@ self.bezelView.alpha = self.opacity;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/31/Reading-The-Solution-Tango/" itemprop="url">
-                  Reading The Solution Tango
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-08-31T20:14:15+08:00" content="2016-08-31">
-              2016-08-31
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>最近读了一本不错的管理类书籍，《The Solution Tango: Solving any problem in senven easy steps》 译者可能也知道这个英文名字估计不能吸引中国读者，所以他的中文译名是意译的 《不懂带人，你就自己干到死：把身边的庸才变干将》。</p>
-<p>做技术的人大多跟机器打交道，并不擅长处理人的关系。当从做技术升级为管理层时，很少和下属沟通，或者弄得下属觉得整天被指手画脚工作地并不舒服；又或是一些下属主动沟通的能力基本没有，被动沟通时又表现出一副不屑或者不愿搭理的样子。前两天还看到有人说，技术很厉害的人凑在一起创业的多了，但是成功的就没有几个了，技术上的问题很容易解决，但是人的问题就没那么容易处理了。</p>
-<p>这本书就是解决人的问题的，它提出了一些事例和七个步骤来说明如何带人：</p>
-<blockquote>
-<p>别再给员工讲道理了，没人听</p>
-</blockquote>
-<p>当出现问题时，首要需要想想如何解决问题，而不是陷入指责谁是导致问题的原因。</p>
-<p>大部分情况下领导在出现问题时都是先追责，追责可以让导致出现问题的人记住教训避免其再犯，或者找出一个人来承担责任。但是书中指出这对问题的解决一点用处没有，而且很容易使人陷入一种负面的情绪中，大家变得沮丧、压抑、毫无斗志，我们应该在出现问题时，及时想办法补救。忘掉为什么，多问怎么办。</p>
-<blockquote>
-<p>如何听，员工才会说；如何说，员工才会听</p>
-</blockquote>
-<p>听，不要让自己的先入之见扭曲别人传递的信息。做到这点其实还挺不容易的，我们总是习惯在听人说话时，把自己放在一个更高的位置，认为自己有多么聪明，可以想到别人要表达什么，但是很多时候那只是我们的想法不是别人要说的，倾听时要对他人有耐心。</p>
-<p>说，要用宽松而不是指令性的语言，采取邀请的姿态，而不是摆出指挥的架势。想到最近的女排，每次比赛切到郎平指导时，她都是以一种商量的口吻、建议的语气指出队员的问题（“XXX 刚才是不是 XXX 那样更好些？”)。又想到羽毛球，总指导说林丹是那种比较抗压的，可以指出他的问题说他逼他，但是谌龙就不能用这种方式，要用安抚的方式。大家都能接受宽松式的语言，但却有很多人不能接受指令性语言。</p>
-<p>书名中提到的解决方案的七个步骤是：</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/08/31/Reading-The-Solution-Tango/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1427,7 +1421,7 @@ self.bezelView.alpha = self.opacity;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">29</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1437,7 +1431,7 @@ self.bezelView.alpha = self.opacity;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,SourceCode," />
+  <meta name="keywords" content="Books," />
 
 
 
@@ -84,25 +84,43 @@
 
 
 
-<meta name="description" content="RunLoop 和 NSTimer每次显示时先要将之前设置过的 timer 取消
-// cancel previous dismissing &amp;amp; remove animations
-[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
-timer 的设置">
+<meta name="description" content="今年看过的工作类图书如下：
+iOS 成长之路 2017 春 夏
+
+《春》的内容少一些， 关于 HTTP 2.0 的介绍得很详细。《夏》在内容上就丰富多了，对不同层次的开发者应该都有一些吸引点。
+
+Learning OpenCV 3
+
+OpenCV 的手册书，学 OpenCV 必看
+
+Mastering OpenCV with Practical Computer Vision Projects">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Source Code Learning JDStatusBarNotification">
-<meta property="og:url" content="http://yoursite.com/2016/10/11/Source-Code-Learning-JDStatusBarNotification/index.html">
+<meta property="og:title" content="2017 book list">
+<meta property="og:url" content="http://yoursite.com/2017/12/29/2017-book-list/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="RunLoop 和 NSTimer每次显示时先要将之前设置过的 timer 取消
-// cancel previous dismissing &amp;amp; remove animations
-[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
-timer 的设置">
-<meta property="og:updated_time" content="2016-12-31T12:21:15.000Z">
+<meta property="og:description" content="今年看过的工作类图书如下：
+iOS 成长之路 2017 春 夏
+
+《春》的内容少一些， 关于 HTTP 2.0 的介绍得很详细。《夏》在内容上就丰富多了，对不同层次的开发者应该都有一些吸引点。
+
+Learning OpenCV 3
+
+OpenCV 的手册书，学 OpenCV 必看
+
+Mastering OpenCV with Practical Computer Vision Projects">
+<meta property="og:updated_time" content="2017-12-30T04:07:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Source Code Learning JDStatusBarNotification">
-<meta name="twitter:description" content="RunLoop 和 NSTimer每次显示时先要将之前设置过的 timer 取消
-// cancel previous dismissing &amp;amp; remove animations
-[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
-timer 的设置">
+<meta name="twitter:title" content="2017 book list">
+<meta name="twitter:description" content="今年看过的工作类图书如下：
+iOS 成长之路 2017 春 夏
+
+《春》的内容少一些， 关于 HTTP 2.0 的介绍得很详细。《夏》在内容上就丰富多了，对不同层次的开发者应该都有一些吸引点。
+
+Learning OpenCV 3
+
+OpenCV 的手册书，学 OpenCV 必看
+
+Mastering OpenCV with Practical Computer Vision Projects">
 
 
 
@@ -123,9 +141,9 @@ timer 的设置">
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/10/11/Source-Code-Learning-JDStatusBarNotification/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/12/29/2017-book-list/"/>
 
-  <title> Source Code Learning JDStatusBarNotification | Alicia's Blog </title>
+  <title> 2017 book list | Alicia's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -255,7 +273,7 @@ timer 的设置">
             
             
               
-                Source Code Learning JDStatusBarNotification
+                2017 book list
               
             
           </h1>
@@ -267,8 +285,8 @@ timer 的设置">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-10-11T19:41:33+08:00" content="2016-10-11">
-              2016-10-11
+            <time itemprop="dateCreated" datetime="2017-12-29T22:12:11+08:00" content="2017-12-29">
+              2017-12-29
             </time>
           </span>
 
@@ -295,50 +313,40 @@ timer 的设置">
       
 
       
-        <h3 id="RunLoop-和-NSTimer"><a href="#RunLoop-和-NSTimer" class="headerlink" title="RunLoop 和 NSTimer"></a>RunLoop 和 NSTimer</h3><p>每次显示时先要将之前设置过的 timer 取消</p>
-<pre><code>// cancel previous dismissing &amp; remove animations
-[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
-</code></pre><p>timer 的设置代码如下：</p>
-<pre><code>- (void)setDismissTimerWithInterval:(NSTimeInterval)interval; {
-    [self.dismissTimer invalidate];             // 重新赋值时先要使其无效
-    self.dismissTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval]
-                                             interval:0 target:self selector:@selector(dismiss:) userInfo:nil repeats:NO];
-    [[NSRunLoop currentRunLoop] addTimer:self.dismissTimer forMode:NSRunLoopCommonModes];
-}
-</code></pre><p>为了能在用户拖拽页面的时候 timer 正确计时，将 timer 添加到 NSRunLoopCommonModes 模式下</p>
-<h3 id="UIWindowLevel"><a href="#UIWindowLevel" class="headerlink" title="UIWindowLevel"></a>UIWindowLevel</h3><p>每个应用都有一个主 window，通常在 AppDelegate 中设置</p>
-<pre><code>self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-self.window.backgroundColor = [UIColor whiteColor];
-self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:
-                                  [[SBExampleViewController alloc] initWithStyle:UITableViewStyleGrouped]];
-
-[self.window makeKeyAndVisible];
-</code></pre><p>makeKeyAndVisible 方法是将某个 window 设置为主窗口并设置为可见，这个窗口的级别使用默认值 UIWindowLevelNormal，UIWindowLevel 的级别如下</p>
-<a id="more"></a>
-<pre><code>UIKIT_EXTERN const UIWindowLevel UIWindowLevelNormal;
-UIKIT_EXTERN const UIWindowLevel UIWindowLevelAlert;
-UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
-</code></pre><p>其级别顺序是 Normal &lt; StatusBar &lt; Alert，也就是说 Alert 级别的 window 会在最前端显示。</p>
-<p>其中 UIKIT_EXTERN 的定义如下</p>
-<pre><code>#ifdef __cplusplus
-#define UIKIT_EXTERN        extern &quot;C&quot; __attribute__((visibility (&quot;default&quot;)))
-#else
-#define UIKIT_EXTERN            extern __attribute__((visibility (&quot;default&quot;)))
-#endif
-</code></pre><p>这几个变量的定义在该文件中可见</p>
-<p>extern “C”是连接申明(linkage declaration),被extern “C”修饰的变量和函数是按照C语言方式编译和连接的</p>
-<p>所以我们如果用 AppDelegate 中创建的这个最低级别作为显示状态栏的窗口的话，很可能会被遮盖，所以首先要创建一个状态栏级别的窗口，创建窗口的代码见 - (UIWindow *)overlayWindow; 方法。</p>
-<pre><code>self.overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-self.overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-self.overlayWindow.backgroundColor = [UIColor redColor];
-self.overlayWindow.userInteractionEnabled = NO;
-self.overlayWindow.windowLevel = UIWindowLevelStatusBar;
-self.overlayWindow.rootViewController = [[UIViewController alloc] init];
-self.overlayWindow.rootViewController.view.backgroundColor = [UIColor clearColor];
-self.overlayWindow.hidden = NO;
-</code></pre><p>需要注意的是，窗口创建后默认是不显示的，设置 hidden 为 NO 即可显示，如上我们创建了一个红色的窗口，它可以和 AppDelegate 中设置的主窗口并存，由于它的级别高，所以完全覆盖了主窗口显示红色。</p>
-<h3 id="屏幕旋转"><a href="#屏幕旋转" class="headerlink" title="屏幕旋转"></a>屏幕旋转</h3><p>当屏幕旋转时，我们创建的 overlayWindow 也要处理旋转，它的旋转 transform 应当和主窗口相同，mainApplicationWindowIgnoringWindow 方法用来获取主窗口，之后将 overlayWindow 的 transform 和 frame 设置为主窗口一致即可，overlayWindow 中的 topBar 的 frame 也需要重新设置。</p>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="http://www.cnblogs.com/smileEvday/archive/2012/11/16/UIWindow.html" target="_blank" rel="external">UIWindow的一点儿思考</a><br><a href="http://www.cnblogs.com/smileEvday/archive/2013/05/30/statusBarTips.html" target="_blank" rel="external">状态栏提示控件的实现原理</a></p>
+        <h3 id="今年看过的工作类图书如下："><a href="#今年看过的工作类图书如下：" class="headerlink" title="今年看过的工作类图书如下："></a>今年看过的工作类图书如下：</h3><blockquote>
+<p>iOS 成长之路 2017 春 夏</p>
+</blockquote>
+<p>《春》的内容少一些， 关于 HTTP 2.0 的介绍得很详细。《夏》在内容上就丰富多了，对不同层次的开发者应该都有一些吸引点。</p>
+<blockquote>
+<p>Learning OpenCV 3</p>
+</blockquote>
+<p>OpenCV 的手册书，学 OpenCV 必看</p>
+<blockquote>
+<p>Mastering OpenCV with Practical Computer Vision Projects</p>
+</blockquote>
+<p>介绍了 PC 和 iOS、Android 上使用 OpenCV 的实例。包括人脸识别、人物变动画效果、汽车牌照识别等等应用场景。</p>
+<blockquote>
+<p>架构实战－软件架构设计的过程</p>
+</blockquote>
+<p>这本书是7、8年前在亚麻买的，买后随便翻了下觉得写得不好就放下了，今年突然想起这本书，拿出来仔细阅读了下，真的是没冤枉它这些年被尘封，这次看完就扔了，都是概念、名词解释，没有什么实际指导意义。它应该比较适合完全没有接触过软件架构的人看。</p>
+<h3 id="管理类书籍包括："><a href="#管理类书籍包括：" class="headerlink" title="管理类书籍包括："></a>管理类书籍包括：</h3><blockquote>
+<p>格鲁夫给经理人的第一课</p>
+</blockquote>
+<p>安迪格鲁夫是英特尔公司前 CEO，这本书凝聚了管理学的经典理论和方法，并且结合实际介绍了些方式方法。</p>
+<blockquote>
+<p>德鲁克系列之 管理的实践 </p>
+</blockquote>
+<p>《管理的实践》《卓有成效的管理者》《管理：任务，责任，实践》这三套书是德鲁克书籍中的经典，非常详细的说明了德鲁克的管理理论。</p>
+<blockquote>
+<p>给你一个团队，你能怎么管</p>
+</blockquote>
+<p>书名一看就是国人写的书，估计是出版社特意要求的。相对于其它国人书籍的特点举实例、讲具体方法，这本书还是结合了一些理论和方法，值得思考和借鉴。</p>
+<p>这一年读的很多管理类书籍感触很多，重要的它们改变了我看待事物的角度，但是还没有来得及整理成文字，接下来的一年会找个时间写一篇系统的总结。另外由于这一年要做代码重构的工作，重读了《重构》《Head First Desgin Patterns》《设计模式》以及《Effective Objective-C 2.0》，经典的书每次都能让你有不同的体会。很欣赏西方人总结的能力，自己在这方面十分欠缺，大部分时间都是在干活，却忽略了总结。</p>
+<h3 id="非工作类书籍的特殊推荐"><a href="#非工作类书籍的特殊推荐" class="headerlink" title="非工作类书籍的特殊推荐"></a>非工作类书籍的特殊推荐</h3><blockquote>
+<p>艺术的故事 （贡布里希）</p>
+</blockquote>
+<p>去年写读书总结的时候没有列任何一本非工作类书籍，这一次特意把它记录下来，是因为这本书解开了我对艺术的太多的疑问，它让我爱上了曾经看不懂的很多名画，让我对欧洲的旅行有了些许期待，更重要的是它帮我开拓了眼界，打开了格局，格局可以决定行动，行动可以决定未来。</p>
+<p>另外还看了一些财会、战略类的书籍，好吧，今年看的书特别杂设计类书籍看的有点多了，技术类书籍明显有点少了，来年要多看一些技术类的书籍了。</p>
 
       
     </div>
@@ -382,9 +390,7 @@ self.overlayWindow.hidden = NO;
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
-            <a href="/tags/SourceCode/" rel="tag">#SourceCode</a>
+            <a href="/tags/Books/" rel="tag">#Books</a>
           
         </div>
       
@@ -393,17 +399,13 @@ self.overlayWindow.hidden = NO;
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/23/Clang-Attributes-in-Open-Source/" rel="next" title="Clang Attributes in Open Source">
-                <i class="fa fa-chevron-left"></i> Clang Attributes in Open Source
+              <a href="/2017/12/14/Using-OpenCV/" rel="next" title="Using OpenCV">
+                <i class="fa fa-chevron-left"></i> Using OpenCV
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/17/About-Message-send-to-dealloc-instance/" rel="prev" title="About Message send to dealloc instance">
-                About Message send to dealloc instance <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -530,7 +532,7 @@ self.overlayWindow.hidden = NO;
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RunLoop-和-NSTimer"><span class="nav-number">1.</span> <span class="nav-text">RunLoop 和 NSTimer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UIWindowLevel"><span class="nav-number">2.</span> <span class="nav-text">UIWindowLevel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#屏幕旋转"><span class="nav-number">3.</span> <span class="nav-text">屏幕旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#今年看过的工作类图书如下："><span class="nav-number">1.</span> <span class="nav-text">今年看过的工作类图书如下：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管理类书籍包括："><span class="nav-number">2.</span> <span class="nav-text">管理类书籍包括：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非工作类书籍的特殊推荐"><span class="nav-number">3.</span> <span class="nav-text">非工作类书籍的特殊推荐</span></a></li></ol></div>
             
           </div>
         </section>

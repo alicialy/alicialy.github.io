@@ -248,6 +248,116 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/05/Writing-Crash-Free-Code/" itemprop="url">
+                  Writing Crash-Free Code
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-09-05T17:03:07+08:00" content="2016-09-05">
+              2016-09-05
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>面试的时候经常会被问到“程序崩溃都有哪些原因造成”，突然想的话想不到那么全面， 总结一下以备不时之需，也可以在写代码时注意下。另外，“如何处理崩溃”也是面试官喜欢问的问题，也做个总结。</p>
+<h3 id="程序崩溃都有哪些原因造成"><a href="#程序崩溃都有哪些原因造成" class="headerlink" title="程序崩溃都有哪些原因造成"></a>程序崩溃都有哪些原因造成</h3><ul>
+<li>可变数组的操作<ol>
+<li>使用 (for in) 或迭代器遍历可变数组时删除数组元素，改为逆序遍历或者添加个数组副本</li>
+<li>可变数组声明属性为 copy<br> // .h 文件<br> @property (nonatomic, copy) NSMutableArray <em>mutableArray;<br> // .m 文件<br> NSMutableArray </em>array = @[@1,@2];<br> self.mutableArray = array;<br> // 下句崩溃，因为 NSArray 中找不到 removeObjectAtIndex 方法<br> [self.mutableArray removeObjectAtIndex:0];  </li>
+</ol>
+</li>
+<li>NSNotification addObserver 使用后没有（在 dealloc 中） removeObserver，或者 delegate 使用后没有置为 nil</li>
+<li>多线程中访问同一块资源时，没有为数据加锁，数据错误可能会导致崩溃。另外在多线程中，UI 等操作需要放到主线程操作，否则会导致崩溃</li>
+<li>操作野指针，或者对空进行操作，可以使用 NSParameterAssert 等进行判断</li>
+<li>数组越界</li>
+<li>调用对象不存在的方法</li>
+<li>低内存终止，看门狗结束程序，大多是内存泄漏等导致。</li>
+</ul>
+<h3 id="修复线上崩溃的方法"><a href="#修复线上崩溃的方法" class="headerlink" title="修复线上崩溃的方法"></a>修复线上崩溃的方法</h3>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/09/05/Writing-Crash-Free-Code/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/08/31/Reading-The-Solution-Tango/" itemprop="url">
                   Reading The Solution Tango
                 </a>
@@ -1225,110 +1335,11 @@ Podfile.lock
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/05/What-can-make-Core-Graphics-coding-easy/" itemprop="url">
-                  What can make Core Graphics coding easy
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-05T10:35:01+08:00" content="2016-05-05">
-              2016-05-05
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>[LEAF Photo] 这个项目用到太多图形绘制，少不了使用 Core Graphics，因为用法简单所以之前也没什么困扰，但是这个项目中复杂图形和曲线绘制的频繁使用导致查询 API 和计算弧度的时间消耗，如果绘制贝塞尔曲线用 Sketch 画好后再计算控制点太费劲了。今天找到一个好工具 ［PaintCode］，可谓是射鸡屎和程序猿通吃的神器。</p>
-<p><img src="http://image.woshipm.com/wp-files/2015/05/3aa286544500.jpg" alt="img"></p>
-<p>这个工具最大的好处就是可以像操作［Sketch］一样，可视化的方式操作各种图形，OC 代码就直接生成了，大大滴提高了效率。</p>
-<p><img src="http://image.woshipm.com/wp-files/2015/05/123123123-1024x640.png" alt="img"></p>
-<p>［Sketch］ 设计好的矢量图形可以导出 SVG 格式，直接拖到［PaintCode］代码就生成了。</p>
-<p>它的操作也很简单，常用的功能在顶部，属性设置在右方，不学就能会。摸不到头脑的话可以看看 <a href="http://www.paintcodeapp.com" target="_blank" rel="external">官方文档</a> 或者这个系列的 <a href="http://www.woshipm.com/ucd/154006.html" target="_blank" rel="external">使用介绍</a> 。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1369,7 +1380,7 @@ Podfile.lock
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

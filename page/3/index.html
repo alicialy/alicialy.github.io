@@ -248,6 +248,105 @@
             
               
                 
+                <a class="post-title-link" href="/2016/05/05/What-can-make-Core-Graphics-coding-easy/" itemprop="url">
+                  What can make Core Graphics coding easy
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-05-05T10:35:01+08:00" content="2016-05-05">
+              2016-05-05
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>[LEAF Photo] 这个项目用到太多图形绘制，少不了使用 Core Graphics，因为用法简单所以之前也没什么困扰，但是这个项目中复杂图形和曲线绘制的频繁使用导致查询 API 和计算弧度的时间消耗，如果绘制贝塞尔曲线用 Sketch 画好后再计算控制点太费劲了。今天找到一个好工具 ［PaintCode］，可谓是射鸡屎和程序猿通吃的神器。</p>
+<p><img src="http://image.woshipm.com/wp-files/2015/05/3aa286544500.jpg" alt="img"></p>
+<p>这个工具最大的好处就是可以像操作［Sketch］一样，可视化的方式操作各种图形，OC 代码就直接生成了，大大滴提高了效率。</p>
+<p><img src="http://image.woshipm.com/wp-files/2015/05/123123123-1024x640.png" alt="img"></p>
+<p>［Sketch］ 设计好的矢量图形可以导出 SVG 格式，直接拖到［PaintCode］代码就生成了。</p>
+<p>它的操作也很简单，常用的功能在顶部，属性设置在右方，不学就能会。摸不到头脑的话可以看看 <a href="http://www.paintcodeapp.com" target="_blank" rel="external">官方文档</a> 或者这个系列的 <a href="http://www.woshipm.com/ucd/154006.html" target="_blank" rel="external">使用介绍</a> 。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/" itemprop="url">
                   Lighter View Controllers For LEAFPhoto
                 </a>
@@ -1396,129 +1495,11 @@ return MAXFLOAT;\
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2014/01/15/Mobile-Client-Development-Notice/" itemprop="url">
-                  Mobile Client Development Notice
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2014-01-15T01:48:01+08:00" content="2014-01-15">
-              2014-01-15
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这是一篇关于移动客户端开发中容易出现的 Bug 及问题以及产品方面的大杂烩。</p>
-<h2 id="写代码前应当注意的问题"><a href="#写代码前应当注意的问题" class="headerlink" title="写代码前应当注意的问题"></a>写代码前应当注意的问题</h2><ol>
-<li>进度条、提示框的处理。在需要超过 2s 的地方添加进度条或等待提示框。出错时要使用提示框提示用户能看得懂的提示语句。</li>
-<li>删除、放弃等操作需要添加确认提示。</li>
-<li>当设计稿只给定了一种文字样式，这种样式正好文字不是很长时，需要确认文字过多、过长时的显示方式。文字过多时是省略(使用…)还是截取，是否支持多行显示。</li>
-<li>图片的显示方式，图片显示时是要进行裁剪还是等比缩放。</li>
-<li>小屏手机上的显示效果。例如出现键盘显示时，如果设计给出的效果在小屏手机上出现键盘遮挡控件时，需要确认如何处理。</li>
-<li>列表点击后是否需要设置选中色。</li>
-<li>需要使用数据库存放数据时，图片、文件、 二进制数据不要存放到数据库中。</li>
-</ol>
-<h2 id="提交测试前应确认的问题"><a href="#提交测试前应确认的问题" class="headerlink" title="提交测试前应确认的问题"></a>提交测试前应确认的问题</h2><ol>
-<li>网络异常时程序是否出现异常。</li>
-<li>带输入框的地方没有输入或输入过长时的处理，是否使用了合适的键盘，纯数字或者文本？能否正确地触发键盘的弹出和收起。</li>
-<li>如果调用系统 API 获取了时间，当本地时间发生变动时是否会造成影响。</li>
-<li>按钮是否支持连续点击。</li>
-<li>列表为空时展示成何种样式，网络出现问题时是否需要支持重新加载。</li>
-<li>Tab 切换是否正常刷新。</li>
-</ol>
-<h2 id="产品相关方面应当考虑的问题"><a href="#产品相关方面应当考虑的问题" class="headerlink" title="产品相关方面应当考虑的问题"></a>产品相关方面应当考虑的问题</h2><ol>
-<li>想不清楚一个功能点时宁可不做，或者突发奇想觉得某个功能很好玩时，先要三思。从以往的经历来看，这种功能即使做了，结果要不就是后来被弃用，要不就是发现有严重问题需要重做。</li>
-<li>不要期待你的客户帮你想如何改进，他们不是你的产品经理，除非你已经有了非常忠实的一批粉丝。</li>
-<li>如果大家都在为老板做产品，“哎，大家都觉得这里很别扭，大家都觉得这样很难看，但是改吧，老板说要这个功能，老板说要做成这样”，这个时候就要想想是否能试图改变这种状况。</li>
-<li>同一个页面有多个入口，同一个功能有多种展现方式？你让用户选择，不如你为用户选择好一个最佳的方式。</li>
-<li>保持产品主干清晰，一个产品应该主要关注一件事情，如果分支太多，或者喧宾夺主，以为这样做能留存了用户，但是事实上那些用户大多情况下不是你的目标用户，如果想要拉投资需要算人头的情况除外。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1559,7 +1540,7 @@ return MAXFLOAT;\
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

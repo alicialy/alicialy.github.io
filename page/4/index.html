@@ -248,6 +248,319 @@
             
               
                 
+                <a class="post-title-link" href="/2015/07/04/Source-Code-Learning-SDWebImage/" itemprop="url">
+                  Source Code Learning - SDWebImage
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2015-07-04T17:16:24+08:00" content="2015-07-04">
+              2015-07-04
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下</p>
+<h2 id="NSURLSession-工作模式"><a href="#NSURLSession-工作模式" class="headerlink" title="NSURLSession 工作模式"></a>NSURLSession 工作模式</h2><p>NSURLSessionConfiguration 分为三种工作模式<br>default: 可以使用磁盘缓存、身份认证、Cookie<br>ephemeral(及时模式): 数据只能保存到内存，无法存储到磁盘。<br>background: 可以在后台执行上传或下载任务</p>
+<h2 id="后进先出"><a href="#后进先出" class="headerlink" title="后进先出"></a>后进先出</h2><p>后进先出通过 NSOperation 的依赖实现</p>
+<pre><code>if (wself.executionOrder == SDWebImageDownloaderLIFOExecutionOrder) {
+        // Emulate LIFO execution order by systematically adding new operations as last operation&apos;s dependency
+        [wself.lastAddedOperation addDependency:operation];
+        wself.lastAddedOperation = operation;
+}
+</code></pre><h2 id="GCD-barrier"><a href="#GCD-barrier" class="headerlink" title="GCD barrier"></a>GCD barrier</h2><p>dispatch_barrier_async 比较常见，那么 dispatch_barrier_sync 又是做什么的，区别是什么呢？看文档可知 dispatch_barrier_async 不用执行完内部方法即可返回，dispatch_barrier_sync 需要等到执行完内部方法才会返回</p>
+<pre><code>dispatch_aync(queue, ^{
+    NSLog(@&quot;In 1&quot;);
+});
+dispatch_barrier_sync(queue,^{
+    for (int i = 0; i &lt; 100000; i++) {
+        // ...
+    }
+    NSLog(@&quot;In barrier&quot;);
+});
+NSLog(@&quot;In 2&quot;);
+</code></pre><p>输出结果为</p>
+<pre><code>In 1
+In barrier
+In 2
+</code></pre><p>如果 dispatch_barrier_sync 改为 dispatch_barrier_async</p>
+<p>输出结果为</p>
+<pre><code>In 1
+In 2
+In barrier
+</code></pre><h2 id="线程锁"><a href="#线程锁" class="headerlink" title="线程锁"></a>线程锁</h2><pre><code>// 头文件中定义
+@property (strong, nonatomic) NSMutableArray *failedURLs;
+// 实现文件的函数中在多线程环境下使用，对参数加锁，保证临界区内代码的线程安全
+@synchronized (self.failedURLs) {
+    isFailedUrl = [self.failedURLs containsObject:url];
+}
+</code></pre><p>failedURLs 没有设置为 atomic，使用 synchronized 来保证线程安全</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/07/04/Source-Code-Learning-SDWebImage/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2014/09/23/Macro/" itemprop="url">
+                  Macro
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2014-09-23T19:41:41+08:00" content="2014-09-23">
+              2014-09-23
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="尺寸宏"><a href="#尺寸宏" class="headerlink" title="尺寸宏"></a>尺寸宏</h3><pre><code>#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height) 
+</code></pre><h3 id="打印宏"><a href="#打印宏" class="headerlink" title="打印宏"></a>打印宏</h3><pre><code>#ifdef DEBUG
+#   define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+</code></pre><p><strong>func</strong>, <strong>FUNCTION</strong>, <strong>PRETTY_FUNCTION</strong> 可以用来打印函数名。<br><strong>PRETTY_FUNCTION</strong> 和 <strong>func</strong>, <strong>FUNCTION</strong> 稍微有点不同的是，它在 C/C++ 函数中会打印出方法签名（即方法名称和一个参数列表）。</p>
+<p>如果觉得上面的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="external">喵神的代码</a></p>
+<pre><code>#define NSLog(format, ...) do { \
+    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
+    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
+    __LINE__, __func__);  \
+    (NSLog)((format), ##__VA_ARGS__);   \
+    fprintf(stderr, &quot;-------\n&quot;);       \
+} while (0)
+</code></pre><h3 id="系统宏"><a href="#系统宏" class="headerlink" title="系统宏"></a>系统宏</h3><pre><code>//检查系统版本
+#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+</code></pre><h3 id="颜色宏"><a href="#颜色宏" class="headerlink" title="颜色宏"></a>颜色宏</h3><pre><code>//带有RGBA的颜色设置
+#define RGBCOLORA(r, g, b, a) [UIColor colorWithRed:4/255.0 green:g/255.0 blue:b/255.0 alpha:a]
+#define RGBCOLOR(r,g,b) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f alpha:1]
+</code></pre><h3 id="单例宏"><a href="#单例宏" class="headerlink" title="单例宏"></a>单例宏</h3><pre><code>#define singleH(name) +(instancetype)share##name;
+
+#if __has_feature(objc_arc)
+
+#define singleM(name) static id _instance;\
++(instancetype)allocWithZone:(struct _NSZone *)zone\
+{\
+static dispatch_once_t onceToken;\
+dispatch_once(&amp;onceToken, ^{\
+_instance = [super allocWithZone:zone];\
+});\
+return _instance;\
+}\
+\
++(instancetype)share##name\
+{\
+return [[self alloc]init];\
+}\
+-(id)copyWithZone:(NSZone *)zone\
+{\
+return _instance;\
+}\
+\
+-(id)mutableCopyWithZone:(NSZone *)zone\
+{\
+return _instance;\
+}
+
+#else
+#define singleM static id _instance;\
++(instancetype)allocWithZone:(struct _NSZone *)zone\
+{\
+static dispatch_once_t onceToken;\
+dispatch_once(&amp;onceToken, ^{\
+_instance = [super allocWithZone:zone];\
+});\
+return _instance;\
+}\
+\
++(instancetype)shareTools\
+{\
+return [[self alloc]init];\
+}\
+-(id)copyWithZone:(NSZone *)zone\
+{\
+return _instance;\
+}\
+-(id)mutableCopyWithZone:(NSZone *)zone\
+{\
+return _instance;\
+}\
+-(oneway void)release\
+{\
+}\
+\
+-(instancetype)retain\
+{\
+return _instance;\
+}\
+\
+-(NSUInteger)retainCount\
+{\
+return MAXFLOAT;\
+}
+#endif
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2014/01/15/Mobile-Client-Development-Notice/" itemprop="url">
                   Mobile Client Development Notice
                 </a>
@@ -291,34 +604,18 @@
 
       
         
-          
-            <p>这是一篇关于移动客户端开发中容易出现的 Bug 及问题以及产品方面的大杂烩。</p>
-<h2 id="写代码前应当注意的问题"><a href="#写代码前应当注意的问题" class="headerlink" title="写代码前应当注意的问题"></a>写代码前应当注意的问题</h2><ol>
-<li>进度条、提示框的处理。在需要超过 2s 的地方添加进度条或等待提示框。出错时要使用提示框提示用户能看得懂的提示语句。</li>
-<li>删除、放弃等操作需要添加确认提示。</li>
-<li>当设计稿只给定了一种文字样式，这种样式正好文字不是很长时，需要确认文字过多、过长时的显示方式。文字过多时是省略(使用…)还是截取，是否支持多行显示。</li>
-<li>图片的显示方式，图片显示时是要进行裁剪还是等比缩放。</li>
-<li>小屏手机上的显示效果。例如出现键盘显示时，如果设计给出的效果在小屏手机上出现键盘遮挡控件时，需要确认如何处理。</li>
-<li>列表点击后是否需要设置选中色。</li>
-<li>需要使用数据库存放数据时，图片、文件、 二进制数据不要存放到数据库中。</li>
-</ol>
-<h2 id="提交测试前应确认的问题"><a href="#提交测试前应确认的问题" class="headerlink" title="提交测试前应确认的问题"></a>提交测试前应确认的问题</h2><ol>
-<li>网络异常时程序是否出现异常。</li>
-<li>带输入框的地方没有输入或输入过长时的处理，是否使用了合适的键盘，纯数字或者文本？能否正确地触发键盘的弹出和收起。</li>
-<li>如果调用系统 API 获取了时间，当本地时间发生变动时是否会造成影响。</li>
-<li>按钮是否支持连续点击。</li>
-<li>列表为空时展示成何种样式，网络出现问题时是否需要支持重新加载。</li>
-<li>Tab 切换是否正常刷新。</li>
-</ol>
-<h2 id="产品相关方面应当考虑的问题"><a href="#产品相关方面应当考虑的问题" class="headerlink" title="产品相关方面应当考虑的问题"></a>产品相关方面应当考虑的问题</h2><ol>
-<li>想不清楚一个功能点时宁可不做，或者突发奇想觉得某个功能很好玩时，先要三思。从以往的经历来看，这种功能即使做了，结果要不就是后来被弃用，要不就是发现有严重问题需要重做。</li>
-<li>不要期待你的客户帮你想如何改进，他们不是你的产品经理，除非你已经有了非常忠实的一批粉丝。</li>
-<li>如果大家都在为老板做产品，“哎，大家都觉得这里很别扭，大家都觉得这样很难看，但是改吧，老板说要这个功能，老板说要做成这样”，这个时候就要想想是否能试图改变这种状况。</li>
-<li>同一个页面有多个入口，同一个功能有多种展现方式？你让用户选择，不如你为用户选择好一个最佳的方式。</li>
-<li>保持产品主干清晰，一个产品应该主要关注一件事情，如果分支太多，或者喧宾夺主，以为这样做能留存了用户，但是事实上那些用户大多情况下不是你的目标用户，如果想要拉投资需要算人头的情况除外。</li>
-</ol>
-
-          
+          <p>这是一篇关于移动客户端开发中容易出现的 Bug 及问题以及产品方面的大杂烩。</p>
+<h2 id="修改代码时应当注意的问题"><a href="#修改代码时应当注意的问题" class="headerlink" title="修改代码时应当注意的问题"></a>修改代码时应当注意的问题</h2><ul>
+<li>代码是否可能存在重复，修复一个地方，其他的地方没有修复完全，要把重复的代码抽到公共的地方</li>
+<li>修改前和修改后是否功能是一致的没有出现变化。</li>
+<li>属性是否应该是只读的，一旦把只读变成非只读，要考虑修改了内存中常驻的变量时是否会有功能影响</li>
+</ul>
+<h2 id="提交代码前的自测应检查的内容"><a href="#提交代码前的自测应检查的内容" class="headerlink" title="提交代码前的自测应检查的内容"></a>提交代码前的自测应检查的内容</h2><p>总结下通用的测试用例</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2014/01/15/Mobile-Client-Development-Notice/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -390,7 +687,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -457,7 +754,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

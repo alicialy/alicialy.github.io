@@ -94,7 +94,7 @@ NSURLSession 工作模式NSURLSessionConfiguration 分为三种工作模式defau
 <meta property="og:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
 NSURLSession 工作模式NSURLSessionConfiguration 分为三种工作模式default: 可以使用磁盘缓存、身份认证、Cookieephemeral(及时模式): 数据只能保存到内存，无法存储到磁盘。background: 可以在后台执行上传或下载任务
 后进先出后进先出通过 NSOperation 的依赖">
-<meta property="og:updated_time" content="2017-07-31T14:44:32.000Z">
+<meta property="og:updated_time" content="2018-01-12T14:05:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - SDWebImage">
 <meta name="twitter:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
@@ -338,12 +338,11 @@ In barrier
 <li>另外，图片下载失败后，会记录下这个地址到 failedURLs，下载时可以选择是否下载失败的地址不再重新尝试下载</li>
 </ul>
 <h2 id="一些调用方法"><a href="#一些调用方法" class="headerlink" title="一些调用方法"></a>一些调用方法</h2><ul>
-<li>shouldDecompressImages 是否需要解压图片</li>
+<li>shouldDecompressImages 是否需要解压图片，默认是 YES</li>
 </ul>
-<p>在缓存前对图片进行解码或者说解压缩，是由于图片被渲染到控件时，会有一个解压操作，这个解压过程会有一些效率问题，如果在将图片保存到缓存前就进行了解压缩，对于 TableView 等滑动时的流畅效果会有提高，这就是所谓的空间换时间的做法。但是，如果图片较大又不会被频繁渲染，这时最好关闭解压过程，否则可能导致内存剧增，从而出现内存警告甚至崩溃。</p>
-<p>但是多大的图片算大呢？这个在早年间做 app 时深有体会，当时的老板要求在一个类似微博客户端列表中所有的图片都使用微博的原图，但是市面上没有一个 app 这么做，我们争执了一番，结果老板给出的理由是我这个 2G 内存的手机（这是2011年左右的手机）连几张几百K内存的图片加载都做不到么？怎么可能。于是研究了一番发现，其实解压一张几百K的图片，需要的内存可不一定是几百K。</p>
-<p>解压图片需要开辟的内存大小为<br>bitmapWidth <em> bitmapHeight </em> 位图的每一行所占的字节数（ 例如 4 byte 或 2 byte)<br>例如一张 1500 * 500 大小的 PNG，需要 3000000B = 2.8M。</p>
-<p>看到这个计算方式后老板终于不再要求实现原先的功能了，所以当显示尺寸较大的图片时，不要开启 shouldDecompressImages。</p>
+<p>在缓存前对图片进行解码或者说解压缩，是由于图片被渲染到控件时，会有一个解压操作，这个解压过程会有一些效率问题，如果在将图片保存到缓存前就进行了解压缩，对于 TableView 等滑动时的流畅效果会有提高，这就是所谓的空间换时间的做法。</p>
+<p>一张图片解压需要开辟的内存大小为<br>bitmapWidth <em> bitmapHeight </em> 位图的每一行所占的字节数（ 例如 4 byte 或 2 byte)<br>例如一张 1500 * 500 大小的 PNG，需要 3000000B = 2.8M。</p>
+<p>当显示尺寸较大的图片时，最好不要开启 shouldDecompressImages，否则可能导致内存剧增，从而出现内存警告甚至崩溃。</p>
 <ul>
 <li>maxCacheAge 缓存的有效时间是1周</li>
 </ul>
@@ -524,7 +523,7 @@ func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -602,7 +601,7 @@ func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

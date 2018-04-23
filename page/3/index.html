@@ -857,6 +857,350 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
               
                 
+                <a class="post-title-link" href="/2016/03/21/Pro-Multilthreading-and-Memory-Management-for-iOS/" itemprop="url">
+                  Pro Multilthreading and Memory Management for iOS
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-03-21T20:02:26+08:00" content="2016-03-21">
+              2016-03-21
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Code tells everything，所以直接上代码</p>
+<h3 id="ARC"><a href="#ARC" class="headerlink" title="ARC"></a>ARC</h3><h5 id="weak-修饰符的效率"><a href="#weak-修饰符的效率" class="headerlink" title="__weak 修饰符的效率"></a>__weak 修饰符的效率</h5><pre><code>{
+    id __weak o = obj; 
+    NSLog(@&quot;1 %@&quot;, o); 
+    NSLog(@&quot;2 %@&quot;, o); 
+}
+</code></pre><p>当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak 对象，对象就会被多次放到自动释放池中，如上 o 被加入两次，所以建议使用添加加一个强引用来优化如下：</p>
+<pre><code>{
+    id __weak o = obj; 
+    id tmp = o; 
+    NSLog(@&quot;1 %@&quot;, tmp); 
+    NSLog(@&quot;2 %@&quot;, tmp);
+}
+</code></pre><h5 id="weak-如何在释放时赋值为-nil"><a href="#weak-如何在释放时赋值为-nil" class="headerlink" title="__weak 如何在释放时赋值为 nil"></a>__weak 如何在释放时赋值为 nil</h5><pre><code>{
+    id __weak obj1 = obj;
+}
+</code></pre><p>以上代码 clang 后为</p>
+<pre><code>id obj1;
+objc_initWeak(&amp;obj1, obj); 
+</code></pre><p>objc_initWeak 定义如下</p>
+<pre><code>id objc_initWeak(id *location, id newObj) {
+    if (!newObj) {
+        *location = nil;
+        return nil;
+    }
+    //  这里的 template 用法是非类型的类模板参数 
+    return storeWeak&lt;false/*old*/, true/*new*/, true/*crash*/&gt;
+        (location, (objc_object*)newObj);
+}
+</code></pre><p>关于上面 非类型的类模板参数 也有叫非类型形参，可以优化性能，但是具体原因网上没搜索到，有空看看 《C++ Templates》 应该有具体介绍，可以探究下提升性能的原因。</p>
+<pre><code>template &lt;bool HaveOld, bool HaveNew, bool CrashIfDeallocating&gt;
+static id storeWeak(id *location, objc_object *newObj) {
+    Class previouslyInitializedClass = nil;
+    id oldObj;
+    SideTable *oldTable;
+    SideTable *newTable;
+    //
+    retry:
+    if (HaveOld) {
+        oldObj = *location;
+        oldTable = &amp;SideTables()[oldObj];
+    } else {
+        oldTable = nil;
+    }
+    if (HaveNew) {
+        newTable = &amp;SideTables()[newObj];
+    } else {
+        newTable = nil;
+    }
+    //
+    SideTable::lockTwo&lt;HaveOld, HaveNew&gt;(oldTable, newTable);
+    if (HaveOld  &amp;&amp;  *location != oldObj) {
+        SideTable::unlockTwo&lt;HaveOld, HaveNew&gt;(oldTable, newTable);
+        goto retry;
+    }
+    //
+    if (HaveNew  &amp;&amp;  newObj) {
+        Class cls = newObj-&gt;getIsa();
+        // 通过调用 initialize 保证所有弱引用的 isa 非空
+        if (cls != previouslyInitializedClass  &amp;&amp;  
+            !((objc_class *)cls)-&gt;isInitialized()) {
+
+            SideTable::unlockTwo&lt;HaveOld, HaveNew&gt;(oldTable, newTable);
+            _class_initialize(_class_getNonMetaClass(cls, (id)newObj));
+            previouslyInitializedClass = cls;
+            goto retry;
+        }
+    }
+    //
+    if (HaveOld) {
+        weak_unregister_no_lock(&amp;oldTable-&gt;weak_table, oldObj, location);
+    }
+
+    if (HaveNew) {
+        newObj = (objc_object *)weak_register_no_lock(&amp;newTable-&gt;weak_table, 
+                                                  (id)newObj, location, 
+                                                  CrashIfDeallocating);
+
+        if (newObj  &amp;&amp;  !newObj-&gt;isTaggedPointer()) {
+            newObj-&gt;setWeaklyReferenced_nolock();
+        }
+        *location = (id)newObj;
+    }
+    SideTable::unlockTwo&lt;HaveOld, HaveNew&gt;(oldTable, newTable);
+    return (id)newObj;
+}
+</code></pre><p>变量会存在 SideTable 中</p>
+<pre><code>class SideTable {
+    private:
+        static uint8_t table_buf[SIDE_TABLE_STRIPE * SIDE_TABLE_SIZE];
+    public:
+        RefcountMap refcnts;
+        weak_table_t weak_table;
+        // ...
+}
+
+struct weak_table_t {
+    weak_entry_t *weak_entries;
+    size_t    num_entries;
+    // ...
+};
+
+struct weak_entry_t {
+    DisguisedPtr referent;
+    union {
+        struct {
+            weak_referrer_t *referrers;
+            uintptr_t        out_of_line : 1;
+            // ...
+        };
+        struct {
+            // out_of_line=0 is LSB of one of these (don&apos;t care which)
+            weak_referrer_t  inline_referrers[WEAK_INLINE_COUNT];
+        };
+    };
+};
+</code></pre><p>对象被释放的时候 dealloc 会调用到 _objc_rootDealloc -&gt; objc_clear_deallocating，该方法主要是要找到 weak_entry_t 结构体中保存的变量，将弱引用置为 nil</p>
+<pre><code>void objc_clear_deallocating(id obj) 
+{
+    ／/ ....
+    SideTable *table = SideTable::tableForPointer(obj);
+    // clear any weak table items
+    // clear extra retain count and deallocating bit
+    // (fixme warn or abort if extra retain count == 0 ?)
+    OSSpinLockLock(&amp;table-&gt;slock);
+    if (seen_weak_refs) {
+        arr_clear_deallocating(&amp;table-&gt;weak_table, obj);
+    }
+    // ...
+}
+
+PRIVATE_EXTERN void arr_clear_deallocating(weak_table_t *weak_table, id referent) {
+    weak_entry_t *entry = weak_entry_for_referent(weak_table, referent);
+    if (entry == NULL) {
+        // ...
+        return;
+    }
+    // zero out references
+    for (int i = 0; i &lt; entry-&gt;referrers.num_allocated; ++i) {
+        id *referrer = entry-&gt;referrers.refs[i].referrer;
+        if (referrer) {
+            if (*referrer == referent) {
+                *referrer = nil;
+            }
+            else if (*referrer) {
+                _objc_inform(&quot;__weak variable @ %p holds %p instead of %p\n&quot;, referrer, *referrer, referent);
+            }
+        }
+    }
+    weak_entry_remove_no_lock(weak_table, entry);
+    weak_table-&gt;num_weak_refs--;
+}
+</code></pre><h3 id="Blocks"><a href="#Blocks" class="headerlink" title="Blocks"></a>Blocks</h3><p>标准 C 不支持匿名函数的，但是 GCC 和 Clang 是可以实现的，</p>
+<p>GCC 的形式 ( { return_type anonymous_functions_name (parameters) { function_body } anonymous_functions_name; } )</p>
+<p>Clang 的形式 ^return_type ( parameters ) { function_body }</p>
+<h5 id="捕获局部变量"><a href="#捕获局部变量" class="headerlink" title="捕获局部变量"></a>捕获局部变量</h5><pre><code>int main()
+{
+    int val = 10;
+    const char *fmt = &quot;val = %d\n&quot;;
+    void (^blk)(void) = ^{printf(fmt, val);};
+    val = 2;
+    fmt = &quot;These values were changed. val = %d\n&quot;;
+    blk();
+    return 0; 
+}
+</code></pre><p>blk 在定义的时候就捕获了 fmt 和 val 变量，所以输出内容是 val = 10。变量在 Block 内部被捕获后就是只读的，如果需要修改需要使用 __block 修饰符。</p>
+<p>对于数组，以下的方式没有问题</p>
+<pre><code>id array = [[NSMutableArray alloc] init]; 
+void (^blk)(void) = ^{
+    id obj = [[NSObject alloc] init];
+    [array addObject:obj]; 
+};
+</code></pre><p>但是如果改变数组指针地址就会报错</p>
+<pre><code>id array = [[NSMutableArray alloc] init]; 
+void (^blk)(void) = ^{
+    array = [[NSMutableArray alloc] init]; 
+};
+</code></pre><h5 id="OC-gt-C"><a href="#OC-gt-C" class="headerlink" title="OC -&gt; C"></a>OC -&gt; C</h5><p>clang -rewrite-objc file_name_of_the_source_code</p>
+<pre><code>int main()
+{
+    void (^blk)(void) = ^{printf(&quot;Block\n&quot;);};
+    blk();
+    return 0;
+}
+</code></pre><p>clang 转换的代码</p>
+<pre><code>void (^blk)(void)  ==&gt; void (*blk)(void)
+
+^{printf(&quot;Block\n&quot;);}; ==&gt; 
+
+(void (*)(void))&amp;__main_block_impl_0(
+    (void *)__main_block_func_0, &amp;__main_block_desc_0_DATA);
+</code></pre><p>__main_block_impl_0 是结构体，其构造函数如下</p>
+<pre><code>struct __main_block_impl_0 {
+    struct __block_impl impl;
+    struct __main_block_desc_0* Desc;
+    //
+    __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int flags=0) { 
+        impl.isa = &amp;_NSConcreteStackBlock;
+        impl.Flags = flags;
+        impl.FuncPtr = fp;
+        Desc = desc; 
+    }
+};
+
+struct __block_impl { 
+    void *isa;
+    int Flags;
+    int Reserved; void *FuncPtr;
+};
+
+static struct __main_block_desc_0 {
+    unsigned long reserved; 
+    unsigned long Block_size;
+} __main_block_desc_0_DATA = { 
+    0,
+    sizeof(struct __main_block_impl_0) 
+};
+
+static void __main_block_func_0(struct __main_block_impl_0 *__cself)
+{
+    printf(&quot;Block\n&quot;);
+}
+</code></pre><p>blk();  转换为</p>
+<pre><code>((void (*)(struct __block_impl *))(
+    (struct __block_impl *)blk)-&gt;FuncPtr)((struct __block_impl *)blk);
+</code></pre><h5 id="可写变量"><a href="#可写变量" class="headerlink" title="可写变量"></a>可写变量</h5><p>如何在 Block 函数中改变变量的值，看如下逻辑，函数中 val 的值即使被改变，也不会把改变的值写回 cself 中，展开形式如下</p>
+<pre><code>static void __main_block_func_0(struct __main_block_impl_0 *__cself)
+{
+    const char *fmt = __cself-&gt;fmt; 
+    int val = __cself-&gt;val;
+    printf(fmt, val); 
+}
+</code></pre><h5 id="block-修饰符"><a href="#block-修饰符" class="headerlink" title="__block 修饰符"></a>__block 修饰符</h5><p>__block 修饰符类似 C 中的 static, auto, and register</p>
+<p>__block 如何实现修改变量</p>
+<pre><code>struct __Block_byref_val_0 { 
+    void *__isa;
+    __Block_byref_val_0 *__forwarding; 
+    int __flags;
+    int __size;
+    int val;
+};
+
+__block int val = 10;
+void (^blk)(void) = ^{val = 1;};
+
+static void __main_block_func_0(struct __main_block_impl_0 *__cself)
+{
+    __Block_byref_val_0 *val = __cself-&gt;val;
+    (val-&gt;__forwarding-&gt;val) = 1; 
+}
+</code></pre><p><img src="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B" alt="Anonymous function"></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/01/11/Source-Code-Learning-AFNetworking/" itemprop="url">
                   Source Code Learning - AFNetworking
                 </a>
@@ -1340,120 +1684,6 @@ NSNull *null2 = [NSNull null];
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/" itemprop="url">
-                  Source Code Learning - UITableView-FDTemplateLayoutCell
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2015-07-12T13:51:12+08:00" content="2015-07-12">
-              2015-07-12
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="actionSheet-避开-switch-case-写法"><a href="#actionSheet-避开-switch-case-写法" class="headerlink" title="actionSheet 避开 switch case 写法"></a>actionSheet 避开 switch case 写法</h2><pre><code>- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    SEL selectors[] = {
-        @selector(insertRow),
-        @selector(insertSection),
-        @selector(deleteSection)
-    };
-
-    if (buttonIndex &lt; sizeof(selectors) / sizeof(SEL)) {
-        void(*imp)(id, SEL) = (typeof(imp))[self methodForSelector:selectors[buttonIndex]];
-        imp(self, selectors[buttonIndex]);
-    }
-}
-</code></pre><p>利用判断条件或者在循环中调用某个方法的方式如上</p>
-<p>已知函数名，有两种方式调用函数，之前在 <a href="http://alicialy.github.io/2016/07/04/Source-Code-Learning-SDWebImage/">SDWebImage 解析</a> 中总结过可以使用 performSelector 或者 methodForSelector 两个函数。</p>
-<h2 id="do-while-0-在宏定义中的使用"><a href="#do-while-0-在宏定义中的使用" class="headerlink" title="do {} while(0) 在宏定义中的使用"></a>do {} while(0) 在宏定义中的使用</h2><pre><code>static void __FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(void (^callout)(void)) {
-    callout();
-}
-#define FDPrimaryCall(...) do {__FD_TEMPLATE_LAYOUT_CELL_PRIMARY_CALL_IF_CRASH_NOT_OUR_BUG__(^{__VA_ARGS__});} while(0)
-</code></pre>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/07/12/Source-Code-Learning-UITableView-FDTemplateLayoutCell/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1499,7 +1729,7 @@ NSNull *null2 = [NSNull null];
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

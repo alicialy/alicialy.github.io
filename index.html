@@ -293,7 +293,7 @@
         
           
             <p>总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。</p>
-<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="重构的原因"><a href="#重构的原因" class="headerlink" title="重构的原因"></a>重构的原因</h3><p>过去一年多做的项目已经运行了五年，一套代码支持了几十个项目，经手的人不下二十。最近开发新需求的时候总是觉得不能得心应手，修复问题或者开发新功能很容易造成项目之间互相影响出现 Bug，再加上代码结构混乱、继承关系错乱导致新员工无法快速上手等。</p>
+<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="重构的原因"><a href="#重构的原因" class="headerlink" title="重构的原因"></a>重构的原因</h3><p>过去一年多做的项目已经运行了六年，一套代码支持了几十个项目，经手的人不下二十。最近开发新需求的时候总是觉得不能得心应手，修复问题或者开发新功能很容易造成项目之间互相影响出现 Bug，再加上代码结构混乱、继承关系错乱导致新员工无法快速上手等。</p>
 <p>为什么这么晚才进行重构，个人感觉不外乎可以归为以下几个，首先大部分员工没有能力做这个事情，其次重构可能带来更多 Bug 测试和市场可能不满，业务需求过多没有足够时间。但是无论什么问题肯定都是有对策的。另外领导应该有承担风险责任，给员工犯错和试错的机会。</p>
 <h3 id="重构和重写"><a href="#重构和重写" class="headerlink" title="重构和重写"></a>重构和重写</h3><p>大多数人都喜欢看自己写的代码，觉得别人的代码不容易理解，维护以前的代码浪费时间，所以一说到重构他们首先想到的是重写。不说重写会造成多少资源的浪费，但是我相信重写引入的 Bug 肯定会比合理重构造成的 Bug 只多不少。《Refactoring》书中给了我们很好的说明什么时候应该重写</p>
 <blockquote>
@@ -311,7 +311,23 @@
 <p>当你感觉需要撰写注释时，请先尝试重构，试着让所有注释变得多余。</p>
 </blockquote>
 <p>以上问题的重构方案步骤参见 《Refactoring》 一书即可，书中很详细的介绍了如何一小步一小步的修改，最终达成目的。</p>
-<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>待完成</p>
+<h3 id="重构的目标"><a href="#重构的目标" class="headerlink" title="重构的目标"></a>重构的目标</h3><ul>
+<li>解耦，减少 Bug</li>
+<li>组件化，将可以共用的部分抽离，避免重复代码散落多处维护困难</li>
+<li>模块化，按照业务功能拆分，做到高内聚低耦合</li>
+<li>梳理混乱的目录结构</li>
+<li>使用 CocoaPods 发布，每个模块打包成单独的 Pod</li>
+</ul>
+<p>如上图橙黄色层为业务模块，绿色为中间层，红色为第三方开源库和底层 API，绿色是对红色层的封装，橙黄色只能调用绿色层和底层，红色部分是不可以修改的部分。调用关系如白线所示，模块间不能通过硬编码互相调用，模块间的重复部分可以下沉到组件。</p>
+<p>重构的目标有了框架也有了，但是如果每个类内部实现的方式很糟糕， 再完美的框架也只是个摆设。模块的高内聚低耦合还是需要利用好的模式来实现。</p>
+<h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><p>采用大家最熟悉的 MVC，未采用 MVVM / MVP / VIPER 等模式是由于公司现有的业务就需要一段时间，再使用一些框架会加长适应时间，再者 RAC 可能会导致不方便查找 Bug，所以新开发的小模块有兴趣的话可以采用 MVP／ VIPER，整体框架沿用 MVC。</p>
+<p>为了实现模块间解耦，引入 BeeHive。</p>
+<h3 id="Controller-瘦身"><a href="#Controller-瘦身" class="headerlink" title="Controller 瘦身"></a>Controller 瘦身</h3><h3 id="组件的问题"><a href="#组件的问题" class="headerlink" title="组件的问题"></a>组件的问题</h3><ul>
+<li>Category 的方法名没有前缀，会导致冲突，例如 UView 的 Cateogry 中添加了 left 方法和 Masonry</li>
+<li>NSLog 的滥用</li>
+</ul>
+<h3 id="CocoaPods-自动打包"><a href="#CocoaPods-自动打包" class="headerlink" title="CocoaPods 自动打包"></a>CocoaPods 自动打包</h3><p>使用脚本，自动生成 Spec</p>
+<p>待完成</p>
 
           
         
@@ -1425,7 +1441,7 @@ self.window.rootViewController = [[UINavigationController alloc] initWithRootVie
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,Books," />
+  <meta name="keywords" content="Books,iOS," />
 
 
 
@@ -103,7 +103,7 @@ ARC__weak 修饰符的效率{
 }
 当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak">
 <meta property="og:image" content="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B">
-<meta property="og:updated_time" content="2018-04-21T12:12:39.000Z">
+<meta property="og:updated_time" content="2018-04-30T02:30:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Pro Multilthreading and Memory Management for iOS">
 <meta name="twitter:description" content="Code tells everything，所以直接上代码
@@ -459,9 +459,11 @@ PRIVATE_EXTERN void arr_clear_deallocating(weak_table_t *weak_table, id referent
     weak_table-&gt;num_weak_refs--;
 }
 </code></pre><h3 id="Blocks"><a href="#Blocks" class="headerlink" title="Blocks"></a>Blocks</h3><p>标准 C 不支持匿名函数的，但是 GCC 和 Clang 是可以实现的，</p>
-<p>GCC 的形式 ( { return_type anonymous_functions_name (parameters) { function_body } anonymous_functions_name; } )</p>
-<p>Clang 的形式 ^return_type ( parameters ) { function_body }</p>
-<h5 id="捕获局部变量"><a href="#捕获局部变量" class="headerlink" title="捕获局部变量"></a>捕获局部变量</h5><pre><code>int main()
+<p>GCC 的形式 </p>
+<pre><code>( { return_type anonymous_functions_name (parameters) { function_body } anonymous_functions_name; } )
+</code></pre><p>Clang 的形式 </p>
+<pre><code>^return_type ( parameters ) { function_body }
+</code></pre><h5 id="捕获局部变量"><a href="#捕获局部变量" class="headerlink" title="捕获局部变量"></a>捕获局部变量</h5><pre><code>int main()
 {
     int val = 10;
     const char *fmt = &quot;val = %d\n&quot;;
@@ -528,7 +530,9 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself)
 {
     printf(&quot;Block\n&quot;);
 }
-</code></pre><p>blk();  转换为</p>
+</code></pre><p>其中</p>
+<pre><code>blk();  
+</code></pre><p>转换为</p>
 <pre><code>((void (*)(struct __block_impl *))(
     (struct __block_impl *)blk)-&gt;FuncPtr)((struct __block_impl *)blk);
 </code></pre><h5 id="可写变量"><a href="#可写变量" class="headerlink" title="可写变量"></a>可写变量</h5><p>如何在 Block 函数中改变变量的值，看如下逻辑，函数中 val 的值即使被改变，也不会把改变的值写回 cself 中，展开形式如下</p>
@@ -600,9 +604,9 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself)
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
             <a href="/tags/Books/" rel="tag">#Books</a>
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
           
         </div>
       

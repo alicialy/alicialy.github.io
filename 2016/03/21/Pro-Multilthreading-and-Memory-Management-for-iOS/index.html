@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Books,iOS," />
+  <meta name="keywords" content="iOS,Books," />
 
 
 
@@ -102,8 +102,7 @@ ARC__weak 修饰符的效率{
     NSLog(@&amp;quot;2 %@&amp;quot;, o); 
 }
 当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak">
-<meta property="og:image" content="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B">
-<meta property="og:updated_time" content="2018-04-30T02:30:28.000Z">
+<meta property="og:updated_time" content="2018-04-30T02:36:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Pro Multilthreading and Memory Management for iOS">
 <meta name="twitter:description" content="Code tells everything，所以直接上代码
@@ -113,7 +112,6 @@ ARC__weak 修饰符的效率{
     NSLog(@&amp;quot;2 %@&amp;quot;, o); 
 }
 当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak">
-<meta name="twitter:image" content="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B">
 
 
 
@@ -336,6 +334,7 @@ objc_initWeak(&amp;obj1, obj);
         (location, (objc_object*)newObj);
 }
 </code></pre><p>关于上面 非类型的类模板参数 也有叫非类型形参，可以优化性能，但是具体原因网上没搜索到，有空看看 《C++ Templates》 应该有具体介绍，可以探究下提升性能的原因。</p>
+<a id="more"></a>
 <pre><code>template &lt;bool HaveOld, bool HaveNew, bool CrashIfDeallocating&gt;
 static id storeWeak(id *location, objc_object *newObj) {
     Class previouslyInitializedClass = nil;
@@ -560,7 +559,7 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself)
     __Block_byref_val_0 *val = __cself-&gt;val;
     (val-&gt;__forwarding-&gt;val) = 1; 
 }
-</code></pre><p><img src="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B" alt="Anonymous function"></p>
+</code></pre><p><a href="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B" target="_blank" rel="external">Anonymous function</a></p>
 
       
     </div>
@@ -604,9 +603,9 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself)
       
         <div class="post-tags">
           
-            <a href="/tags/Books/" rel="tag">#Books</a>
-          
             <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/Books/" rel="tag">#Books</a>
           
         </div>
       

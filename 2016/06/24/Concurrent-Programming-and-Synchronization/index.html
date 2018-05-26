@@ -96,7 +96,7 @@ void retain() {
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
     OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
-<meta property="og:updated_time" content="2016-07-21T03:54:11.000Z">
+<meta property="og:updated_time" content="2018-05-26T14:27:36.173Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Concurrent Programming and Synchronization">
 <meta name="twitter:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
@@ -308,6 +308,59 @@ void release() {
     }
 }
 </code></pre><p>查看支持原子操作的列表，参阅/user/include/libkern/OSAtomic.h头文件和参见 <a href="https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/OSAtomicTestAndSet.3.html" target="_blank" rel="external">atomic主页</a>。</p>
+<p>顺带提一下 iOS 中常用的属性关键字 atomic，它是默认值，能够保证线程安全，同时我们为了提高效率，在单线程下都会给变量属性声明为 nonatomic。</p>
+<a id="more"></a>
+<pre><code>id objc_getProperty(id self, SEL _cmd, ptrdiff_t offset, BOOL atomic) {
+    if (offset == 0) {
+        return object_getClass(self);
+    }
+    // Retain release world
+    id *slot = (id*) ((char*)self + offset);
+    if (!atomic) return *slot;
+    // Atomic retain release world
+    spinlock_t&amp; slotlock = PropertyLocks[slot];
+    slotlock.lock();
+    id value = objc_retain(*slot);
+    slotlock.unlock();
+    // for performance, we (safely) issue the autorelease OUTSIDE of the spinlock.
+    return objc_autoreleaseReturnValue(value);
+}
+
+
+void objc_setProperty_nonatomic(id self, SEL _cmd, id newValue, ptrdiff_t offset)
+{
+    reallySetProperty(self, _cmd, newValue, offset, false, false, false);
+}
+
+static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t offset, bool atomic, bool copy, bool mutableCopy)
+{
+    if (offset == 0) {
+        object_setClass(self, newValue);
+        return;
+    }
+    id oldValue;
+    id *slot = (id*) ((char*)self + offset);
+    if (copy) {
+        newValue = [newValue copyWithZone:nil];
+    } else if (mutableCopy) {
+        newValue = [newValue mutableCopyWithZone:nil];
+    } else {
+        if (*slot == newValue) return;
+        newValue = objc_retain(newValue);
+    }
+    if (!atomic) {
+        oldValue = *slot;
+        *slot = newValue;
+    } else {
+        spinlock_t&amp; slotlock = PropertyLocks[slot];
+        slotlock.lock();
+        oldValue = *slot;
+        *slot = newValue;        
+        slotlock.unlock();
+    } 
+    objc_release(oldValue);
+}
+</code></pre><p>runtime 源码如上，如果一个线程调用 getter 方法获取到 atomic 属性的变量后，另一个线程调用 setter 方法，atomic 能保证 getter 方法的引用计数增加，即使另一个线程调用 setter 方法 release oldValue，也就能保证 getter 方法获取到的 oldValue 变量依然没有被释放。</p>
 <h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。</p>
 <p>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为volatile变量。</p>
 <p>因为内存屏障和volatile变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
@@ -331,7 +384,6 @@ if ([theLock lock]) {
     [theLock unlock];
 }
 </code></pre><p>除了标准的锁行为，NSLock 类还增加了 tryLock 和 lockBeforeDate: 方法。方法 tryLock 试图获取一个锁，但是如果锁不可用的时候，它不会阻塞线程。相反，它只是返回 NO。而 lockBeforeDate: 方法试图获取一个锁，但是如果锁没有在规定的时间内被获得，它会让线程从阻塞状态变为非阻塞状态（或者返回 NO ）。</p>
-<a id="more"></a>
 <pre><code>BOOL moreToDo = YES;
 NSLock *theLock = [[NSLock alloc] init];
 // ...
@@ -348,6 +400,13 @@ while (moreToDo) {
         // Everything between the braces is protected by the @synchronized directive.
     }
 }
+</code></pre><p><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-SW3" target="_blank" rel="external">官方文档</a> 告诉我们 @synchronized 在被保护的代码上暗暗的添加了一个异常处理，为的是同步对象抛出异常后能把锁释放掉，可想而知，这个锁的效率是不高的。其实现方式如下</p>
+<pre><code>@try {
+    objc_sync_enter(obj);
+    // do work
+} @finally {
+    objc_sync_exit(obj);    
+}
 </code></pre><h3 id="NSConditionLock-对象"><a href="#NSConditionLock-对象" class="headerlink" title="NSConditionLock 对象"></a>NSConditionLock 对象</h3><p>它定义了一个互斥锁，可以使用特定值来锁住和解锁。不要把该类型的锁和条件（参见“条件”部分）混淆了。它的行为和条件有点类似，但是它们的实现非常不同。</p>
 <p>通常，当多线程需要以特定的顺序来执行任务的时候，你可以使用一个 NSConditionLock 对象，比如当一个线程生产数据，而另外一个线程消费数据。生产者执行时，消费者使用由你程序指定的条件来获取锁（条件本身是一个你定义的整形值）。当生产者完成时，它会解锁该锁并设置锁的条件为合适的整形值来唤醒消费者线程，之后消费线程继续处理数据。</p>
 <p>NSConditionLock 的锁住和解锁方法可以任意组合使用。比如，你可以使用 unlockWithCondition: 和 lock 消息，或使用 lockWhenCondition: 和 unlock 消息。当然，后面的组合可以解锁一个锁但是可能没有释放任何等待某特定条件值的线程。</p>
@@ -363,7 +422,7 @@ while(true) {
 
 // Thread B，消费者
 while (true) {
-    [condLock lockWhenCondition:HAS_DATA
+    [condLock lockWhenCondition:HAS_DATA];
     //消费
     [condLock unlockWithCondition:NO_DATA];
 }
@@ -382,14 +441,14 @@ void MyRecursiveFunction(int value) {
 
 MyRecursiveFunction(5);
 </code></pre><h2 id="锁-读写锁"><a href="#锁-读写锁" class="headerlink" title="锁 - 读写锁"></a>锁 - 读写锁</h2><p>// TODO: 待完善… </p>
-<h2 id="锁-分布锁"><a href="#锁-分布锁" class="headerlink" title="锁 - 分布锁"></a>锁 - 分布锁</h2><p>NSDistributedLock 分布锁，文件方式实现，可以跨进程用 tryLock 方法获取锁。用 unlock方 法释放锁。</p>
+<h2 id="锁-分布锁"><a href="#锁-分布锁" class="headerlink" title="锁 - 分布锁"></a>锁 - 分布锁</h2><p>NSDistributedLock 分布锁，文件方式实现，可以跨进程用 tryLock 方法获取锁。用 unlock 方法释放锁。</p>
 <p>NSDistributedLock 类可以被多台主机上的多个应用程序使用来限制对某些共享资源的访问，比如一个文件。锁本身是一个高效的互斥锁，它使用文件系统项目来实现，比如一个文件或目录。对于一个可用的NSDistributedLock对象，锁必须由所有使用它的程序写入。这通常意味着把它放在文件系统，该文件系统可以被所有运行在计算机上面的应用程序访问。</p>
 <p>不像其他类型的锁，NSDistributedLock 并没有实现 NSLocking 协议，所有它没有lock 方法。一个 lock 方法将会阻塞线程的执行，并要求系统以预定的速度轮询锁。以其在你的代码中实现这种约束，NSDistributedLock 提供了一个 tryLock 方法，并让你决定是否轮询。</p>
 <p>因为它使用文件系统来实现，一个 NSDistributedLock 对象不会被释放除非它的拥有者显式的释放它。如果你的程序在用户一个分布锁的时候崩溃了，其他客户端简无法访问该受保护的资源。在这种情况下，你可以使用 breadLock 方法来打破现存的锁以便你可以获取它。但是通常应该避免打破锁，除非你确定拥有进程已经死亡并不可能再释放该锁。</p>
 <p>和其他类型的锁一样，当你使用 NSDistributedLock 对象时，你可以通过调用 unlock 方法来释放它。</p>
 <h2 id="锁-自旋锁"><a href="#锁-自旋锁" class="headerlink" title="锁 -  自旋锁"></a>锁 -  自旋锁</h2><p>自旋锁：当上一个线程的任务没有执行完毕的时候（被锁住），那么下一个线程会一直等待（不会睡眠），当上一个线程的任务执行完毕，下一个线程会立即执行。</p>
 <p>互斥锁：当上一个线程的任务没有执行完毕的时候（被锁住），那么下一个线程会进入睡眠状态等待任务执行完毕，当上一个线程的任务执行完毕，下一个线程会自动唤醒然后执行任务。</p>
-<p>自旋锁在被锁后，下一个线程会一直等待上一个线程执行完毕，互斥锁则会进入睡眠状态等待。因为自旋不会引起调用者睡眠，所以效率高于互斥锁，它适合不耗时的操作，否则他一直占用CPU使CPU效率降低。</p>
+<p>自旋锁在被锁后，下一个线程会一直等待上一个线程执行完毕，互斥锁则会进入睡眠状态等待。因为自旋不会引起调用者睡眠，所以效率高于互斥锁，它适合不耗时的操作，否则他一直占用 CPU 使 CPU 效率降低。</p>
 <pre><code>OSSpinLock spinlock = OS_SPINLOCK_INIT;  
 OSSpinLockLock(&amp;spinlock);  
 // do something ...
@@ -482,7 +541,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
 </ul>
 <p>也可以参考下 ibireme (郭曜源) 的 <a href="https://github.com/ibireme/tmp/tree/master/iOSLockBenckmark/iOSLockBenckmark" target="_blank" rel="external">Benchmark Demo</a>。同时 ibireme 指出 <a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">OSSPinLock 不再安全</a>，所以看他的源码基本上是用 pthread_mutex 的情况比较多。另外 iOS 10 已经推出了 OSSpinLock 的替代品 <a href="https://developer.apple.com/reference/os/os_unfair_lock" target="_blank" rel="external">os_unfair_lock</a>。</p>
 <p>另外，在《Effective Objective-C 2.0》第 41 条指出应当多用派发队列，少用同步锁。即使用”串行同步队列” 或者 GCD 的 dispatch_barrier_async / dispatch_barrier_sync 来避开同步锁的使用。</p>
-<h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html" target="_blank" rel="external">iOS 多线程之线程安全</a><br><a href="http://www.dreamingwish.com/article/the-ios-multithreaded-programming-guide-4-thread-synchronization.html" target="_blank" rel="external">iOS 多线程编程指南之线程同步</a><br><a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Synchronized NSLock pthread OSSpinLock 的正确使用</a><br><a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a></p>
+<h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html" target="_blank" rel="external">iOS 多线程之线程安全</a><br><a href="http://www.dreamingwish.com/article/the-ios-multithreaded-programming-guide-4-thread-synchronization.html" target="_blank" rel="external">iOS 多线程编程指南之线程同步</a><br><a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Synchronized NSLock pthread OSSpinLock 的正确使用</a><br><a href="https://www.cnblogs.com/iOSJason/p/5139883.html" target="_blank" rel="external">Synchronized 的实现</a><br><a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a></p>
 
       
     </div>

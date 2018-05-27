@@ -94,7 +94,7 @@ NSURLSession 工作模式NSURLSessionConfiguration 分为三种工作模式defau
 <meta property="og:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
 NSURLSession 工作模式NSURLSessionConfiguration 分为三种工作模式default: 可以使用磁盘缓存、身份认证、Cookieephemeral(及时模式): 数据只能保存到内存，无法存储到磁盘。background: 可以在后台执行上传或下载任务
 后进先出后进先出通过 NSOperation 的依赖">
-<meta property="og:updated_time" content="2018-01-12T14:05:23.000Z">
+<meta property="og:updated_time" content="2018-05-27T12:49:54.086Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - SDWebImage">
 <meta name="twitter:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
@@ -348,26 +348,28 @@ In barrier
 </ul>
 <p>清理缓存的方式见 SDImageCache cleanDiskWithCompletionBlock 方法，先删除1周前的文件，如果文件还超出设置的最大缓存容量，则将磁盘文件按大小排序后按大小顺序删除文件，直到缓存空间小于最大磁盘容量</p>
 <ul>
-<li>可以给定一组链接，下载后按照动画方式展示</li>
-</ul>
-<p><code>-(void)sd_setAnimationImagesWithURLs:arrayOfURLs</code></p>
-<ul>
-<li>可以给定一个链接，如果已经有过缓存，则将缓存图片先展示，而不是展示占位图</li>
-</ul>
-<p><code>-(void)sd_setImageWithPreviousCachedImageWithURL:placeholderImage:options: progress: completed;</code></p>
-<ul>
+<li><p>可以给定一组链接，下载后按照动画方式展示</p>
+<p>  -(void)sd_setAnimationImagesWithURLs:arrayOfURLs</p>
+</li>
+<li><p>可以给定一个链接，如果已经有过缓存，则将缓存图片先展示，而不是展示占位图</p>
+<p>  -(void)sd_setImageWithPreviousCachedImageWithURL:placeholderImage:options: progress: completed; </p>
+</li>
 <li><p>downloadTimeout 超时时间是 15s</p>
 </li>
 <li><p>如果下载一些图片后不着急使用，即不需要设置 completeBlock 时使用 SDWebImagePrefetcher 它的下载优先级也是低的</p>
 </li>
-<li><p>保存图片的时候用链接地址作为 key，如果像过滤掉链接地址中的部分内容，设置 filter 即可，例如 key 需要过滤掉 query 参数，设置 filter 即可</p>
+<li><p>保存图片的时候用链接地址作为 key，如果想过滤掉链接地址中的部分内容，设置 filter 即可，例如 key 需要过滤掉 query 参数，设置 filter 即可</p>
+<p> [[SDWebImageManager sharedManager] setCacheKeyFilter:^(NSURL *url) {</p>
+<pre><code>url = [[NSURL alloc] initWithScheme:url.scheme host:url.host path:url.path];
+return [url absoluteString];
+</code></pre><p>  }];</p>
+</li>
+<li><p>图片下载失败后，会记录下这个地址到 failedURLs，下载时可以选择是否下载失败的地址不再重新尝试下载</p>
+</li>
+<li><p>保存后的文件名：先对链接进行 UTF8 编码，将中文等字符进行转换，之后进行 MD5，将 MD5 的结果作为文件名</p>
 </li>
 </ul>
-<pre><code>[[SDWebImageManager sharedManager] setCacheKeyFilter:^(NSURL *url) {
-    url = [[NSURL alloc] initWithScheme:url.scheme host:url.host path:url.path];
-    return [url absoluteString];
-}];
-</code></pre><h2 id="Macros-那些常用的宏"><a href="#Macros-那些常用的宏" class="headerlink" title="Macros 那些常用的宏"></a>Macros 那些常用的宏</h2><h4 id="判断是否支持了垃圾回收"><a href="#判断是否支持了垃圾回收" class="headerlink" title="判断是否支持了垃圾回收"></a>判断是否支持了垃圾回收</h4><pre><code>#ifdef __OBJC_GC__
+<h2 id="Macros-那些常用的宏"><a href="#Macros-那些常用的宏" class="headerlink" title="Macros 那些常用的宏"></a>Macros 那些常用的宏</h2><h4 id="判断是否支持了垃圾回收"><a href="#判断是否支持了垃圾回收" class="headerlink" title="判断是否支持了垃圾回收"></a>判断是否支持了垃圾回收</h4><pre><code>#ifdef __OBJC_GC__
 #error SDWebImage does not support Objective-C Garbage Collection
 #endif
 </code></pre><p>从 Objective C 2.0 开始，提供了一种内存管理形式垃圾回收，在那个还没有 ARC 的时代，使用它则不用考虑有关保持和释放对象、自动释放池或保持计数的问题了。但是这种机制只支持 OS X (Mac OS X 10.5 - 10.8) 系统，而且在早期的 Xcode 的编译设置中还能看到设置 GC 的选项，现在已经没有该设置了。所以这算是个历史问题。</p>
@@ -445,8 +447,8 @@ func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2014/09/23/Macro/" rel="next" title="Macro">
-                <i class="fa fa-chevron-left"></i> Macro
+              <a href="/2015/05/29/GCD/" rel="next" title="GCD">
+                <i class="fa fa-chevron-left"></i> GCD
               </a>
             
           </div>
@@ -523,7 +525,7 @@ func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">38</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -533,7 +535,7 @@ func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

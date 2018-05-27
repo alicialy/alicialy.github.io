@@ -85,27 +85,24 @@
 
 
 <meta name="description" content="这篇文章应该叫做那些开源项目中用到过的 Clang Attributes，会列出开源项目的名字和使用方式以及用例
-visibility解释attribute ((visibility(“default”)))
+visibility解释__attribute__ ((visibility(&amp;quot;default&amp;quot;)))
 visibility 中的值可以为 default | internal | hidden | protected
-该属性用于设置动态链接库中函数或者变量的可见性
-我们在 C 语言中，如果想">
+该属性用于设置动态链接库中函数或者变量的可见性">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Clang Attributes in Open Source">
 <meta property="og:url" content="http://yoursite.com/2016/09/23/Clang-Attributes-in-Open-Source/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="这篇文章应该叫做那些开源项目中用到过的 Clang Attributes，会列出开源项目的名字和使用方式以及用例
-visibility解释attribute ((visibility(“default”)))
+visibility解释__attribute__ ((visibility(&amp;quot;default&amp;quot;)))
 visibility 中的值可以为 default | internal | hidden | protected
-该属性用于设置动态链接库中函数或者变量的可见性
-我们在 C 语言中，如果想">
-<meta property="og:updated_time" content="2016-11-13T11:49:18.000Z">
+该属性用于设置动态链接库中函数或者变量的可见性">
+<meta property="og:updated_time" content="2018-05-27T12:32:01.367Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Clang Attributes in Open Source">
 <meta name="twitter:description" content="这篇文章应该叫做那些开源项目中用到过的 Clang Attributes，会列出开源项目的名字和使用方式以及用例
-visibility解释attribute ((visibility(“default”)))
+visibility解释__attribute__ ((visibility(&amp;quot;default&amp;quot;)))
 visibility 中的值可以为 default | internal | hidden | protected
-该属性用于设置动态链接库中函数或者变量的可见性
-我们在 C 语言中，如果想">
+该属性用于设置动态链接库中函数或者变量的可见性">
 
 
 
@@ -299,8 +296,8 @@ visibility 中的值可以为 default | internal | hidden | protected
 
       
         <p>这篇文章应该叫做那些开源项目中用到过的 Clang Attributes，会列出开源项目的名字和使用方式以及用例</p>
-<h3 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h3><h5 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h5><p><strong>attribute</strong> ((visibility(“default”)))</p>
-<p>visibility 中的值可以为 default | internal | hidden | protected</p>
+<h3 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h3><h5 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h5><pre><code>__attribute__ ((visibility(&quot;default&quot;)))
+</code></pre><p>visibility 中的值可以为 default | internal | hidden | protected</p>
 <p>该属性用于设置动态链接库中函数或者变量的可见性</p>
 <p>我们在 C 语言中，如果想要将函数或变量限制在当前文件中，可以使用 static 关键字，但是在复杂的项目中，如果想要限制某个符号被共享库内部某些文件可以访问，而外部不可以访问泽有些困难，于是 GCC 中引入了 visibility 属性，它可以设置某个函数或变量是否可访问，例如这个变量在多个文件中被定义，又同时有多个链接库需要引用它时，如果不设置可见性，那么到底引用为那个值或者函数就要看加载顺序了。</p>
 <h5 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h5><pre><code>UIKIT_EXTERN const UIWindowLevel UIWindowLevelNormal;
@@ -320,18 +317,38 @@ UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
 class subClass = objc_allocateClassPair([ParentClass class], &quot;SubClass&quot;, 0);
 class_addMethod(subClass, @selector(run),(IMP) run, &quot;v@:&quot;);
 objc_registerClassPair(subClass);
-</code></pre><h5 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h5><p><strong>attribute</strong>((objc_subclassing_restricted))<br>@interface ParentClass : NSObject<br>@end<br>@interface SubClass : ParentClass // &lt;— Compile Error<br>@end</p>
-<h5 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h5><p><a href="http://blog.sunnyxx.com/2016/05/14/clang-attributes/" target="_blank" rel="external">Clang Attributes 黑魔法小记</a></p>
+</code></pre><h5 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h5><pre><code>__attribute__((objc_subclassing_restricted))
+@interface ParentClass : NSObject
+@end
+@interface SubClass : ParentClass // &lt;--- Compile Error
+@end
+</code></pre><h5 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h5><p><a href="http://blog.sunnyxx.com/2016/05/14/clang-attributes/" target="_blank" rel="external">Clang Attributes 黑魔法小记</a></p>
 <h3 id="deprecated"><a href="#deprecated" class="headerlink" title="deprecated"></a>deprecated</h3><h5 id="解释-2"><a href="#解释-2" class="headerlink" title="解释"></a>解释</h5><pre><code>__attribute__((deprecated(&quot;弃用解释说明&quot;)));
 </code></pre><p>用于说明某个属性已经弃用</p>
-<p>@property (assign, nonatomic) CGFloat opacity <strong>attribute</strong>((deprecated(“Customize bezelView properties instead.”)));</p>
-<h5 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h5><p>另外，忽略弃用警告可以使用</p>
+<pre><code>@property (assign, nonatomic) CGFloat opacity __attribute__((deprecated(&quot;Customize bezelView properties instead.&quot;)));
+</code></pre><h5 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h5><p>另外，忽略弃用警告可以使用</p>
 <pre><code>#pragma clang diagnostic push
 #pragma clang diagnostic ignored &quot;-Wdeprecated-declarations&quot;
 self.bezelView.alpha = self.opacity;
 #pragma clang diagnostic pop
 </code></pre><h5 id="项目-1"><a href="#项目-1" class="headerlink" title="项目"></a>项目</h5><p>MBProgress</p>
-
+<h3 id="objc-requires-super"><a href="#objc-requires-super" class="headerlink" title="objc_requires_super"></a>objc_requires_super</h3><h5 id="解释-3"><a href="#解释-3" class="headerlink" title="解释"></a>解释</h5><p>子类可以覆盖父类方法，如果子类需要调用父类方法使用 super 父类方法名，如果需要强制子类调用父类的方法，可以使用 objc_requires_super，当子类没有调用父类方法时则会给出警告</p>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><pre><code>@interface Father : NSObject
+- (void)payMoney __attribute__((objc_requires_super));
+@end
+@implementation Father
+- (void)payMoney {
+    NSLog(@&quot;I paid&quot;);    
+}
+@end
+@interface Son : Father
+@end
+@implementation Son
+- (void)payMoney {
+} // &lt;--- Compile Error Missing call [super payMoney]
+@end
+</code></pre><p>// .. 待追加</p>
+<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><h5 id="解释-4"><a href="#解释-4" class="headerlink" title="解释"></a>解释</h5><h5 id="用例-3"><a href="#用例-3" class="headerlink" title="用例"></a>用例</h5><h5 id="项目-2"><a href="#项目-2" class="headerlink" title="项目"></a>项目</h5><h5 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h5><h5 id="参考文献-2"><a href="#参考文献-2" class="headerlink" title="参考文献"></a>参考文献</h5>
       
     </div>
 
@@ -463,7 +480,7 @@ self.bezelView.alpha = self.opacity;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">38</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -473,7 +490,7 @@ self.bezelView.alpha = self.opacity;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -522,7 +539,7 @@ self.bezelView.alpha = self.opacity;
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#visibility"><span class="nav-number">1.</span> <span class="nav-text">visibility</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释"><span class="nav-number">1.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用例"><span class="nav-number">1.0.2.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#项目"><span class="nav-number">1.0.3.</span> <span class="nav-text">项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考文献"><span class="nav-number">1.0.4.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#objc-subclassing-restricted"><span class="nav-number">2.</span> <span class="nav-text">objc_subclassing_restricted</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用例-1"><span class="nav-number">2.0.2.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考文献-1"><span class="nav-number">2.0.3.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deprecated"><span class="nav-number">3.</span> <span class="nav-text">deprecated</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释-2"><span class="nav-number">3.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用例-2"><span class="nav-number">3.0.2.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#项目-1"><span class="nav-number">3.0.3.</span> <span class="nav-text">项目</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#visibility"><span class="nav-number">1.</span> <span class="nav-text">visibility</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释"><span class="nav-number">1.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用例"><span class="nav-number">1.0.2.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#项目"><span class="nav-number">1.0.3.</span> <span class="nav-text">项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考文献"><span class="nav-number">1.0.4.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#objc-subclassing-restricted"><span class="nav-number">2.</span> <span class="nav-text">objc_subclassing_restricted</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用例-1"><span class="nav-number">2.0.2.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考文献-1"><span class="nav-number">2.0.3.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deprecated"><span class="nav-number">3.</span> <span class="nav-text">deprecated</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释-2"><span class="nav-number">3.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用例-2"><span class="nav-number">3.0.2.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#项目-1"><span class="nav-number">3.0.3.</span> <span class="nav-text">项目</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#objc-requires-super"><span class="nav-number">4.</span> <span class="nav-text">objc_requires_super</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释-3"><span class="nav-number">4.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#示例"><span class="nav-number">4.0.2.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#名称"><span class="nav-number">5.</span> <span class="nav-text">名称</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解释-4"><span class="nav-number">5.0.1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用例-3"><span class="nav-number">5.0.2.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#项目-2"><span class="nav-number">5.0.3.</span> <span class="nav-text">项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#示例-1"><span class="nav-number">5.0.4.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考文献-2"><span class="nav-number">5.0.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></li></ol></div>
             
           </div>
         </section>

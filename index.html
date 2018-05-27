@@ -248,6 +248,127 @@
             
               
                 
+                <a class="post-title-link" href="/2018/05/11/Test-Driven-iOS-Development/" itemprop="url">
+                  Test Driven iOS Development
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2018-05-11T10:52:00+08:00" content="2018-05-11">
+              2018-05-11
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这是一本书的名字，书还没有时间看，借鉴下看过源码的那些轮子是如何写测试代码的</p>
+<h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><h5 id="AFNetworking"><a href="#AFNetworking" class="headerlink" title="AFNetworking"></a>AFNetworking</h5><p>AFN 的单元测试分为 UIKit 测试（包含有 UIKit 调用的测试，如 UIImage/UIImageView/UIButton 等），还有接口测试。基本上每一个类对应一个测试类，每个类都保证创建后能返回非空，或者预期的值，具体代码省略。</p>
+<h5 id="CocoaLumberjack"><a href="#CocoaLumberjack" class="headerlink" title="CocoaLumberjack"></a>CocoaLumberjack</h5><p>使用了第三方库 <a href="https://github.com/specta/expecta" target="_blank" rel="external">expecta</a> 使代码更易读。测试点类似 AFNetworking，具体代码省略。</p>
+<h5 id="Masonry"><a href="#Masonry" class="headerlink" title="Masonry"></a>Masonry</h5><p>使用了 expecta，创建约束后，经过一些设置后，确认是否能获得预期的值，具体代码省略。</p>
+<h5 id="NullSafe"><a href="#NullSafe" class="headerlink" title="NullSafe"></a>NullSafe</h5><p>[NSNull null] 的 stringValue/ bytes 方法应当返回 nil</p>
+<pre><code>XCTAssertNil(result);
+</code></pre><p>[NSNull null] floatValue 方法是否返回 0.0</p>
+<pre><code>XCTAssertEqualWithAccuracy(result, 0.0f, 0.0f);
+</code></pre><p>[NSNull null] intValue 方法是否返回 0</p>
+<pre><code>XCTAssertEqual(result, 0);
+</code></pre><p>创建 [NSNull null] 的类，类名是否 NSNull</p>
+<pre><code>XCTAssertEqualObjects(result, @&quot;NSNull&quot;);
+</code></pre><p>[NSNull null] description 方法是否返回 <null></null></p>
+<pre><code>XCTAssertEqualObjects(result, @&quot;&lt;null&gt;&quot;);
+</code></pre><p>[NSNull null] range 方法是否和 (0,0）范围一致</p>
+<pre><code>NSRange compare = NSMakeRange(0, 0);
+XCTAssertTrue(NSEqualRanges(result, compare), @&quot;Range test failed&quot;);
+</code></pre><p>NSNull 的 Category 创建的方法 NullTestMethod  返回非0数字后是否依然能按照 0 处理</p>
+<pre><code>XCTAssertEqualWithAccuracy(result, 0.0, 0.0);
+</code></pre><h5 id="JLRoutes"><a href="#JLRoutes" class="headerlink" title="JLRoutes"></a>JLRoutes</h5><p>设置 route，添加各种可能性的设置，测试是否能够正常处理，具体代码省略</p>
+<h3 id="UI-测试"><a href="#UI-测试" class="headerlink" title="UI 测试"></a>UI 测试</h3><p>主要是录制一些操作，然后进行校验，忽略轮子中的测试方式</p>
+<h4 id="IQKeyboardManager"><a href="#IQKeyboardManager" class="headerlink" title="IQKeyboardManager"></a>IQKeyboardManager</h4><p>主要是界面中操作过程中录制测试，具体代码省略</p>
+<h4 id="DZNEmptyDataSet"><a href="#DZNEmptyDataSet" class="headerlink" title="DZNEmptyDataSet"></a>DZNEmptyDataSet</h4><p>Pod 引入了 FaceBook 的第三方 <a href="https://github.com/facebookarchive/ios-snapshot-test-case" target="_blank" rel="external">FBSnapshotTestCase</a>，这个库目前已经更新为 <a href="https://github.com/uber/ios-snapshot-test-case/" target="_blank" rel="external">iOSSnapshotTestCase</a></p>
+<p>截图测试</p>
+<pre><code>DetailViewController *vc = [[DetailViewController alloc] initWithApplication:app];
+FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefaultSuffixes(), 0);
+</code></pre><p>使用方式：在 setUp 中首先设置 recordMode 为 YES，进入录制模式，执行测试的上述方法，会生成截图，忽略结果，这时只是截图操作，生成的图片文件在 getReferenceImageDirectoryWithDefault 中指定的位置，以此截图为参考图片。修改 recordMode 为 NO，然后再执行测试方法，就会用快照和之前存在指定位置的参考图片做对比，如果两个图片不匹配的话，测试就会失败</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="http://www.cocoachina.com/ios/20170718/19930.html" target="_blank" rel="external">iOS 单元测试和UI测试教程</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2018/01/13/Design-Pattern-and-Refactoring/" itemprop="url">
                   Design Pattern and Refactoring
                 </a>
@@ -932,6 +1053,224 @@
             
               
                 
+                <a class="post-title-link" href="/2017/03/27/Source-Code-Learning-NullSafe/" itemprop="url">
+                  Source Code Learning - NullSafe
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-03-27T22:51:48+08:00" content="2017-03-27">
+              2017-03-27
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h3><p>代码中有时会处理跟 NSNull 相关的逻辑，有时候我们并不想要 NSNull，我们希望的是 nil，例如后台下发 json 出现如下数据</p>
+<pre><code>{
+    &quot;nullValue&quot;: null
+}
+</code></pre><p>这个时候用一般的库转换 JSON 为对象的时候，就会变为</p>
+<pre><code>{
+    &quot;nullValue&quot;: &quot;&lt;null&gt;&quot;
+}
+</code></pre><p>如果后台本来应该下发数组，而写代码的时候没有判断数据类型，例如直接获取 [array length]，肯定会崩溃，出错原因是 [NSNull length] 没有对应的响应方法。</p>
+<p>如何不手动判断类型，又能避免崩溃？NullSafe 就是为了解决这个问题而诞生的。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>NullSafe 只有短短的一百行代码。实现的方式是，创建 NSNull 的类别，在该类别中首先查找 NSNull 是否能响应某方法，如果不可以响应的话，就查找系统中是否有某个类可以处理调用的方法，如果可以的话，该方法转发给 nil，当作 nil 处理这个方法，例如 nil 调用 [nil length] 是不会抛出异常的。代码如下：</p>
+<p>遍历所有系统中的类，循环遍历找每个类的 superClass，如果 superClass 是 NSObject，则加入到 classList</p>
+<pre><code>static void cacheSignatures()
+{
+    classList = [[NSMutableSet alloc] init];
+    signatureCache = [[NSMutableDictionary alloc] init];
+
+    //get class list
+    int numClasses = objc_getClassList(NULL, 0);
+    Class *classes = (Class *)malloc(sizeof(Class) * (unsigned long)numClasses);
+    numClasses = objc_getClassList(classes, numClasses);
+
+    //add to list for checking
+    for (int i = 0; i &lt; numClasses; i++)
+    {
+        //determine if class has a superclass
+        Class someClass = classes[i];
+        Class superclass = class_getSuperclass(someClass);
+        while (superclass)
+        {
+            if (superclass == [NSObject class])
+            {
+                [classList addObject:someClass];
+                [classList removeObject:[someClass superclass]];
+                break;
+            }
+            superclass = class_getSuperclass(superclass);
+        }
+    }
+    //free class list
+    free(classes);
+}
+</code></pre><p>methodSignatureForSelector 获取方法签名，在 cacheSignatures 中设置好的所有系统类中遍历，查看 classList 如果 classList 中有一个类能响应 selector 方法，则退出循环，返回该方法签名</p>
+<pre><code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
+{
+    //look up method signature
+    NSMethodSignature *signature = [super methodSignatureForSelector:selector];
+    if (!signature)
+    {
+        //check implementation cache first
+        NSString *selectorString = NSStringFromSelector(selector);
+        signature = signatureCache[selectorString];
+        if (!signature)
+        {
+            @synchronized([NSNull class])
+            {
+                //check again, in case it was resolved while we were waitimg
+                signature = signatureCache[selectorString];
+                if (!signature)
+                {
+                    //not supported by NSNull, search other classes
+                    if (signatureCache == nil)
+                    {
+                        if ([NSThread isMainThread])
+                        {
+                            cacheSignatures();
+                        }
+                        else
+                        {
+                            dispatch_sync(dispatch_get_main_queue(), ^{
+                                cacheSignatures();
+                            });
+                        }
+                    }
+                    //find implementation
+                    for (Class someClass in classList)
+                    {
+                        if ([someClass instancesRespondToSelector:selector])
+                        {
+                            signature = [someClass instanceMethodSignatureForSelector:selector];
+                            break;
+                        }
+                    }
+                    //cache for next time
+                    signatureCache[selectorString] = signature ?: [NSNull null];
+                }
+                else if ([signature isKindOfClass:[NSNull class]])
+                {
+                    signature = nil;
+                }
+            }
+        }
+    }
+    return signature;
+}
+</code></pre><p>只要有系统类能处理方法，那么就将 target 设置为 nil，消息转发给 nil，用 nil 去处理对应方法</p>
+<pre><code>- (void)forwardInvocation:(NSInvocation *)invocation
+{
+    invocation.target = nil;
+    [invocation invoke];
+}
+</code></pre><h3 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h3><p><a href="https://github.com/yaakaito/Overline/blob/master/Overline/Over/NSNull/NSNull%2BOVNatural.m" target="_blank" rel="external">NSNull+OVNatural</a></p>
+<pre><code>- (void)forwardInvocation:(NSInvocation *)invocation 
+{ 
+    if ([self respondsToSelector:[invocation selector]]) { 
+        [invocation invokeWithTarget:self]; 
+    } 
+} 
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector 
+{ 
+    NSMethodSignature *sig = [[NSNull class] instanceMethodSignatureForSelector:selector]; 
+    if(sig == nil) { 
+        sig = [NSMethodSignature signatureWithObjCTypes:&quot;@^v^c&quot;]; 
+    } 
+    return sig; 
+} 
+</code></pre><h3 id="方法签名"><a href="#方法签名" class="headerlink" title="方法签名"></a>方法签名</h3><p>// 从某个类中获取实例方法的方法签名</p>
+<pre><code>NSMethodSignature *sig = [[NSNull class] instanceMethodSignatureForSelector:selector]; 
+</code></pre><p>// 从某个类中获取类方法签名</p>
+<pre><code>NSMethodSignature *signature = [super methodSignatureForSelector:selector];
+</code></pre><p>// 创建方法签名</p>
+<pre><code>sig = [NSMethodSignature signatureWithObjCTypes:&quot;@^v^c&quot;]; 
+</code></pre><p>手动创建一个方法签名，它封装了一个方法签名（不包含方法名，只有返回类型和参数类型)。</p>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><pre><code>AFNetWorking 的 AFJSONResponseSerializer 类上有个属性 removesKeysWithNullValues 设置该属性可以移除 null
+</code></pre><h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="http://nshipster.com/type-encodings/" target="_blank" rel="external">Type Encodings</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/02/22/Optimize-App-Startup-Time/" itemprop="url">
                   Optimize App Startup Time
                 </a>
@@ -1044,8 +1383,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/12/31/2016-book-list/" itemprop="url">
-                  2016 book list
+                <a class="post-title-link" href="/2017/01/27/Source-Code-Learning-IQKeyboardManager/" itemprop="url">
+                  Source Code Learning - IQKeyboardManager
                 </a>
               
             
@@ -1058,8 +1397,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-12-31T20:00:30+08:00" content="2016-12-31">
-              2016-12-31
+            <time itemprop="dateCreated" datetime="2017-01-27T21:34:24+08:00" content="2017-01-27">
+              2017-01-27
             </time>
           </span>
 
@@ -1088,290 +1427,22 @@
       
         
           
-            <p>这一年，看过的工作类图书如下：</p>
-<blockquote>
-<p>乔布斯的魔力演讲</p>
-</blockquote>
-<p>即使看过乔布斯演讲的人看看这书也能有所收获。</p>
-<blockquote>
-<p>不懂带人你就自己干到死</p>
-</blockquote>
-<p>看完后写过一篇文章，<a href="http://alicialy.github.io/2016/08/31/Reading-The-Solution-Tango/" target="_blank" rel="external">感兴趣点这里</a></p>
-<blockquote>
-<p>软技能代码之外的生存之道</p>
-</blockquote>
-<p>书中很多东西可能对于一个老程序员来说，早已领悟，看看无妨。对番茄工作法用来估测自己工作时间的方式感觉很有用处，即当你被分配一个任务时，需要预估做完这个工作需要多少时间，可以先预估大致需要几个番茄时间，之后用一个番茄时间 20 分钟去完成，看看进度是多少，然后重新预估的时间一半比较准确。例如预估 8 个 番茄时间能完成的工作，实际工作 1 个番茄时间后发现工作只完成了 1/16，那么预估时间大约就是 16 个番茄时间，这个时间更准确些。</p>
-<blockquote>
-<p>Learning React Native</p>
-</blockquote>
-<p>一边看官方文档，一般看这本书写个 Demo，能对 RN 所有类的用法有个基本掌握。</p>
-<blockquote>
-<p>Design Code </p>
-</blockquote>
-<p>Design 方面讲的还是不错，还介绍了 Sketch 的用法，但是 Code 方面应该只是对刚入门的程序员来说可能又用，所以没有仔细看。</p>
-<blockquote>
-<p>Git 版本控制管理</p>
-</blockquote>
-<p>不只是 Git 的一本不错的工具书，还介绍了一点原理</p>
-<blockquote>
-<p>iOS 测试指南</p>
-</blockquote>
-<p>稍微有些过时，对于平时感觉没有那么有用，有空会再看看</p>
-<blockquote>
-<p>写给大忙人看的 Swift</p>
-</blockquote>
-<p>太简约了，感觉如果真的忙的没有时间，那看官方的手册前几页就可以了，没有必要看这本书。</p>
-<blockquote>
-<p>Mac OS X and iOS Internals</p>
-</blockquote>
-<p>对系统底层非常详细的介绍，但是稍微有些太理论，所以有些枯燥，没有那么容易一气呵成的读完，仍然值得一看。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/17/About-Message-send-to-dealloc-instance/" itemprop="url">
-                  About Message send to dealloc instance
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-11-17T21:43:04+08:00" content="2016-11-17">
-              2016-11-17
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。</p>
-<p>话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。</p>
-<p>上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没有升级所以还是在 MRC 下。先来描述下问题。</p>
-<h3 id="崩溃代码"><a href="#崩溃代码" class="headerlink" title="崩溃代码"></a>崩溃代码</h3><p>重要的事情说三遍，MRC 下，MRC 下，MRC 下</p>
-<pre><code>//.h 头文件中定义了一个变量
-NSString *_title;
-//.m 实现文件中
-- (id)initWithTitle:(NSString *)title {
-    _title = [title copy];
-    // … 
+            <h3 id="OC-中如何做到不加一行代码就实现功能的"><a href="#OC-中如何做到不加一行代码就实现功能的" class="headerlink" title="OC 中如何做到不加一行代码就实现功能的"></a>OC 中如何做到不加一行代码就实现功能的</h3><p>IQKeyboardManager </p>
+<pre><code>+(void)load
+{
+    //Enabling IQKeyboardManager. Loading asynchronous on main thread
+    [self performSelectorOnMainThread:@selector(sharedManager) withObject:nil waitUntilDone:NO];
 }
-- (void)dealloc  {
-    [_title release];
-    [super dealloc];
-}
-// 另一个调用文件中是这样子的
-[[xxClass alloc] initWithTitle:nil];
-</code></pre><p>最近的一次修改导致崩溃是被改成了下面的样子，当 title 为 nil 时把它定义为默认字符串，于是上面的 initWithTitle 改为</p>
-<pre><code>- (id)initWithTitle:(NSString *)title {
-    if (title) {
-        _title = [title copy];
-    } else {
-        _title = NSLocalizedString(@&quot;提示&quot;, nil);
-    }
-}
-</code></pre><p>接下来的事情是这样的，某个页面在多次调用 initWithTitle 的时候会发生崩溃，错误信息是这样子的：</p>
-<pre><code>UncaughtExceptionHandlerAddressesKey = (
-4   CoreFoundation                      0x1b9ca81c &lt;redacted&gt; + 2124,
-5   CoreFoundation                      0x1b9c9f8f CFDictionaryGetValue + 126,
-6   CoreFoundation                      0x1bb1446b &lt;redacted&gt; + 142,
-7   CoreFoundation                      0x1bb14111 CFBundleCopyLocalizedStringForLocalization + 94,
-8   CoreFoundation                      0x1ba0f6bb CFBundleCopyLocalizedString + 18,
-</code></pre><p>调试的话，崩溃的位置就在 _title = NSLocalizedString(@”提示”, nil); 这一行。</p>
-<p>不知道各位看官是否一眼发现了问题，控制台还有这样的输出</p>
-<p>message sent to deallocated instance 0x6d564f0</p>
-<p>一时没想到 NSLocalizedString 会有什么问题，因为好久不用 MRC，武功已经全废，所以关注上了这个 message sent to deallocated instance，想通过这条信息查找到问题。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/11/17/About-Message-send-to-dealloc-instance/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/11/Source-Code-Learning-JDStatusBarNotification/" itemprop="url">
-                  Source Code Learning - JDStatusBarNotification
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-10-11T19:41:33+08:00" content="2016-10-11">
-              2016-10-11
-            </time>
-          </span>
+</code></pre><p>利用 +load 方法来实现不调用就执行的功能</p>
+<p>另： +load 方法<br>每个类在 OC runtime 中会自动调用两个方法，+load 方法是类初始化的时候调用， +initialize 是类或者实例的方法第一次被调用的时候调用。但是，在 Swift 桥接到 C 的代码中自定义的 +load 方法不会自动被调用，所以 Swift 需要写一行代码来实现，OC 不用。</p>
+<p>父类先执行 +load，子类后执行。类的+load 先执行，Category 的该方法后执行。</p>
+<p>+load 和 +initialize 是线程安全的，但是 IQKeyboardManager 中有 UI 操作说一要保证其在主线程中执行。</p>
+<p>初始化中会调用注册方法，注册监听键盘和展开和收起事件，并为 UITextField 和 UITextView 分别注册开始编辑和结束编辑事件。事件中处理 adjustFrame 方法调整 Frame。</p>
+<p>手动开关设置的处理都在初始化中进行，可以设置的功能见文档，<a href="https://github.com/hackiftekhar/IQKeyboardManager/wiki/Manual-Management" target="_blank" rel="external">自定义设置方法</a></p>
+<p>// … 待完成</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="http://nshipster.com/method-swizzling/" target="_blank" rel="external">+load 方法</a></p>
 
           
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="RunLoop-和-NSTimer"><a href="#RunLoop-和-NSTimer" class="headerlink" title="RunLoop 和 NSTimer"></a>RunLoop 和 NSTimer</h3><p>每次显示时先要将之前设置过的 timer 取消</p>
-<pre><code>// cancel previous dismissing &amp; remove animations
-[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
-</code></pre><p>timer 的设置代码如下：</p>
-<pre><code>- (void)setDismissTimerWithInterval:(NSTimeInterval)interval; {
-    [self.dismissTimer invalidate];             // 重新赋值时先要使其无效
-    self.dismissTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval]
-                                             interval:0 target:self selector:@selector(dismiss:) userInfo:nil repeats:NO];
-    [[NSRunLoop currentRunLoop] addTimer:self.dismissTimer forMode:NSRunLoopCommonModes];
-}
-</code></pre><p>为了能在用户拖拽页面的时候 timer 正确计时，将 timer 添加到 NSRunLoopCommonModes 模式下</p>
-<h3 id="UIWindowLevel"><a href="#UIWindowLevel" class="headerlink" title="UIWindowLevel"></a>UIWindowLevel</h3><p>每个应用都有一个主 window，通常在 AppDelegate 中设置</p>
-<pre><code>self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-self.window.backgroundColor = [UIColor whiteColor];
-self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:
-                                  [[SBExampleViewController alloc] initWithStyle:UITableViewStyleGrouped]];
-
-[self.window makeKeyAndVisible];
-</code></pre><p>makeKeyAndVisible 方法是将某个 window 设置为主窗口并设置为可见，这个窗口的级别使用默认值 UIWindowLevelNormal，UIWindowLevel 的级别如下</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/10/11/Source-Code-Learning-JDStatusBarNotification/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
         
       
     </div>
@@ -1443,7 +1514,7 @@ self.window.rootViewController = [[UINavigationController alloc] initWithRootVie
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">38</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1453,7 +1524,7 @@ self.window.rootViewController = [[UINavigationController alloc] initWithRootVie
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

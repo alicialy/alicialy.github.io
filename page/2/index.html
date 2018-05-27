@@ -248,6 +248,381 @@
             
               
                 
+                <a class="post-title-link" href="/2016/12/31/2016-book-list/" itemprop="url">
+                  2016 book list
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-12-31T20:00:30+08:00" content="2016-12-31">
+              2016-12-31
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这一年，看过的工作类图书如下：</p>
+<blockquote>
+<p>乔布斯的魔力演讲</p>
+</blockquote>
+<p>即使看过乔布斯演讲的人看看这书也能有所收获。</p>
+<blockquote>
+<p>不懂带人你就自己干到死</p>
+</blockquote>
+<p>看完后写过一篇文章，<a href="http://alicialy.github.io/2016/08/31/Reading-The-Solution-Tango/" target="_blank" rel="external">感兴趣点这里</a></p>
+<blockquote>
+<p>软技能代码之外的生存之道</p>
+</blockquote>
+<p>书中很多东西可能对于一个老程序员来说，早已领悟，看看无妨。对番茄工作法用来估测自己工作时间的方式感觉很有用处，即当你被分配一个任务时，需要预估做完这个工作需要多少时间，可以先预估大致需要几个番茄时间，之后用一个番茄时间 20 分钟去完成，看看进度是多少，然后重新预估的时间一半比较准确。例如预估 8 个 番茄时间能完成的工作，实际工作 1 个番茄时间后发现工作只完成了 1/16，那么预估时间大约就是 16 个番茄时间，这个时间更准确些。</p>
+<blockquote>
+<p>Learning React Native</p>
+</blockquote>
+<p>一边看官方文档，一般看这本书写个 Demo，能对 RN 所有类的用法有个基本掌握。</p>
+<blockquote>
+<p>Design Code </p>
+</blockquote>
+<p>Design 方面讲的还是不错，还介绍了 Sketch 的用法，但是 Code 方面应该只是对刚入门的程序员来说可能又用，所以没有仔细看。</p>
+<blockquote>
+<p>Git 版本控制管理</p>
+</blockquote>
+<p>不只是 Git 的一本不错的工具书，还介绍了一点原理</p>
+<blockquote>
+<p>iOS 测试指南</p>
+</blockquote>
+<p>稍微有些过时，对于平时感觉没有那么有用，有空会再看看</p>
+<blockquote>
+<p>写给大忙人看的 Swift</p>
+</blockquote>
+<p>太简约了，感觉如果真的忙的没有时间，那看官方的手册前几页就可以了，没有必要看这本书。</p>
+<blockquote>
+<p>Mac OS X and iOS Internals</p>
+</blockquote>
+<p>对系统底层非常详细的介绍，但是稍微有些太理论，所以有些枯燥，没有那么容易一气呵成的读完，仍然值得一看。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/11/17/About-Message-send-to-dealloc-instance/" itemprop="url">
+                  About Message send to dealloc instance
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-11-17T21:43:04+08:00" content="2016-11-17">
+              2016-11-17
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。</p>
+<p>话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。</p>
+<p>上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没有升级所以还是在 MRC 下。先来描述下问题。</p>
+<h3 id="崩溃代码"><a href="#崩溃代码" class="headerlink" title="崩溃代码"></a>崩溃代码</h3><p>重要的事情说三遍，MRC 下，MRC 下，MRC 下</p>
+<pre><code>//.h 头文件中定义了一个变量
+NSString *_title;
+//.m 实现文件中
+- (id)initWithTitle:(NSString *)title {
+    _title = [title copy];
+    // … 
+}
+- (void)dealloc  {
+    [_title release];
+    [super dealloc];
+}
+// 另一个调用文件中是这样子的
+[[xxClass alloc] initWithTitle:nil];
+</code></pre><p>最近的一次修改导致崩溃是被改成了下面的样子，当 title 为 nil 时把它定义为默认字符串，于是上面的 initWithTitle 改为</p>
+<pre><code>- (id)initWithTitle:(NSString *)title {
+    if (title) {
+        _title = [title copy];
+    } else {
+        _title = NSLocalizedString(@&quot;提示&quot;, nil);
+    }
+}
+</code></pre><p>接下来的事情是这样的，某个页面在多次调用 initWithTitle 的时候会发生崩溃，错误信息是这样子的：</p>
+<pre><code>UncaughtExceptionHandlerAddressesKey = (
+4   CoreFoundation                      0x1b9ca81c &lt;redacted&gt; + 2124,
+5   CoreFoundation                      0x1b9c9f8f CFDictionaryGetValue + 126,
+6   CoreFoundation                      0x1bb1446b &lt;redacted&gt; + 142,
+7   CoreFoundation                      0x1bb14111 CFBundleCopyLocalizedStringForLocalization + 94,
+8   CoreFoundation                      0x1ba0f6bb CFBundleCopyLocalizedString + 18,
+</code></pre><p>调试的话，崩溃的位置就在 _title = NSLocalizedString(@”提示”, nil); 这一行。</p>
+<p>不知道各位看官是否一眼发现了问题，控制台还有这样的输出</p>
+<p>message sent to deallocated instance 0x6d564f0</p>
+<p>一时没想到 NSLocalizedString 会有什么问题，因为好久不用 MRC，武功已经全废，所以关注上了这个 message sent to deallocated instance，想通过这条信息查找到问题。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/11/17/About-Message-send-to-dealloc-instance/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/11/Source-Code-Learning-JDStatusBarNotification/" itemprop="url">
+                  Source Code Learning - JDStatusBarNotification
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-10-11T19:41:33+08:00" content="2016-10-11">
+              2016-10-11
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="RunLoop-和-NSTimer"><a href="#RunLoop-和-NSTimer" class="headerlink" title="RunLoop 和 NSTimer"></a>RunLoop 和 NSTimer</h3><p>每次显示时先要将之前设置过的 timer 取消</p>
+<pre><code>// cancel previous dismissing &amp; remove animations
+[[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
+</code></pre><p>timer 的设置代码如下：</p>
+<pre><code>- (void)setDismissTimerWithInterval:(NSTimeInterval)interval; {
+    [self.dismissTimer invalidate];             // 重新赋值时先要使其无效
+    self.dismissTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval]
+                                             interval:0 target:self selector:@selector(dismiss:) userInfo:nil repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:self.dismissTimer forMode:NSRunLoopCommonModes];
+}
+</code></pre><p>为了能在用户拖拽页面的时候 timer 正确计时，将 timer 添加到 NSRunLoopCommonModes 模式下</p>
+<h3 id="UIWindowLevel"><a href="#UIWindowLevel" class="headerlink" title="UIWindowLevel"></a>UIWindowLevel</h3><p>每个应用都有一个主 window，通常在 AppDelegate 中设置</p>
+<pre><code>self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+self.window.backgroundColor = [UIColor whiteColor];
+self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:
+                                  [[SBExampleViewController alloc] initWithStyle:UITableViewStyleGrouped]];
+
+[self.window makeKeyAndVisible];
+</code></pre><p>makeKeyAndVisible 方法是将某个 window 设置为主窗口并设置为可见，这个窗口的级别使用默认值 UIWindowLevelNormal，UIWindowLevel 的级别如下</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/10/11/Source-Code-Learning-JDStatusBarNotification/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/23/Clang-Attributes-in-Open-Source/" itemprop="url">
                   Clang Attributes in Open Source
                 </a>
@@ -293,8 +668,8 @@
         
           
             <p>这篇文章应该叫做那些开源项目中用到过的 Clang Attributes，会列出开源项目的名字和使用方式以及用例</p>
-<h3 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h3><h5 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h5><p><strong>attribute</strong> ((visibility(“default”)))</p>
-<p>visibility 中的值可以为 default | internal | hidden | protected</p>
+<h3 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h3><h5 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h5><pre><code>__attribute__ ((visibility(&quot;default&quot;)))
+</code></pre><p>visibility 中的值可以为 default | internal | hidden | protected</p>
 <p>该属性用于设置动态链接库中函数或者变量的可见性</p>
 <p>我们在 C 语言中，如果想要将函数或变量限制在当前文件中，可以使用 static 关键字，但是在复杂的项目中，如果想要限制某个符号被共享库内部某些文件可以访问，而外部不可以访问泽有些困难，于是 GCC 中引入了 visibility 属性，它可以设置某个函数或变量是否可访问，例如这个变量在多个文件中被定义，又同时有多个链接库需要引用它时，如果不设置可见性，那么到底引用为那个值或者函数就要看加载顺序了。</p>
 <h5 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h5><pre><code>UIKIT_EXTERN const UIWindowLevel UIWindowLevelNormal;
@@ -314,18 +689,38 @@ UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
 class subClass = objc_allocateClassPair([ParentClass class], &quot;SubClass&quot;, 0);
 class_addMethod(subClass, @selector(run),(IMP) run, &quot;v@:&quot;);
 objc_registerClassPair(subClass);
-</code></pre><h5 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h5><p><strong>attribute</strong>((objc_subclassing_restricted))<br>@interface ParentClass : NSObject<br>@end<br>@interface SubClass : ParentClass // &lt;— Compile Error<br>@end</p>
-<h5 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h5><p><a href="http://blog.sunnyxx.com/2016/05/14/clang-attributes/" target="_blank" rel="external">Clang Attributes 黑魔法小记</a></p>
+</code></pre><h5 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h5><pre><code>__attribute__((objc_subclassing_restricted))
+@interface ParentClass : NSObject
+@end
+@interface SubClass : ParentClass // &lt;--- Compile Error
+@end
+</code></pre><h5 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h5><p><a href="http://blog.sunnyxx.com/2016/05/14/clang-attributes/" target="_blank" rel="external">Clang Attributes 黑魔法小记</a></p>
 <h3 id="deprecated"><a href="#deprecated" class="headerlink" title="deprecated"></a>deprecated</h3><h5 id="解释-2"><a href="#解释-2" class="headerlink" title="解释"></a>解释</h5><pre><code>__attribute__((deprecated(&quot;弃用解释说明&quot;)));
 </code></pre><p>用于说明某个属性已经弃用</p>
-<p>@property (assign, nonatomic) CGFloat opacity <strong>attribute</strong>((deprecated(“Customize bezelView properties instead.”)));</p>
-<h5 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h5><p>另外，忽略弃用警告可以使用</p>
+<pre><code>@property (assign, nonatomic) CGFloat opacity __attribute__((deprecated(&quot;Customize bezelView properties instead.&quot;)));
+</code></pre><h5 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h5><p>另外，忽略弃用警告可以使用</p>
 <pre><code>#pragma clang diagnostic push
 #pragma clang diagnostic ignored &quot;-Wdeprecated-declarations&quot;
 self.bezelView.alpha = self.opacity;
 #pragma clang diagnostic pop
 </code></pre><h5 id="项目-1"><a href="#项目-1" class="headerlink" title="项目"></a>项目</h5><p>MBProgress</p>
-
+<h3 id="objc-requires-super"><a href="#objc-requires-super" class="headerlink" title="objc_requires_super"></a>objc_requires_super</h3><h5 id="解释-3"><a href="#解释-3" class="headerlink" title="解释"></a>解释</h5><p>子类可以覆盖父类方法，如果子类需要调用父类方法使用 super 父类方法名，如果需要强制子类调用父类的方法，可以使用 objc_requires_super，当子类没有调用父类方法时则会给出警告</p>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><pre><code>@interface Father : NSObject
+- (void)payMoney __attribute__((objc_requires_super));
+@end
+@implementation Father
+- (void)payMoney {
+    NSLog(@&quot;I paid&quot;);    
+}
+@end
+@interface Son : Father
+@end
+@implementation Son
+- (void)payMoney {
+} // &lt;--- Compile Error Missing call [super payMoney]
+@end
+</code></pre><p>// .. 待追加</p>
+<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><h5 id="解释-4"><a href="#解释-4" class="headerlink" title="解释"></a>解释</h5><h5 id="用例-3"><a href="#用例-3" class="headerlink" title="用例"></a>用例</h5><h5 id="项目-2"><a href="#项目-2" class="headerlink" title="项目"></a>项目</h5><h5 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h5><h5 id="参考文献-2"><a href="#参考文献-2" class="headerlink" title="参考文献"></a>参考文献</h5>
           
         
       
@@ -1006,317 +1401,6 @@ void release() {
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/26/LEAF-Photo/" itemprop="url">
-                  LEAF Photo
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-26T23:52:34+08:00" content="2016-05-26">
-              2016-05-26
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/post_images/leafphoto1.gif" width="300px" class="fancybox"></p>
-<p><img src="/post_images/leafphoto2.gif" width="300px" class="fancybox"></p>
-<p><a href="https://itunes.apple.com/us/app/leaf-photo/id1117744396?l=zh&amp;ls=1&amp;mt=8" target="_blank" rel="external">Download now!</a></p>
-<p>LEAF Photo - Edit your photos easy.</p>
-<p>Design Tools: Templates, Text, Sticker, Marker Pen, Background, all of these make your photos beautiful or fashion.</p>
-<p>Not just collages. Do you wanna make scrapbook with an app? It can help you combine multiple photos into single one, and then print it, print one photo that contains multiple photos can save ink for you, at last paste photos on scrapbook. Or you can edit your photos, after done then print it, bind your photos to an album. Enjoy your D.I.Y album or scrapbook.</p>
-<p>Have a question or suggestion? I am waiting for your feedback.<br>Email: leafsupport@163.com</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/26/iOS-Localization/" itemprop="url">
-                  iOS Localization
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-26T20:26:21+08:00" content="2016-05-26">
-              2016-05-26
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>上一次写需要本地化的代码还是 iPhone 4 风靡的时代，现在 iPhone 7 都要出了。因为手机系统默认语言是英文，所以经常看到一些小公司写的 App 实现了本地化但是不够彻底，残留了一些文字还是中文，这也就罢了毕竟我还能认识，比较恶心的是，很多英文单词比中文长，不测试看看的话，很容易出现一个按钮上显示一半英文单词的现象。</p>
-<p>其实 Xcode 上测试本地化的方式很简单，好久不用了找半天才找到，写到这里备忘。</p>
-<p>Product -&gt; Scheme -&gt; Edit Scheme -&gt; Options -&gt; Application Language 中设置语言</p>
-<p><img src="http://s2.51cto.com/wyfs02/M01/80/B9/wKiom1dEBqeiTZjbAACs8qUNwCI064.jpg-s_3284702980.jpg" alt="img"></p>
-<p>另外，介绍个工具 <a href="http://www.peerassembly.com/linguan.html" target="_blank" rel="external">Linguan</a>，这个工具可以把本地化的 String 显示在一个画面上，这样编辑的时候省去切换的苦恼，如果有漏掉没有翻译的文字还会有提示。</p>
-<p><img src="http://www.peerassembly.com/images/LinguanScreenShot01.png" alt="img"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/20/iOS-Memory-Warning/" itemprop="url">
-                  iOS Memory Warning
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-05-20T23:48:50+08:00" content="2016-05-20">
-              2016-05-20
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>[LEAF Photo] 中要处理图片，如果操作时间长的话会收到 Memory Warning，内存处理的不好的话就会崩溃，下面记录下处理内存警告的一些优化。</p>
-<h2 id="处理内存警告"><a href="#处理内存警告" class="headerlink" title="处理内存警告"></a>处理内存警告</h2><p>处理所有 ViewController 中的 didReceiveMemoryWarning 方法<br>didReceiveMemoryWarning 方法中应当把缓存的变量都清空，这些变量最好都是通过懒加载的方式创建，这样收到内存警告后也会自动加载。</p>
-<pre><code>@interface TestViewController () 
-@property (strong, nonatomic) NSMutableArray *dataArray;
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-    self.dataArray = nil;
-}
-- (NSMutableArray *)dataArray {
-    if (!_dataArray) {
-        _dataArray = [[NSMutableArray alloc] init];
-    }
-    // 赋值处理 ... 
-    return _dataArray;
-}
-</code></pre><p>在处理图片的 Controller 中当用户点击某个按钮时会加载一些 View，例如处理文字、背景、绘图笔等是弹出的设置页面，这些 View 都封装成了自定义的类从 Controller 中分离出去，这些类的内存可以被处理，如果在 didReceiveMemoryWarning 中把这些视图清理时，需要判断当前视图是否是否正在使用，否则可能出现正在操作这些视图时，由于收到内存警告而被删除导致错误，在 iOS 6 以上的版本中可以用如下方式判断视图是否在使用</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/05/20/iOS-Memory-Warning/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1362,7 +1446,7 @@ void release() {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">38</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1372,7 +1456,7 @@ void release() {
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

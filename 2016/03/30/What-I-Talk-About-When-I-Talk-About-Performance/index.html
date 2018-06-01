@@ -93,7 +93,7 @@
 <meta property="og:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
 要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”">
 <meta property="og:image" content="http://yoursite.com/post_images/performance1.jpg">
-<meta property="og:updated_time" content="2016-07-21T03:53:22.000Z">
+<meta property="og:updated_time" content="2018-06-01T07:19:04.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Performance">
 <meta name="twitter:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
@@ -263,7 +263,7 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-03-30T22:12:34+08:00" content="2016-03-30">
+            <time itemprop="dateCreated" datetime="2016-03-30T22:13:34+08:00" content="2016-03-30">
               2016-03-30
             </time>
           </span>
@@ -321,35 +321,77 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 <h2 id="Allocations-amp-Leaks"><a href="#Allocations-amp-Leaks" class="headerlink" title="Allocations &amp; Leaks"></a>Allocations &amp; Leaks</h2><p>运行 Leaks 检查是否存在内存泄漏。但是 ARC 出现后，即使检测过程中覆盖面够大，大多数情况下也是查不出什么泄漏的，除非你犯了太明显的错误，所以 Leaks 工具可能还不够用。</p>
 <p>之后运行 Allocations，点击所有的页面，看看进入每个页面后退出，内存是否会下降回或者接近进入该页面前的内存数。如果进入某个页面，再退出，发现内存没有减少回初始状态，说明操作的页面应该是有内存泄漏的。</p>
 <p>那么如何哪里泄漏呢，这里可以使用 Generation Analysis。发现有问题后，一定要记住重现步骤，每次按照重现步骤操作，操作中在进入怀疑有内存泄漏的页面 Mark Gerneration，等待几秒钟，页面加载完毕后，再退出该页面，再 Mark Gerneration 下，如果 Snapshot 的 Growth 和 Persistent 一直增长，说明肯定是有问题的。如果这个时候你打开对应页面的代码，随便看一眼，看到某个 Block 中有循环引用或者其他错误，那么恭喜你问题找到了。但是如果问题太隐蔽怎么办？看我的下一篇文章吧。</p>
-<h2 id="Core-Animation"><a href="#Core-Animation" class="headerlink" title="Core Animation"></a>Core Animation</h2><p>运行 Core Animation 查看帧率，如果滚动时帧率达不到60 fps 都是有调整的空间。下面按照设置面板中的 Debug Options 分别说明。</p>
+<h2 id="卡顿的原因"><a href="#卡顿的原因" class="headerlink" title="卡顿的原因"></a>卡顿的原因</h2><p>界面需要绘制的时候，首先主线程开始在 CPU 中计算要显示的内容，如视图的创建、布局计算、图片解码、文本绘制等。随后 CPU 将计算好的内容交给 GPU，由 GPU 进行变换、合成、渲染，GPU 再把处理结果提交到帧缓冲区，等待垂直同步信号到来时显示到屏幕上。如果一个垂直同步信号时间内，CPU 或者 GPU 内容没有提交，就会导致丢帧，现象就会表现为卡顿，所以 CPU 和 GPU 的工作都可能会影响界面卡顿。</p>
+<h3 id="CPU-资源消耗调整"><a href="#CPU-资源消耗调整" class="headerlink" title="CPU 资源消耗调整"></a>CPU 资源消耗调整</h3><h5 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h5><p>尽量用轻量的对象代替重量的对象，例如用 CALayer 比 UIView 轻量<br>说一下 CALayer 和 UIView 的区别，首先看其继承结构图<br>NSObject<br>    |- UIResponder<br>        |- UIView<br>            |- UIWindow<br>            |- UILabel<br>    |- CALayer</p>
+<ul>
+<li><p>从继承关系可以看出来，CALayer 是不能响应任何用户事件的。CALayer 为什么从 UIView 中分离出来，单独处理显示部分？Mac OS 和 iOS 的 视图都需要处理手势事件，但是 Mac 上是用鼠标操作， iOS 是手指点击，显然处理方式不同，所以分别用 NSView 和 UIView 处理，Layer 只用于显示，为了解耦和避免重复代码，所以两个平台处理展示层的代码都适用 CALayer</p>
+</li>
+<li><p>UIView 的绘制是建立在 Core Graphics 上的，CPU 负责其绘制，自下向上一层层进行绘制。CALayer 是用的是 Core Animation，处理的是 Texture，系统决定是用 CPU 还是 GPU 进行绘制。CPU (Central Processing Unit) 和 GPU (Graphics Processing Unit) 都是用来处理绘制和动画的。CPU 是基于软件处理图形的，GPU 部分的依靠硬件处理，但是 GPU 处理能力有限，如果超出了其操作容量，就会导致效率下降。</p>
+</li>
+</ul>
+<p>此外，文本渲染方面 CATextLayer 的绘制效率也是高于 UILabel 的。UILabel 等所有文本内容的控件，包括 UIWebView 在底层都是通过 Core Text 进行排版、绘制为 Bitmap 显示的，使用 Core Text 可以对文本进行异步绘制，会比 UILabel 这些只能在主线程中操作的控件有更多性能上的优势，当然其缺陷就是实现起来相对复杂。</p>
+<h5 id="布局计算"><a href="#布局计算" class="headerlink" title="布局计算"></a>布局计算</h5><p>布局层级过于复杂会导致性能问题。iOS 6 推出的 Autolayout 机制比之前的 autoresizing 逻辑更消耗 CPU 性能。如果布局比较复杂的时候，随着视图数量的增加，Autolayout 带来的 CPU 消耗也会指数级上升，<a href="http://pilky.me/36/" target="_blank" rel="external">分析文章点这里</a>。</p>
+<h5 id="布局懒加载"><a href="#布局懒加载" class="headerlink" title="布局懒加载"></a>布局懒加载</h5><p>尽管懒加载可以更好的利用内存，但是创建控件的时机改到用户操作的时刻，会影响操作的响应时间。</p>
+<h5 id="Core-Graphics-绘制"><a href="#Core-Graphics-绘制" class="headerlink" title="Core Graphics 绘制"></a>Core Graphics 绘制</h5><p>实现 drawRect 或者 CALayerDelegate 的 drawLayer:inContext: 方法会产生一定的性能问题。这是由于 Core Animation 为了支持 layer 绘制必须创建一个背衬层，绘制后通过 IPC 将图片数据传送到渲染器，导致 Core Graphics 的绘制是非常慢的。 但是 Core Graphics 方法通常是线程安全的，所以图像绘制可以异步执行。</p>
+<pre><code>- (void)display {
+    dispatch_async(backgroundQueue, ^{
+        CGContextRef ctx = CGBitmapContextCreate(...);
+        // draw in context...
+        CGImageRef img = CGBitmapContextCreateImage(ctx);
+        CFRelease(ctx);
+        dispatch_async(mainQueue, ^{
+            layer.contents = img;
+        });
+    });
+}
+</code></pre><h5 id="图片解码"><a href="#图片解码" class="headerlink" title="图片解码"></a>图片解码</h5><p>JPG 或者 PNG 比位图小，但是展示这些图片就需要进行解码，解码是比较消耗性能的。</p>
+<p>使图片能够在加载后立即解码的方式有</p>
+<ul>
+<li>[UIImage imageNamed:] 方法会在加载图片后立即解压图片，但是 [UIImage imageWithContentsOfFile:] 等其他方法不会，它们是在 CALayer 被提交到 GPU 前才会解码。</li>
+</ul>
+<p>PS: 总结一下 UIImage imageNamed 和 imageWithContentsOfFile 的区别<br>UIImage imageNamed 方法会在加载图片后立即解压图片，imageWithContentsOfFile 不会，另外 imageNamed 的图片会保存到缓存中， imageWithContentsOfFile 不会</p>
+<ul>
+<li>使用 UIKit 的 CGImageSourceCreateImageAtIndex 方法设置 option 的值为 kCGImageSourceShouldCache 可以立即解压图片，或者直接将图片绘制到 CGContext 上，然后从 Bitmap 直接创建图片</li>
+</ul>
+<h3 id="GPU-资源消耗调整"><a href="#GPU-资源消耗调整" class="headerlink" title="GPU 资源消耗调整"></a>GPU 资源消耗调整</h3><h5 id="过多的几何图形"><a href="#过多的几何图形" class="headerlink" title="过多的几何图形"></a>过多的几何图形</h5><p>几何图形需要变换和栅格化（转成像素）后才能交给处理器处理，GPU 是能处理百万级的几何图形，但是显示前渲染器需要通过 IPC 将要处理的 layer 传递给 CPU 处理，CPU 的限制操作中有一个能够处理的上限制，所以这个问题主要是 CPU 处理出现瓶颈</p>
+<h5 id="视图的混合-Blend"><a href="#视图的混合-Blend" class="headerlink" title="视图的混合(Blend)"></a>视图的混合(Blend)</h5><p>主要是半透明图层叠加引起。GPU 的填充比率（用颜色填充像素的比率）是限制的，所以要尽量使用非透明图层</p>
+<h5 id="离屏绘制"><a href="#离屏绘制" class="headerlink" title="离屏绘制"></a>离屏绘制</h5><p>离屏绘制可能是发生在基于 CPU 绘制的也可能发生在基于 GPU 绘制的时候，在层上添加诸如 rounded corner / layer masks / drop shadows / layer rasterization 都会使 Core Animation 离屏预渲染</p>
+<h5 id="过大的图片"><a href="#过大的图片" class="headerlink" title="过大的图片"></a>过大的图片</h5><p>如果绘制超过支持的最大(2048 <em> 2048 或者 4096 </em> 4096，不同设备不一样）图片，CPU 通常需要在它每次显示前对预处理图片，这会降低性能</p>
+<h3 id="利用-Core-Animation-查找-GPU-问题"><a href="#利用-Core-Animation-查找-GPU-问题" class="headerlink" title="利用 Core Animation 查找 GPU 问题"></a>利用 Core Animation 查找 GPU 问题</h3><p>运行 Core Animation 查看帧率，如果滚动时帧率达不到 60 fps 都是有调整的空间。下面按照设置面板中的 Debug Options 分别说明。</p>
 <p><em>Color Blended Layers</em><br>红色的区域说明该 View 是透明的，系统需要对这些 View 和下层的 View 混合（Blend）才能计算出实际颜色。所以应当尽量将红色的 View 设置为不透明。</p>
 <p>这个优化，我觉得主要是要和设计师协作才能有好的效果。例如：如果图片是 PNG 的，且部分地方透明，可以的话可以将透明部分的颜色设置为背景色（这样做，是不是逼死设计师，平白无辜的给人家添了些工作，估计还要费一番口舌去解释原因）</p>
 <p>再者，可以看下手机 QQ 的应用，打开左侧边栏，有很多应用为了美观在滚动区域设置了背景图，但是手机 QQ 遇到这个问题是怎么解决的？看下你就知道了，上方不滚动区域有背景图，但是滚动区域是不加背景图的。这样能保证滚动区域的视图是非透明的。</p>
 <p><em>Color Hits Green and Misses Red</em><br>如果设置了栅格 shouldRasterized 属性，那么这里会使用红色对栅格化进行高亮。</p>
 <pre><code>cell.layer.shouldRasterize = YES;
 </code></pre><p>如果在离屏渲染中使用了圆角、阴影等效果，在对应视图的层上开启栅格化属性，该属性在绘制图层时会对图像进行缓存，所以对其进行栅格化后，页面刚加载的时候会和未优化时帧率差不太多，但是滚动中因为进行了缓存，效率有所提高。所以说栅格化就是一把双刃剑。</p>
-<p><em>Color Copied Images</em><br>这里指图片的颜色或者格式 GPU 处理不了，这时图片需要使用 CPU 处理。如果遇到这种情况，请检查下图片格式或者颜色空间设置。</p>
-<p><em>Color Immediately</em><br>通常 Core Animatin Instruments 以每毫秒10次的频率更新图层，对于某些效果来说，这个速度可能会比较慢，所以设置该选项后每秒都会刷新，但是该选项开启后会影响到渲染性能，导致帧率测量不准确，所以不需要时请不要勾选此项</p>
+<p><em>Color Copied Images</em></p>
+<p>这里指图片的颜色或者格式 GPU 处理不了，这时图片需要使用 CPU 处理。如果遇到这种情况，请检查下图片格式或者颜色空间设置。</p>
+<p><em>Color Immediately</em></p>
+<p>通常 Core Animatin Instruments 以每毫秒 10 次的频率更新图层，对于某些效果来说，这个速度可能会比较慢，所以设置该选项后每秒都会刷新，但是该选项开启后会影响到渲染性能，导致帧率测量不准确，所以不需要时请不要勾选此项</p>
 <p><em>Color Misaligned Images</em><br>设置该选项后，被绘制为黄色的 View 是被缩放的，被设置为洋红色的  View 是像素没有对齐（像素对齐指绘制的点无法直接映射到屏幕的像素点上）的。</p>
 <p>处理黄色视图方法：图片大小和控件大小不一致，可以使用 Core Graphics 中的 UIGraphicsBeginImageContextWithOptions 方法将图片缩放到控件大小，缩放图片的调用应放到线程中，避免阻塞主线程。</p>
 <p>处理洋红色视图方法：尽管 Core Graphics 中的坐标都是浮点型的，但是请尽量将坐标设置为整型的，例如在 [LEAF Photo]项目中很多视图的坐标是计算出来的，难免就出现浮点型，这时可以使用 ceilf、floorf和 CGRectIntegral 将小数整数化。</p>
 <p>说一段痛苦的经历，在修改 Color Misaligned Images 问题时，我经历过类似 Bishop (前言提到的翻译文章作者) 查找内存泄漏时遭遇的不幸，当我把图片进行缩放后放到 ImageView 中，发现 ImageView 仍然显示黄色，Debug 和 UI Debug 还有 Reveal 查看视图的大小和图片的大小都是一致的，但是仍然显示成黄色，于是还特意查了很多其他资料，看看是否有其他原因导致黄色，但是都无果。经过一个多小时的折腾，我发现这个问题可能是 Instruments 的问题。</p>
 <p>我为何会怀疑 Instruments 呢，因为我将模拟器（说明下用模拟器做性能测试，是在各种方式尝试后仍找不到原因才使用的，希望这里不要误导了大家，性能方面的测试还是要在真机上运行滴）的 Debug -&gt; Color Misaligned Images 勾选后，可以直接查看视图问题，这时开启 Reveal，在 Reveal 中查看是没有黄色的，那么是不是因为 Reveal 的 Debug 没有显示有问题的视图的功能呢？于是我把代码退回到优化前的版本，可以看到 Reveal 是有洋红色和黄色的，这时 Instruments 也是显示有问题，再使用修改后的版本，Reveal 上不再有洋红色和黄色，Instruments 上黄色还存在，但是洋红色比之前少了。所以暂时作罢，不再查了，因为调整后帧率已经从52 - 56 增长到 57 - 60 fps了。</p>
-<p><em>Color Offscreen-Rendered Yellow</em><br>离屏渲染。网上很多说如何优化离屏渲染的文章，不详述了，主要是滚动视图中直接使用 cornerRadius 处理圆角会有性能问题，很多人写了 Core Graphics 绘制圆角等方法解决；</p>
+<p><em>Color Offscreen-Rendered Yellow</em></p>
+<p>离屏渲染。网上很多说如何优化离屏渲染的文章，不详述了，主要是滚动视图中直接使用 cornerRadius 处理圆角会有性能问题，很多人写了 Core Graphics 绘制圆角等方法解决；</p>
 <pre><code>view.layer.shadowOffset = CGSizeMake(-1.0f, 1.0f);
 view.layer.shadowRadius = 5.0f;
 view.layer.shadowOpacity = 0.6;
 </code></pre><p>使用阴影的话要添加 shadowPath 来优化。</p>
 <pre><code>view.layer.shadowPath = [[UIBezierPath bezierPathWithRect:view.bounds] CGPath];
-</code></pre><p><em>Color OpenGL Fast-Path Blue</em><br>勾选该选项后会对任何直接使用OpenGL绘制的图层进行高亮。如果仅使用 UIKit 或者 Core Animation 的 API，那么不会有任何效果。如果使用 GLKView 或者 CAEAGLLayer，那如果不显示蓝色块的话就意味着你正在强制 CPU 渲染额外的纹理，而不是绘制到屏幕。    </p>
+</code></pre><p><em>Color OpenGL Fast-Path Blue</em></p>
+<p>勾选该选项后会对任何直接使用 OpenGL 绘制的图层进行高亮。如果仅使用 UIKit 或者 Core Animation 的 API，那么不会有任何效果。如果使用 GLKView 或者 CAEAGLLayer，那如果不显示蓝色块的话就意味着你正在强制 CPU 渲染额外的纹理，而不是绘制到屏幕。    </p>
 <p><em>Flash Updated Regions</em><br>勾选该选项会对重绘的内容高亮成黄色（也就是任何在软件层面使用 Core Graphics 绘制的图层）。这种绘图的速度很慢。如果频繁发生这种情况的话，这意味着有一个隐藏的 bug 或者说通过增加缓存或者使用替代方案会有提升性能的空间。</p>
 <p>上面的描述是不是太术语化了，举个例子可能就好明白了。例如写一个时钟的应用，大多数时间只需要调整秒针的位置，这个时候只需要重会秒针的区域，但是如果重绘的区域显示为这个表盘的话就需要优化下代码了。</p>
-<h2 id="OpenGL-ES-Analysis"><a href="#OpenGL-ES-Analysis" class="headerlink" title="OpenGL ES Analysis"></a>OpenGL ES Analysis</h2><p>如果想知道 GPU 的利用率，无疑这个工具是可以帮助你，另外它还可用来判断和 GPU 相关的动画性能。</p>
+<h3 id="OpenGL-ES-Analysis"><a href="#OpenGL-ES-Analysis" class="headerlink" title="OpenGL ES Analysis"></a>OpenGL ES Analysis</h3><p>如果想知道 GPU 的利用率，无疑这个工具是可以帮助你，另外它还可用来判断和 GPU 相关的动画性能。</p>
 <p>右侧边栏的统计数据有一些有用的指标<br><em>Renderer Utilization</em><br>这个值大于50%，看下是否有离屏渲染问题或者 Blended View 把混合视图尽量设置为不透明。</p>
 <p><em>Tiler Utilization</em><br>这个值大于50%，看看是否能将图层数减少，是否有多余的图层删除或者合并。</p>
+<h3 id="IO-受限操作"><a href="#IO-受限操作" class="headerlink" title="IO 受限操作"></a>IO 受限操作</h3><p>加载图片比较消耗性能<br>加载本地图片可以使用 GCD 或者 NSOperationQueue，或者 CATiledLayer，加载网络图片使用在新的线程中进行，下载后主线程中刷新界面</p>
 <h2 id="测试设备"><a href="#测试设备" class="headerlink" title="测试设备"></a>测试设备</h2><p>注意的是测试性能一定要使用真机，不同型号的 iPhone 测试结果也会不同，例如 iPhone 5s 上测试滚动帧率在50多 fps，在 iPhone 4上的帧率可能也就 30 － 40。</p>
 <p>另外 Insturments 有时跟矫情的小娘们一样耍耍小性儿，开始按钮不能点击，或者连接了真机后，设备中的真机不可用。这时尝试拔掉手机连线，重启手机，还不管用再重启下电脑和 Xcode。</p>
 <h2 id="写到最后"><a href="#写到最后" class="headerlink" title="写到最后"></a>写到最后</h2><p>最后说明下，以上文章出自多年积累，某些概念因年旧没有记录出处了。另外，如果有写的不对的地方请指正。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios/" target="_blank" rel="external">iOS 保持界面流畅的技巧</a><br>iOS Core Animation Advanced Techniques</p>
 
       
     </div>
@@ -543,7 +585,7 @@ view.layer.shadowOpacity = 0.6;
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Time-Profiler"><span class="nav-number">2.</span> <span class="nav-text">Time Profiler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Allocations-amp-Leaks"><span class="nav-number">3.</span> <span class="nav-text">Allocations & Leaks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Animation"><span class="nav-number">4.</span> <span class="nav-text">Core Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenGL-ES-Analysis"><span class="nav-number">5.</span> <span class="nav-text">OpenGL ES Analysis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试设备"><span class="nav-number">6.</span> <span class="nav-text">测试设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写到最后"><span class="nav-number">7.</span> <span class="nav-text">写到最后</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Time-Profiler"><span class="nav-number">2.</span> <span class="nav-text">Time Profiler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Allocations-amp-Leaks"><span class="nav-number">3.</span> <span class="nav-text">Allocations & Leaks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卡顿的原因"><span class="nav-number">4.</span> <span class="nav-text">卡顿的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU-资源消耗调整"><span class="nav-number">4.1.</span> <span class="nav-text">CPU 资源消耗调整</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#对象的创建"><span class="nav-number">4.1.0.1.</span> <span class="nav-text">对象的创建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#布局计算"><span class="nav-number">4.1.0.2.</span> <span class="nav-text">布局计算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#布局懒加载"><span class="nav-number">4.1.0.3.</span> <span class="nav-text">布局懒加载</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Core-Graphics-绘制"><span class="nav-number">4.1.0.4.</span> <span class="nav-text">Core Graphics 绘制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图片解码"><span class="nav-number">4.1.0.5.</span> <span class="nav-text">图片解码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GPU-资源消耗调整"><span class="nav-number">4.2.</span> <span class="nav-text">GPU 资源消耗调整</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#过多的几何图形"><span class="nav-number">4.2.0.1.</span> <span class="nav-text">过多的几何图形</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#视图的混合-Blend"><span class="nav-number">4.2.0.2.</span> <span class="nav-text">视图的混合(Blend)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#离屏绘制"><span class="nav-number">4.2.0.3.</span> <span class="nav-text">离屏绘制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#过大的图片"><span class="nav-number">4.2.0.4.</span> <span class="nav-text">过大的图片</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用-Core-Animation-查找-GPU-问题"><span class="nav-number">4.3.</span> <span class="nav-text">利用 Core Animation 查找 GPU 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenGL-ES-Analysis"><span class="nav-number">4.4.</span> <span class="nav-text">OpenGL ES Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IO-受限操作"><span class="nav-number">4.5.</span> <span class="nav-text">IO 受限操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试设备"><span class="nav-number">5.</span> <span class="nav-text">测试设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写到最后"><span class="nav-number">6.</span> <span class="nav-text">写到最后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
           </div>
         </section>

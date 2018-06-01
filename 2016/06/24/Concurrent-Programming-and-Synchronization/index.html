@@ -96,7 +96,7 @@ void retain() {
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
     OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
-<meta property="og:updated_time" content="2018-05-26T14:55:36.186Z">
+<meta property="og:updated_time" content="2018-05-29T15:06:18.942Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Concurrent Programming and Synchronization">
 <meta name="twitter:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
@@ -360,10 +360,10 @@ static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t o
     } 
     objc_release(oldValue);
 }
-</code></pre><p>runtime 源码如上，如果一个线程调用 getter 方法获取到 atomic 属性的变量后，另一个线程调用 setter 方法，atomic 能保证 getter 方法的引用计数增加，即使另一个线程调用 setter 方法 release oldValue，也就能保证 getter 方法获取到的 oldValue 变量依然没有被释放。</p>
+</code></pre><p>Runtime 源码如上，如果一个线程调用 getter 方法获取到 atomic 属性的变量后，另一个线程调用 setter 方法，atomic 能保证 getter 方法的引用计数增加，即使另一个线程调用 setter 方法 release oldValue，也就能保证 getter 方法获取到的 oldValue 变量依然没有被释放。</p>
 <h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。</p>
-<p>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为volatile变量。</p>
-<p>因为内存屏障和volatile变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
+<p>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为 volatile 变量。</p>
+<p>因为内存屏障和 volatile 变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
 <pre><code>// ...
 OSMemoryBarrier();
 // ...
@@ -407,7 +407,140 @@ while (moreToDo) {
 } @finally {
     objc_sync_exit(obj);    
 }
-</code></pre><h3 id="NSConditionLock-对象"><a href="#NSConditionLock-对象" class="headerlink" title="NSConditionLock 对象"></a>NSConditionLock 对象</h3><p>它定义了一个互斥锁，可以使用特定值来锁住和解锁。不要把该类型的锁和条件（参见“条件”部分）混淆了。它的行为和条件有点类似，但是它们的实现非常不同。</p>
+</code></pre><p>WWDC 早期的一次大会中推荐我们在实现单例的时候使用 GCD 的 dispatch_once 代替 @synchronized，我们从源码分析上来看一下二者的区别</p>
+<p>先把 @synchronized 往祖坟里刨一刨</p>
+<pre><code>int objc_sync_enter(id obj)
+{
+    int result = OBJC_SYNC_SUCCESS;
+    if (obj) {
+        SyncData* data = id2data(obj, ACQUIRE);
+        data-&gt;mutex.lock();
+    }
+    return result;
+}
+
+int objc_sync_exit(id obj)
+{
+    int result = OBJC_SYNC_SUCCESS;
+    if (obj) {
+        SyncData* data = id2data(obj, RELEASE);
+        bool okay = data-&gt;mutex.tryUnlock();
+        if (!okay) {
+        result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
+        }
+    } 
+    return result;
+}
+</code></pre><p>SyncData 中的定义如下</p>
+<pre><code>typedef struct SyncData {
+    struct SyncData* nextData;
+    DisguisedPtr&lt;objc_object&gt; object;
+    int32_t threadCount;  // number of THREADS using this block
+    recursive_mutex_t mutex;
+} SyncData;
+
+struct SyncList {
+    SyncData *data;
+    spinlock_t lock;
+};
+
+#define LOCK_FOR_OBJ(obj) sDataLists[obj].lock
+#define LIST_FOR_OBJ(obj) sDataLists[obj].data
+static StripedMap&lt;SyncList&gt; sDataLists;
+
+static SyncData* id2data(id object, enum usage why)
+{
+    spinlock_t *lockp = &amp;LOCK_FOR_OBJ(object);
+    SyncData **listp = &amp;LIST_FOR_OBJ(object);
+    SyncData* result = NULL;
+    lockp-&gt;lock();
+    {
+        SyncData* p;
+        SyncData* firstUnused = NULL;
+        for (p = *listp; p != NULL; p = p-&gt;nextData) {
+            if ( p-&gt;object == object ) {
+                result = p;
+                OSAtomicIncrement32Barrier(&amp;result-&gt;threadCount);
+                goto done;
+            }
+            if ( (firstUnused == NULL) &amp;&amp; (p-&gt;threadCount == 0) )
+                firstUnused = p;
+        }
+        if ( firstUnused != NULL ) {
+            result = firstUnused;
+            result-&gt;object = (objc_object *)object;
+            result-&gt;threadCount = 1;
+            goto done;
+        }
+    }
+    result = (SyncData*)calloc(sizeof(SyncData), 1);
+    result-&gt;object = (objc_object *)object;
+    result-&gt;threadCount = 1;
+
+    new (&amp;result-&gt;mutex) recursive_mutex_t();
+    result-&gt;nextData = *listp;
+    *listp = result;
+
+done:
+    lockp-&gt;unlock();
+    return result;
+}
+</code></pre><p>调用 objc_sync_enter(obj) 后，obj 会在哈希表对应的链表中查询对应的对象，查询不到则创建一个新对象加入到链表，然后新对象上加锁；调用 objc_sync_exit 后试图解锁，来保证线程安全。</p>
+<p>再看下 dispatch_once 源码</p>
+<pre><code>void dispatch_once(dispatch_once_t *val, dispatch_block_t block)
+{
+    struct Block_basic *bb = (void *)block;
+    dispatch_once_f(val, block, (void *)bb-&gt;Block_invoke);
+}
+
+void dispatch_once_f(dispatch_once_t *val, void *ctxt, dispatch_function_t func) {
+    struct _dispatch_once_waiter_s * volatile *vval = (struct _dispatch_once_waiter_s**)val;
+    struct _dispatch_once_waiter_s dow = { NULL, 0 };
+    struct _dispatch_once_waiter_s *tail, *tmp;
+    _dispatch_thread_semaphore_t sema;
+
+    if (__sync_bool_compare_and_swap(vval, NULL, &amp;dow)) {
+        dispatch_atomic_acquire_barrier();
+        _dispatch_client_callout(ctxt, func);
+        dispatch_atomic_maximally_synchronizing_barrier();
+
+        tmp = __sync_swap(vval, DISPATCH_ONCE_DONE);  
+        tail = &amp;dow;
+        while (tail != tmp) {
+            while (!tmp-&gt;dow_next) {
+                _dispatch_hardware_pause();
+            }
+            sema = tmp-&gt;dow_sema;
+            tmp = (struct _dispatch_once_waiter_s*)tmp-&gt;dow_next;
+            _dispatch_thread_semaphore_signal(sema);
+        }
+    }
+    else 
+    {   
+        dow.dow_sema = _dispatch_get_thread_semaphore();
+        for (;;) {
+            tmp = *vval;
+
+            if (tmp == DISPATCH_ONCE_DONE) {
+                break;
+            }
+            dispatch_atomic_store_barrier();
+            if (__sync_bool_compare_and_swap(vval, tmp, &amp;dow)) {
+                dow.dow_next = tmp;
+                _dispatch_thread_semaphore_wait(dow.dow_sema);
+            }
+        }
+        _dispatch_put_thread_semaphore(dow.dow_sema);
+    }
+}
+
+struct _dispatch_once_waiter_s {
+    volatile struct _dispatch_once_waiter_s *volatile dow_next;
+    _dispatch_thread_semaphore_t dow_sema;
+};
+#define DISPATCH_ONCE_DONE ((struct _dispatch_once_waiter_s *)~0l)
+</code></pre><p>当第一个线程调用 dispatch_once 时，vval 的值是 NULL，完成后设置其为 DISPATCH_ONCE_DONE，这个过程中间其他线程再调用该方法则会等待，等待第一个线程执行完成后唤醒各线程。dispatch_once 使用内存屏障和信号量结合实现线程同步。</p>
+<h3 id="NSConditionLock-对象"><a href="#NSConditionLock-对象" class="headerlink" title="NSConditionLock 对象"></a>NSConditionLock 对象</h3><p>它定义了一个互斥锁，可以使用特定值来锁住和解锁。不要把该类型的锁和条件（参见“条件”部分）混淆了。它的行为和条件有点类似，但是它们的实现非常不同。</p>
 <p>通常，当多线程需要以特定的顺序来执行任务的时候，你可以使用一个 NSConditionLock 对象，比如当一个线程生产数据，而另外一个线程消费数据。生产者执行时，消费者使用由你程序指定的条件来获取锁（条件本身是一个你定义的整形值）。当生产者完成时，它会解锁该锁并设置锁的条件为合适的整形值来唤醒消费者线程，之后消费线程继续处理数据。</p>
 <p>NSConditionLock 的锁住和解锁方法可以任意组合使用。比如，你可以使用 unlockWithCondition: 和 lock 消息，或使用 lockWhenCondition: 和 unlock 消息。当然，后面的组合可以解锁一个锁但是可能没有释放任何等待某特定条件值的线程。</p>
 <pre><code>// Common
@@ -426,7 +559,7 @@ while (true) {
     //消费
     [condLock unlockWithCondition:NO_DATA];
 }
-</code></pre><h2 id="锁-递归锁"><a href="#锁-递归锁" class="headerlink" title="锁 - 递归锁"></a>锁 - 递归锁</h2><p>NSRecursiveLock 类定义的锁可以在同一线程多次获得，而不会造成死锁。一个递归锁会跟踪它被多少次成功获得了。每次成功的获得该锁都必须平衡调用锁住和解锁的操作。只有所有的锁住和解锁操作都平衡的时候，锁才真正被释放给其他线程获得。</p>
+</code></pre><h2 id="锁-递归锁"><a href="#锁-递归锁" class="headerlink" title="锁 - 递归锁"></a>锁 - 递归锁</h2><p>NSRecursiveLock 类定义的锁可以在同一线程多次获得，而不会造成死锁，即多次调用不会阻塞已获取该锁的线程。一个递归锁会跟踪它被多少次成功获得了。每次成功的获得该锁都必须平衡调用锁住和解锁的操作。只有所有的锁住和解锁操作都平衡的时候，锁才真正被释放给其他线程获得。</p>
 <p>正如它名字所言，这种类型的锁通常被用在一个递归函数里面来防止递归造成阻塞线程。你可以类似的在非递归的情况下使用他来调用函数，这些函数的语义要求它们使用锁。以下是一个简单递归函数，它在递归中获取锁。如果你不在该代码里使用 NSRecursiveLock 对象，当函数被再次调用的时候线程将会出现死锁。</p>
 <pre><code>NSRecursiveLock *theLock = [[NSRecursiveLock alloc] init];
 
@@ -453,10 +586,11 @@ MyRecursiveFunction(5);
 OSSpinLockLock(&amp;spinlock);  
 // do something ...
 OSSpinLockUnlock(&amp;spinlock);  
-</code></pre><h2 id="锁-双重检查锁"><a href="#锁-双重检查锁" class="headerlink" title="锁 - 双重检查锁"></a>锁 - 双重检查锁</h2><p>// TODO: 待完善… </p>
+</code></pre><p><code>OSSpinLock 在iOS 10 上已被废弃，建议用 os_unfair_lock 来替代</code></p>
+<h2 id="锁-双重检查锁"><a href="#锁-双重检查锁" class="headerlink" title="锁 - 双重检查锁"></a>锁 - 双重检查锁</h2><p>// TODO: 待完善… </p>
 <h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>GCD提供一种信号的机制，使用它我们可以创建“锁”，这个地方加引号是因为它不是锁。</p>
 <p>我们把信号量当作是一个计数器，dispatch_semaphore_wait 等待信号，当信号总量为 0 时则一直等待，否则就可以正常的执行，并让信号总量 -1；dispatch_semaphore_signal 是发送一个信号，让信号总量加 1。</p>
-<pre><code>// 实例类person
+<pre><code>// 实例类 person
 Person *person = [[Person alloc] init];
 // 创建并设置信号量
 dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
@@ -531,7 +665,8 @@ void SignalThreadUsingCondition() {
 dispatch_async(dispatch_get_main_queue(), ^{
     [self doSomething];
 });
-</code></pre><h2 id="同步的性能"><a href="#同步的性能" class="headerlink" title="同步的性能"></a>同步的性能</h2><p>同步可以确保你的程序正确执行，但是可能会牺牲掉部分性能。如果发生锁的争夺，你的线程有可能进入阻塞，在体验上会产生更大的迟延。</p>
+</code></pre><h3 id="创建线程的成本"><a href="#创建线程的成本" class="headerlink" title="创建线程的成本"></a>创建线程的成本</h3><p>创建线程也是有开销的，iOS 下主要成本包括构造内核数据结构（大约 1KB），栈空间（主线程 1M，子线程 512K，不过可以使用 -setStackSize 自己设置，但是必须是 4K 的倍数，最小是 16K ），创建线程大约需要 90 毫秒</p>
+<h2 id="同步的性能"><a href="#同步的性能" class="headerlink" title="同步的性能"></a>同步的性能</h2><p>同步可以确保你的程序正确执行，但是可能会牺牲掉部分性能。如果发生锁的争夺，你的线程有可能进入阻塞，在体验上会产生更大的迟延。</p>
 <p>参考下 <a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Benchmark Demo</a>，对比几种锁在加锁和解锁 33554432 次 (即 1024<em>1024</em>32)，耗时时间分别是<br>NSLock: 3.5175 sec<br>NSLock+IMP Cache: 3.1165 sec<br>pthread_mutex: 1.5870 sec<br>OSSpinLock: 1.0893<br>@synchronized: 9.9488 sec</p>
 <ul>
 <li>NSLock 和 NSLock+IMP 时间比较接近，他们都是 pthread mutexes 封装的，创建对象时需要额外开销</li>
@@ -541,7 +676,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
 </ul>
 <p>也可以参考下 ibireme (郭曜源) 的 <a href="https://github.com/ibireme/tmp/tree/master/iOSLockBenckmark/iOSLockBenckmark" target="_blank" rel="external">Benchmark Demo</a>。同时 ibireme 指出 <a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">OSSPinLock 不再安全</a>，所以看他的源码基本上是用 pthread_mutex 的情况比较多。另外 iOS 10 已经推出了 OSSpinLock 的替代品 <a href="https://developer.apple.com/reference/os/os_unfair_lock" target="_blank" rel="external">os_unfair_lock</a>。</p>
 <p>另外，在《Effective Objective-C 2.0》第 41 条指出应当多用派发队列，少用同步锁。即使用”串行同步队列” 或者 GCD 的 dispatch_barrier_async / dispatch_barrier_sync 来避开同步锁的使用。</p>
-<h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html" target="_blank" rel="external">iOS 多线程之线程安全</a><br><a href="http://www.dreamingwish.com/article/the-ios-multithreaded-programming-guide-4-thread-synchronization.html" target="_blank" rel="external">iOS 多线程编程指南之线程同步</a><br><a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Synchronized NSLock pthread OSSpinLock 的正确使用</a><br><a href="https://www.cnblogs.com/iOSJason/p/5139883.html" target="_blank" rel="external">Synchronized 的实现</a><br><a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a></p>
+<h2 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h2><p><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/CreatingThreads/CreatingThreads.html#//apple_ref/doc/uid/10000057i-CH15-SW2" target="_blank" rel="external">创建线程官方文档</a><br><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html" target="_blank" rel="external">iOS 多线程之线程安全</a><br><a href="http://www.dreamingwish.com/article/the-ios-multithreaded-programming-guide-4-thread-synchronization.html" target="_blank" rel="external">iOS 多线程编程指南之线程同步</a><br><a href="http://perpendiculo.us/2009/09/synchronized-nslock-pthread-osspinlock-showdown-done-right/" target="_blank" rel="external">Synchronized NSLock pthread OSSpinLock 的正确使用</a><br><a href="https://www.cnblogs.com/iOSJason/p/5139883.html" target="_blank" rel="external">Synchronized 的实现</a><br><a href="http://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a></p>
 
       
     </div>
@@ -735,7 +870,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原子操作"><span class="nav-number">1.</span> <span class="nav-text">原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存屏障（Memory-Barrier）"><span class="nav-number">2.</span> <span class="nav-text">内存屏障（Memory Barrier）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-互斥锁"><span class="nav-number">3.</span> <span class="nav-text">锁 - 互斥锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POSIX-互斥锁在很多程序里面很容易使用"><span class="nav-number">3.1.</span> <span class="nav-text">POSIX 互斥锁在很多程序里面很容易使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSLock-中实现了一个简单的互斥锁"><span class="nav-number">3.2.</span> <span class="nav-text">NSLock 中实现了一个简单的互斥锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-指令"><span class="nav-number">3.3.</span> <span class="nav-text">@synchronized 指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSConditionLock-对象"><span class="nav-number">3.4.</span> <span class="nav-text">NSConditionLock 对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-递归锁"><span class="nav-number">4.</span> <span class="nav-text">锁 - 递归锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-读写锁"><span class="nav-number">5.</span> <span class="nav-text">锁 - 读写锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-分布锁"><span class="nav-number">6.</span> <span class="nav-text">锁 - 分布锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-自旋锁"><span class="nav-number">7.</span> <span class="nav-text">锁 -  自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-双重检查锁"><span class="nav-number">8.</span> <span class="nav-text">锁 - 双重检查锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号量"><span class="nav-number">9.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件"><span class="nav-number">10.</span> <span class="nav-text">条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件-使用-NSCondition-类"><span class="nav-number">10.1.</span> <span class="nav-text">条件 - 使用 NSCondition 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件-使用-POSIX-条件"><span class="nav-number">10.2.</span> <span class="nav-text">条件 - 使用 POSIX 条件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行-Selector"><span class="nav-number">11.</span> <span class="nav-text">执行 Selector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步的性能"><span class="nav-number">12.</span> <span class="nav-text">同步的性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考内容"><span class="nav-number">13.</span> <span class="nav-text">参考内容</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原子操作"><span class="nav-number">1.</span> <span class="nav-text">原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存屏障（Memory-Barrier）"><span class="nav-number">2.</span> <span class="nav-text">内存屏障（Memory Barrier）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-互斥锁"><span class="nav-number">3.</span> <span class="nav-text">锁 - 互斥锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POSIX-互斥锁在很多程序里面很容易使用"><span class="nav-number">3.1.</span> <span class="nav-text">POSIX 互斥锁在很多程序里面很容易使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSLock-中实现了一个简单的互斥锁"><span class="nav-number">3.2.</span> <span class="nav-text">NSLock 中实现了一个简单的互斥锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-指令"><span class="nav-number">3.3.</span> <span class="nav-text">@synchronized 指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSConditionLock-对象"><span class="nav-number">3.4.</span> <span class="nav-text">NSConditionLock 对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-递归锁"><span class="nav-number">4.</span> <span class="nav-text">锁 - 递归锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-读写锁"><span class="nav-number">5.</span> <span class="nav-text">锁 - 读写锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-分布锁"><span class="nav-number">6.</span> <span class="nav-text">锁 - 分布锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-自旋锁"><span class="nav-number">7.</span> <span class="nav-text">锁 -  自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁-双重检查锁"><span class="nav-number">8.</span> <span class="nav-text">锁 - 双重检查锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号量"><span class="nav-number">9.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件"><span class="nav-number">10.</span> <span class="nav-text">条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件-使用-NSCondition-类"><span class="nav-number">10.1.</span> <span class="nav-text">条件 - 使用 NSCondition 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件-使用-POSIX-条件"><span class="nav-number">10.2.</span> <span class="nav-text">条件 - 使用 POSIX 条件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行-Selector"><span class="nav-number">11.</span> <span class="nav-text">执行 Selector</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建线程的成本"><span class="nav-number">11.1.</span> <span class="nav-text">创建线程的成本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步的性能"><span class="nav-number">12.</span> <span class="nav-text">同步的性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考内容"><span class="nav-number">13.</span> <span class="nav-text">参考内容</span></a></li></ol></div>
             
           </div>
         </section>

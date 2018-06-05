@@ -819,14 +819,16 @@ self.bezelView.alpha = self.opacity;
 <li>可变数组声明属性为 copy<br> // .h 文件<br> @property (nonatomic, copy) NSMutableArray <em>mutableArray;<br> // .m 文件<br> NSMutableArray </em>array = @[@1,@2];<br> self.mutableArray = array;<br> // 下句崩溃，因为 NSArray 中找不到 removeObjectAtIndex 方法<br> [self.mutableArray removeObjectAtIndex:0];  </li>
 </ol>
 </li>
-<li>NSNotification addObserver 使用后没有（在 dealloc 中） removeObserver，或者 delegate 使用后没有置为 nil</li>
-<li>多线程中访问同一块资源时，没有为数据加锁，数据错误可能会导致崩溃。另外在多线程中，UI 等操作需要放到主线程操作，否则会导致崩溃</li>
-<li>操作野指针，或者对空进行操作，可以使用 NSParameterAssert 等进行判断</li>
-<li>数组越界</li>
-<li>调用对象不存在的方法</li>
+<li>多线程中访问同一块资源时，没有为数据加锁，数据错误可能会导致崩溃。</li>
+<li>在多线程中，UI 等操作需要放到主线程操作，否则会导致崩溃</li>
+<li>操作野指针。</li>
+<li>数组越界，像 NSDictionary 或者 NSArray 中插入数组等</li>
+<li>调用对象不存在的方法，unrecognized selector</li>
 <li>低内存终止，看门狗结束程序，大多是内存泄漏等导致。</li>
+<li>内存泄漏<a href="http://alicialy.github.io/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/">详情见之前的文章</a></li>
 </ul>
-<h3 id="修复线上崩溃的方法"><a href="#修复线上崩溃的方法" class="headerlink" title="修复线上崩溃的方法"></a>修复线上崩溃的方法</h3>
+<p>发生 EXC_BAD_ACCESS 的错误，通过全局断点进行定位。可以使用 NSZombies 可以定位野指针。资源竞争的定位可以通过 Thread Sanitizer 查找。</p>
+<h3 id="修复线上崩溃的方法"><a href="#修复线上崩溃的方法" class="headerlink" title="修复线上崩溃的方法"></a>修复线上崩溃的方法</h3><h4 id="使用-symbolicatecrash-工具将崩溃堆栈符号化"><a href="#使用-symbolicatecrash-工具将崩溃堆栈符号化" class="headerlink" title="使用 symbolicatecrash 工具将崩溃堆栈符号化"></a>使用 symbolicatecrash 工具将崩溃堆栈符号化</h4><p>创建新的文件夹，将 symbolicatecrash、.crash 和 .dSYM 文件放到该文件夹下执行下面命令，生成新的 symbol.crash 文件，该文件中可以显示崩溃函数名及位置。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/09/05/Writing-Crash-Free-Code/#more" rel="contents">
               Read more &raquo;
@@ -1327,7 +1329,7 @@ dispatch_resume(timer);
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-06-24T21:26:36+08:00" content="2016-06-24">
+            <time itemprop="dateCreated" datetime="2016-06-24T21:26:38+08:00" content="2016-06-24">
               2016-06-24
             </time>
           </span>

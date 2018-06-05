@@ -968,32 +968,6 @@ Podfile.lock
 }
 </code></pre><p>要把 self 改为 WeakSelf。</p>
 <p>上面的 DLog 是我常用的一个日志宏，调试的时候能输出函数名称和所在行数，定义如下</p>
-<pre><code>#ifdef DEBUG
-#define DLog(args, ...) NSLog((@&quot;%s - [Line %d] -- &quot; args), __FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#   define DLog(...)
-#endif
-</code></pre><p>如果觉得这样的方式输入的内容还不够丰富，建议使用 <a href="https://onevcat.com/2014/01/black-magic-in-macro/">喵神的代码</a></p>
-<pre><code>#define NSLog(format, ...) do { \
-    fprintf(stderr, &quot;&lt;%s : %d&gt; %s\n&quot;,  \
-    [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], \
-    __LINE__, __func__);  \
-   (NSLog)((format), ##__VA_ARGS__);   \
-   fprintf(stderr, &quot;-------\n&quot;);       \
-} while (0)
-</code></pre><p>注意，这种方式在某些情况下仍然能执行 dealloc，并不是十分可靠，还要确认 Instruments 的 Leaks 下没有报错才可以，例如以下这种比较常见的循环引用，需要使用 Leaks 查看。</p>
-<h2 id="常见的循环引用"><a href="#常见的循环引用" class="headerlink" title="常见的循环引用"></a>常见的循环引用</h2><pre><code>@interface RetainCycleModel : NSObject
-@property (strong, nonatomic) id obj;
-@end
-
-
-RetainCycleModel *model1 = [[RetainCycleModel alloc] init];
-RetainCycleModel *model2 = [[RetainCycleModel alloc] init];
-
-[model1 setObj:model2];
-[model2 setObj:model1];
-</code></pre><p>上例中 model1 强引用了 model2，model2 又强引用了 model1。<a href="https://github.com/alicialy/MemoryLeaks">Demo 代码点击这里</a></p>
-<h2 id="如何用-Instrument-定位隐蔽的循环引用"><a href="#如何用-Instrument-定位隐蔽的循环引用" class="headerlink" title="如何用 Instrument 定位隐蔽的循环引用"></a>如何用 Instrument 定位隐蔽的循环引用</h2><p>还是拿 [LEAF Photo] 举例，运行 Allocation。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/#more" rel="contents">
               Read more &raquo;

@@ -96,7 +96,7 @@ void retain() {
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
     OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
-<meta property="og:updated_time" content="2018-05-29T15:06:18.942Z">
+<meta property="og:updated_time" content="2018-06-05T13:48:31.178Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Concurrent Programming and Synchronization">
 <meta name="twitter:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
@@ -267,7 +267,7 @@ void retain() {
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2016-06-24T21:26:36+08:00" content="2016-06-24">
+            <time itemprop="dateCreated" datetime="2016-06-24T21:26:38+08:00" content="2016-06-24">
               2016-06-24
             </time>
           </span>
@@ -363,6 +363,7 @@ static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t o
 </code></pre><p>Runtime 源码如上，如果一个线程调用 getter 方法获取到 atomic 属性的变量后，另一个线程调用 setter 方法，atomic 能保证 getter 方法的引用计数增加，即使另一个线程调用 setter 方法 release oldValue，也就能保证 getter 方法获取到的 oldValue 变量依然没有被释放。</p>
 <h2 id="内存屏障（Memory-Barrier）"><a href="#内存屏障（Memory-Barrier）" class="headerlink" title="内存屏障（Memory Barrier）"></a>内存屏障（Memory Barrier）</h2><p>内存屏障（Memory Barrier）是用来确保内存操作按照正确顺序工作的非阻塞同步工具。内存屏障的作用就像一个栅栏，迫使处理器来完成位于障碍前面的任何加载和存储操作，才允许它执行位于屏障之后的加载和存储操作。</p>
 <p>Volatile 变量适用于独立变量的另一个内存限制类型。编译器优化代码通过加载这些变量的值进入寄存器。对于本地变量，这通常不会有什么问题。但是如果一个变量对另外一个线程可见，那么这种优化可能会阻止其他线程发现变量的任何变化。在变量之前加上关键字 volatile 可以强制编译器每次使用变量的时候都从内存里面加载。如果一个变量的值随时可能给编译器无法检测的外部源更改，那么你可以把该变量声明为 volatile 变量。</p>
+<p>volatile 使用场景有：<br>并行设备的硬件寄存器（如：状态寄存器）；一个中断服务子程序中会访问到的非自动变量(Non-automatic variables)；多线程应用中被几个任务共享的变量</p>
 <p>因为内存屏障和 volatile 变量降低了编译器可执行的优化，因此应该谨慎使用它们，只在有需要的地方时候，以确保正确性。关于更多使用内存屏障的信息，参阅 OSMemoryBarrier 主页。</p>
 <pre><code>// ...
 OSMemoryBarrier();

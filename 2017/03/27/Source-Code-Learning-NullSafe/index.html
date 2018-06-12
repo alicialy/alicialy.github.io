@@ -106,7 +106,7 @@
     &amp;quot;nullValue&amp;quot;: &amp;quot;&amp;lt;null&amp;gt;&amp;quot;
 }
 如果后台本来应">
-<meta property="og:updated_time" content="2018-05-27T12:54:17.012Z">
+<meta property="og:updated_time" content="2018-06-12T12:59:04.756Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - NullSafe">
 <meta name="twitter:description" content="起源代码中有时会处理跟 NSNull 相关的逻辑，有时候我们并不想要 NSNull，我们希望的是 nil，例如后台下发 json 出现如下数据
@@ -321,6 +321,7 @@
 </code></pre><p>如果后台本来应该下发数组，而写代码的时候没有判断数据类型，例如直接获取 [array length]，肯定会崩溃，出错原因是 [NSNull length] 没有对应的响应方法。</p>
 <p>如何不手动判断类型，又能避免崩溃？NullSafe 就是为了解决这个问题而诞生的。</p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>NullSafe 只有短短的一百行代码。实现的方式是，创建 NSNull 的类别，在该类别中首先查找 NSNull 是否能响应某方法，如果不可以响应的话，就查找系统中是否有某个类可以处理调用的方法，如果可以的话，该方法转发给 nil，当作 nil 处理这个方法，例如 nil 调用 [nil length] 是不会抛出异常的。代码如下：</p>
+<a id="more"></a>
 <p>遍历所有系统中的类，循环遍历找每个类的 superClass，如果 superClass 是 NSObject，则加入到 classList</p>
 <pre><code>static void cacheSignatures()
 {

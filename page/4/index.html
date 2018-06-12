@@ -768,33 +768,26 @@ NSNull *null2 = [NSNull null];
         [wself.lastAddedOperation addDependency:operation];
         wself.lastAddedOperation = operation;
 }
-</code></pre><h2 id="GCD-barrier"><a href="#GCD-barrier" class="headerlink" title="GCD barrier"></a>GCD barrier</h2><p>dispatch_barrier_async 比较常见，那么 dispatch_barrier_sync 又是做什么的，区别是什么呢？看文档可知 dispatch_barrier_async 不用执行完内部方法即可返回，dispatch_barrier_sync 需要等到执行完内部方法才会返回</p>
-<pre><code>dispatch_aync(queue, ^{
-    NSLog(@&quot;In 1&quot;);
-});
-dispatch_barrier_sync(queue,^{
-    for (int i = 0; i &lt; 100000; i++) {
-        // ...
-    }
-    NSLog(@&quot;In barrier&quot;);
-});
-NSLog(@&quot;In 2&quot;);
-</code></pre><p>输出结果为</p>
-<pre><code>In 1
-In barrier
-In 2
-</code></pre><p>如果 dispatch_barrier_sync 改为 dispatch_barrier_async</p>
-<p>输出结果为</p>
-<pre><code>In 1
-In 2
-In barrier
-</code></pre><h2 id="线程锁"><a href="#线程锁" class="headerlink" title="线程锁"></a>线程锁</h2><pre><code>// 头文件中定义
-@property (strong, nonatomic) NSMutableArray *failedURLs;
-// 实现文件的函数中在多线程环境下使用，对参数加锁，保证临界区内代码的线程安全
-@synchronized (self.failedURLs) {
-    isFailedUrl = [self.failedURLs containsObject:url];
+</code></pre><h2 id="initialize-方法"><a href="#initialize-方法" class="headerlink" title="initialize 方法"></a>initialize 方法</h2><p>即使创建多个实例，initialize 只会执行一次，如果希望仅运行一次的话调用该方法。</p>
+<pre><code>#import &quot;Animal.h&quot;;
+@implementation Animal
++(void) initialize {
+    NSLog(@&quot;Animal initialize&quot;);
 }
-</code></pre><p>failedURLs 没有设置为 atomic，使用 synchronized 来保证线程安全</p>
+-(void) init {
+    NSLog(@&quot;Animal init&quot;);
+}
+@end
+// In Test class
+- (void)test {
+    Animal *animal1 = [[Animal alloc] init];
+    Animal *animal2 = [[Animal alloc] init];
+}
+</code></pre><p>输出</p>
+<pre><code>Animal initialize
+Animal init
+Animal init
+</code></pre><p>一般某个全局状态无法在编译期初始化，可以放在 initialize 里面。而 SDWebImageDownloader 中实现 initialize 方法，用来注册观察者对象  </p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/07/04/Source-Code-Learning-SDWebImage/#more" rel="contents">
               Read more &raquo;

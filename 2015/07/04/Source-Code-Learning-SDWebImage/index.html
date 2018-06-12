@@ -94,7 +94,7 @@ NSURLSession 工作模式NSURLSessionConfiguration 分为三种工作模式defau
 <meta property="og:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
 NSURLSession 工作模式NSURLSessionConfiguration 分为三种工作模式default: 可以使用磁盘缓存、身份认证、Cookieephemeral(及时模式): 数据只能保存到内存，无法存储到磁盘。background: 可以在后台执行上传或下载任务
 后进先出后进先出通过 NSOperation 的依赖">
-<meta property="og:updated_time" content="2018-05-27T12:49:54.086Z">
+<meta property="og:updated_time" content="2018-06-12T14:11:10.366Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - SDWebImage">
 <meta name="twitter:description" content="之前看源码的时候，有很多东西研究的不够透彻，所以重新整理学习下
@@ -300,7 +300,100 @@ NSURLSession 工作模式NSURLSessionConfiguration 分为三种工作模式defau
         [wself.lastAddedOperation addDependency:operation];
         wself.lastAddedOperation = operation;
 }
-</code></pre><h2 id="GCD-barrier"><a href="#GCD-barrier" class="headerlink" title="GCD barrier"></a>GCD barrier</h2><p>dispatch_barrier_async 比较常见，那么 dispatch_barrier_sync 又是做什么的，区别是什么呢？看文档可知 dispatch_barrier_async 不用执行完内部方法即可返回，dispatch_barrier_sync 需要等到执行完内部方法才会返回</p>
+</code></pre><h2 id="initialize-方法"><a href="#initialize-方法" class="headerlink" title="initialize 方法"></a>initialize 方法</h2><p>即使创建多个实例，initialize 只会执行一次，如果希望仅运行一次的话调用该方法。</p>
+<pre><code>#import &quot;Animal.h&quot;;
+@implementation Animal
++(void) initialize {
+    NSLog(@&quot;Animal initialize&quot;);
+}
+-(void) init {
+    NSLog(@&quot;Animal init&quot;);
+}
+@end
+// In Test class
+- (void)test {
+    Animal *animal1 = [[Animal alloc] init];
+    Animal *animal2 = [[Animal alloc] init];
+}
+</code></pre><p>输出</p>
+<pre><code>Animal initialize
+Animal init
+Animal init
+</code></pre><p>一般某个全局状态无法在编译期初始化，可以放在 initialize 里面。而 SDWebImageDownloader 中实现 initialize 方法，用来注册观察者对象  </p>
+<a id="more"></a>
+<p>总结下 load 和 initialize 的区别<br>load 方法</p>
+<ul>
+<li>所有引入的类及分类都会被调用 load 方法，并且仅调用一次。</li>
+<li>load 方法的调用在 main 函数之前调用</li>
+<li>执行子类的 load 方法前，会先执行所有父类的 load 方法，调用顺序为：1.父类 2.子类 3.分类</li>
+<li>load 方法中不要调用其他类，因为各个类的载入顺序可能不同</li>
+<li>如果类本身没有实现 load 方法，那么系统就不会调用该方法，不管父类有没有实现</li>
+<li>执行 load 方法时会程序会被阻塞，直到所有类的 load 方法执行完毕才会继续</li>
+</ul>
+<p>initialize 方法</p>
+<ul>
+<li>使用类之前系统会调用该方法，并且仅调用一次</li>
+<li>惰性调用，只有当程序使用相关类时才会调用</li>
+<li>运行期系统会确保 initialize 方法是在线程安全的环境中执行，即只有执行 initialize 的那个线程可以操作类或类实例。其他线程都要先阻塞，等待 initialize 执行完</li>
+<li>如果类未实现 initialize 方法，而其父类实现了该方法，那么会运行父类的该方法</li>
+</ul>
+<h2 id="渐进下载图片效果"><a href="#渐进下载图片效果" class="headerlink" title="渐进下载图片效果"></a>渐进下载图片效果</h2><p>Option 为 SDWebImageDownloaderProgressiveDownload 时可以实现渐进下载效果<br>实现的代码如下</p>
+<pre><code>- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self.imageData appendData:data];
+
+    if ((self.options &amp; SDWebImageDownloaderProgressiveDownload) &amp;&amp; self.expectedSize &gt; 0 &amp;&amp; self.completedBlock) {
+        // Get the total bytes downloaded
+        const NSInteger totalSize = self.imageData.length;
+
+        // Update the data source, we must pass ALL the data, not just the new bytes
+        CGImageSourceRef imageSource = CGImageSourceCreateIncremental(NULL);
+
+        CGImageSourceUpdateData(imageSource, (__bridge CFDataRef)self.imageData, totalSize == self.expectedSize);
+        if (width + height == 0) {
+            CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+            if (properties) {
+                // .. get values
+                CFRelease(properties);
+                // .. set orientation
+            }
+        }
+        if (width + height &gt; 0 &amp;&amp; totalSize &lt; self.expectedSize) {
+            // Create the image
+            CGImageRef partialImageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+            // .. Workaround for iOS anamorphic image
+            if (partialImageRef) {
+                UIImage *image = [UIImage imageWithCGImage:partialImageRef scale:1 orientation:orientation];
+                // .. scale and decode 
+                image = [UIImage decodedImageWithImage:scaledImage];
+                CGImageRelease(partialImageRef);
+                dispatch_main_sync_safe(^{
+                    if (self.completedBlock) {
+                        self.completedBlock(image, nil, nil, NO);
+                    }
+                });
+            }
+        }
+        CFRelease(imageSource);
+    }
+}
+</code></pre><p>流程主要是在接收到下载数据后，创建空的图片源 CGImageSourceCreateIncremental(NULL)，之后更新图片源 CGImageSourceUpdateData(imageSource, false)，最后创建图片用来显示CGImageSourceCreateImageAtIndex() 。</p>
+<h2 id="程序进入后台需要申请更长时间完成工作"><a href="#程序进入后台需要申请更长时间完成工作" class="headerlink" title="程序进入后台需要申请更长时间完成工作"></a>程序进入后台需要申请更长时间完成工作</h2><pre><code>if ([self shouldContinueWhenAppEntersBackground]) {
+    __weak __typeof__ (self) wself = self;
+    self.backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        __strong __typeof (wself) sself = wself;
+          if (sself) {
+             [sself cancel];
+             [[UIApplication sharedApplication] endBackgroundTask:sself.backgroundTaskId];
+              sself.backgroundTaskId = UIBackgroundTaskInvalid;
+            }
+        }];
+}
+if (self.backgroundTaskId != UIBackgroundTaskInvalid) {
+    [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskId];
+    self.backgroundTaskId = UIBackgroundTaskInvalid;
+}
+</code></pre><p>beginBackgroundTaskWithExpirationHandler endBackgroundTask 一定要成对出现</p>
+<h2 id="GCD-barrier"><a href="#GCD-barrier" class="headerlink" title="GCD barrier"></a>GCD barrier</h2><p>dispatch_barrier_async 比较常见，那么 dispatch_barrier_sync 又是做什么的，区别是什么呢？看文档可知 dispatch_barrier_async 不用执行完内部方法即可返回，dispatch_barrier_sync 需要等到执行完内部方法才会返回</p>
 <pre><code>dispatch_aync(queue, ^{
     NSLog(@&quot;In 1&quot;);
 });
@@ -327,7 +420,6 @@ In barrier
     isFailedUrl = [self.failedURLs containsObject:url];
 }
 </code></pre><p>failedURLs 没有设置为 atomic，使用 synchronized 来保证线程安全</p>
-<a id="more"></a>
 <h2 id="缓存的流程"><a href="#缓存的流程" class="headerlink" title="缓存的流程"></a>缓存的流程</h2><ul>
 <li>通过 category 机制提供简单的 API 给外部调用</li>
 <li>判断内存缓存中（使用 NSCache）是否已经存在要下载的图片，存在则直接返回图片</li>
@@ -390,7 +482,9 @@ return [url absoluteString];
 IMP imp = [NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;) methodForSelector:selector];
 void (*func)(id, SEL) = (void *)imp;
 func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
-</code></pre><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.raywenderlich.com/110458/nsurlsession-tutorial-getting-started" target="_blank" rel="external">NSURLSession 教程</a><br><a href="http://www.cocoachina.com/industry/20131106/7304.html" target="_blank" rel="external">NSURLSession 使用说明</a><br><a href="http://www.jianshu.com/p/fafc67475c73" target="_blank" rel="external">使用 NSURLSession</a></p>
+</code></pre><p><code>2017 更新如下内容</code></p>
+<h2 id="decodedImageWithImage-的目的"><a href="#decodedImageWithImage-的目的" class="headerlink" title="decodedImageWithImage 的目的"></a>decodedImageWithImage 的目的</h2><p>由于图片加载后当绘制的时候才将图片数据解压成 ARGB 图像，所以在每次绘图时，会有一个解压图片操作，在绘制的时候同时做解码操作就会导致效率问题。为了提高效率通过 SDWebImageDecoder 将数据解压，将解码后的图片直接保存到内存中，缺点是占用内存较多，是一种空间换时间的做法。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.raywenderlich.com/110458/nsurlsession-tutorial-getting-started" target="_blank" rel="external">NSURLSession 教程</a><br><a href="http://www.cocoachina.com/industry/20131106/7304.html" target="_blank" rel="external">NSURLSession 使用说明</a><br><a href="http://www.jianshu.com/p/fafc67475c73" target="_blank" rel="external">使用 NSURLSession</a><br><a href="http://www.cocoachina.com/ios/20170227/18784.html" target="_blank" rel="external">iOS 图片解压缩</a><br><a href="https://segmentfault.com/a/1190000002776279" target="_blank" rel="external">开源库分析</a><br><a href="https://www.jianshu.com/p/1c9de8dea3ea" target="_blank" rel="external">图片解码</a></p>
 
       
     </div>
@@ -584,7 +678,7 @@ func(NSClassFromString(@&quot;SDNetworkActivityIndicator&quot;), selector);
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURLSession-工作模式"><span class="nav-number">1.</span> <span class="nav-text">NSURLSession 工作模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后进先出"><span class="nav-number">2.</span> <span class="nav-text">后进先出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCD-barrier"><span class="nav-number">3.</span> <span class="nav-text">GCD barrier</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程锁"><span class="nav-number">4.</span> <span class="nav-text">线程锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存的流程"><span class="nav-number">5.</span> <span class="nav-text">缓存的流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些调用方法"><span class="nav-number">6.</span> <span class="nav-text">一些调用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Macros-那些常用的宏"><span class="nav-number">7.</span> <span class="nav-text">Macros 那些常用的宏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#判断是否支持了垃圾回收"><span class="nav-number">7.0.1.</span> <span class="nav-text">判断是否支持了垃圾回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断系统版本"><span class="nav-number">7.0.2.</span> <span class="nav-text">判断系统版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断是否支持了-ARC"><span class="nav-number">7.0.3.</span> <span class="nav-text">判断是否支持了 ARC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告"><span class="nav-number">7.0.4.</span> <span class="nav-text">忽视 performSelector may cause a leak because its selector is unknown 警告</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURLSession-工作模式"><span class="nav-number">1.</span> <span class="nav-text">NSURLSession 工作模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后进先出"><span class="nav-number">2.</span> <span class="nav-text">后进先出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#initialize-方法"><span class="nav-number">3.</span> <span class="nav-text">initialize 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渐进下载图片效果"><span class="nav-number">4.</span> <span class="nav-text">渐进下载图片效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序进入后台需要申请更长时间完成工作"><span class="nav-number">5.</span> <span class="nav-text">程序进入后台需要申请更长时间完成工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCD-barrier"><span class="nav-number">6.</span> <span class="nav-text">GCD barrier</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程锁"><span class="nav-number">7.</span> <span class="nav-text">线程锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存的流程"><span class="nav-number">8.</span> <span class="nav-text">缓存的流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些调用方法"><span class="nav-number">9.</span> <span class="nav-text">一些调用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Macros-那些常用的宏"><span class="nav-number">10.</span> <span class="nav-text">Macros 那些常用的宏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#判断是否支持了垃圾回收"><span class="nav-number">10.0.1.</span> <span class="nav-text">判断是否支持了垃圾回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断系统版本"><span class="nav-number">10.0.2.</span> <span class="nav-text">判断系统版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断是否支持了-ARC"><span class="nav-number">10.0.3.</span> <span class="nav-text">判断是否支持了 ARC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#忽视-performSelector-may-cause-a-leak-because-its-selector-is-unknown-警告"><span class="nav-number">10.0.4.</span> <span class="nav-text">忽视 performSelector may cause a leak because its selector is unknown 警告</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decodedImageWithImage-的目的"><span class="nav-number">11.</span> <span class="nav-text">decodedImageWithImage 的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">12.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
           </div>
         </section>

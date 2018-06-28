@@ -668,11 +668,11 @@ self.window.rootViewController = [[UINavigationController alloc] initWithRootVie
         
           
             <p>这篇文章应该叫做那些开源项目中用到过的 Clang Attributes，会列出开源项目的名字和使用方式以及用例</p>
-<h3 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h3><h5 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h5><pre><code>__attribute__ ((visibility(&quot;default&quot;)))
+<h3 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h3><h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><pre><code>__attribute__ ((visibility(&quot;default&quot;)))
 </code></pre><p>visibility 中的值可以为 default | internal | hidden | protected</p>
 <p>该属性用于设置动态链接库中函数或者变量的可见性</p>
 <p>我们在 C 语言中，如果想要将函数或变量限制在当前文件中，可以使用 static 关键字，但是在复杂的项目中，如果想要限制某个符号被共享库内部某些文件可以访问，而外部不可以访问泽有些困难，于是 GCC 中引入了 visibility 属性，它可以设置某个函数或变量是否可访问，例如这个变量在多个文件中被定义，又同时有多个链接库需要引用它时，如果不设置可见性，那么到底引用为那个值或者函数就要看加载顺序了。</p>
-<h5 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h5><pre><code>UIKIT_EXTERN const UIWindowLevel UIWindowLevelNormal;
+<h4 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h4><pre><code>UIKIT_EXTERN const UIWindowLevel UIWindowLevelNormal;
 UIKIT_EXTERN const UIWindowLevel UIWindowLevelAlert;
 UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
 
@@ -681,31 +681,31 @@ UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
 #else
 #define UIKIT_EXTERN            extern __attribute__((visibility (&quot;default&quot;)))
 #endif
-</code></pre><h5 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h5><p>JDStatusBarNotification</p>
-<h5 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h5><p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.3.5/gcc/Function-Attributes.html" target="_blank" rel="external">Visibility Pragmas</a><br><a href="https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/CppRuntimeEnv/Articles/SymbolVisibility.html" target="_blank" rel="external">Controlling Symbol Visibility</a></p>
-<h3 id="objc-subclassing-restricted"><a href="#objc-subclassing-restricted" class="headerlink" title="objc_subclassing_restricted"></a>objc_subclassing_restricted</h3><h5 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h5><pre><code>__attribute__((objc_subclassing_restricted))
+</code></pre><h4 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h4><p>JDStatusBarNotification</p>
+<h4 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h4><p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.3.5/gcc/Function-Attributes.html" target="_blank" rel="external">Visibility Pragmas</a><br><a href="https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/CppRuntimeEnv/Articles/SymbolVisibility.html" target="_blank" rel="external">Controlling Symbol Visibility</a></p>
+<h3 id="objc-subclassing-restricted"><a href="#objc-subclassing-restricted" class="headerlink" title="objc_subclassing_restricted"></a>objc_subclassing_restricted</h3><h4 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h4><pre><code>__attribute__((objc_subclassing_restricted))
 </code></pre><p>用于限制某个类是不可继承的，但是这个限制只是编译时的限制，不直接写 @interface SubClass : ParentClass，而是使用 Runtime 的方式仍然是可以创建继承关系的。</p>
 <pre><code>void run(id self, SEL _cmd) {}
 class subClass = objc_allocateClassPair([ParentClass class], &quot;SubClass&quot;, 0);
 class_addMethod(subClass, @selector(run),(IMP) run, &quot;v@:&quot;);
 objc_registerClassPair(subClass);
-</code></pre><h5 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h5><pre><code>__attribute__((objc_subclassing_restricted))
+</code></pre><h4 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h4><pre><code>__attribute__((objc_subclassing_restricted))
 @interface ParentClass : NSObject
 @end
 @interface SubClass : ParentClass // &lt;--- Compile Error
 @end
-</code></pre><h5 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h5><p><a href="http://blog.sunnyxx.com/2016/05/14/clang-attributes/" target="_blank" rel="external">Clang Attributes 黑魔法小记</a></p>
-<h3 id="deprecated"><a href="#deprecated" class="headerlink" title="deprecated"></a>deprecated</h3><h5 id="解释-2"><a href="#解释-2" class="headerlink" title="解释"></a>解释</h5><pre><code>__attribute__((deprecated(&quot;弃用解释说明&quot;)));
+</code></pre><h4 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h4><p><a href="http://blog.sunnyxx.com/2016/05/14/clang-attributes/" target="_blank" rel="external">Clang Attributes 黑魔法小记</a></p>
+<h3 id="deprecated"><a href="#deprecated" class="headerlink" title="deprecated"></a>deprecated</h3><h4 id="解释-2"><a href="#解释-2" class="headerlink" title="解释"></a>解释</h4><pre><code>__attribute__((deprecated(&quot;弃用解释说明&quot;)));
 </code></pre><p>用于说明某个属性已经弃用</p>
 <pre><code>@property (assign, nonatomic) CGFloat opacity __attribute__((deprecated(&quot;Customize bezelView properties instead.&quot;)));
-</code></pre><h5 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h5><p>另外，忽略弃用警告可以使用</p>
+</code></pre><h4 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h4><p>另外，忽略弃用警告可以使用</p>
 <pre><code>#pragma clang diagnostic push
 #pragma clang diagnostic ignored &quot;-Wdeprecated-declarations&quot;
 self.bezelView.alpha = self.opacity;
 #pragma clang diagnostic pop
-</code></pre><h5 id="项目-1"><a href="#项目-1" class="headerlink" title="项目"></a>项目</h5><p>MBProgress</p>
-<h3 id="objc-requires-super"><a href="#objc-requires-super" class="headerlink" title="objc_requires_super"></a>objc_requires_super</h3><h5 id="解释-3"><a href="#解释-3" class="headerlink" title="解释"></a>解释</h5><p>子类可以覆盖父类方法，如果子类需要调用父类方法使用 super 父类方法名，如果需要强制子类调用父类的方法，可以使用 objc_requires_super，当子类没有调用父类方法时则会给出警告</p>
-<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><pre><code>@interface Father : NSObject
+</code></pre><h4 id="项目-1"><a href="#项目-1" class="headerlink" title="项目"></a>项目</h4><p>MBProgress</p>
+<h3 id="objc-requires-super"><a href="#objc-requires-super" class="headerlink" title="objc_requires_super"></a>objc_requires_super</h3><h4 id="解释-3"><a href="#解释-3" class="headerlink" title="解释"></a>解释</h4><p>子类可以覆盖父类方法，如果子类需要调用父类方法使用 super 父类方法名，如果需要强制子类调用父类的方法，可以使用 objc_requires_super，当子类没有调用父类方法时则会给出警告</p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><pre><code>@interface Father : NSObject
 - (void)payMoney __attribute__((objc_requires_super));
 @end
 @implementation Father
@@ -720,7 +720,7 @@ self.bezelView.alpha = self.opacity;
 } // &lt;--- Compile Error Missing call [super payMoney]
 @end
 </code></pre><p>// .. 待追加</p>
-<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><h5 id="解释-4"><a href="#解释-4" class="headerlink" title="解释"></a>解释</h5><h5 id="用例-3"><a href="#用例-3" class="headerlink" title="用例"></a>用例</h5><h5 id="项目-2"><a href="#项目-2" class="headerlink" title="项目"></a>项目</h5><h5 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h5><h5 id="参考文献-2"><a href="#参考文献-2" class="headerlink" title="参考文献"></a>参考文献</h5>
+<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><h4 id="解释-4"><a href="#解释-4" class="headerlink" title="解释"></a>解释</h4><h4 id="用例-3"><a href="#用例-3" class="headerlink" title="用例"></a>用例</h4><h4 id="项目-2"><a href="#项目-2" class="headerlink" title="项目"></a>项目</h4><h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><h4 id="参考文献-2"><a href="#参考文献-2" class="headerlink" title="参考文献"></a>参考文献</h4>
           
         
       

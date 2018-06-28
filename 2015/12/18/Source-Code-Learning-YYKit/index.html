@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="微博 Demo 性能的优化抛弃了以往在 Controller 中保存 Model 数组的传统方法，而是添加了用于存放布局和数据对象的数组，其中的布局是从 API 获取到数据后，在后台线程中计算后并保存的，这样当 Cell 需要显示时直接从内存中获取，不需要再进行计算。优点显而易见，缺点是 UIKit 的控件不是线程安全的，所以依赖 YYText 中的控件实现。
 头像图片的圆角实现方式是在图片下载后">
-<meta property="og:updated_time" content="2018-06-12T14:14:04.207Z">
+<meta property="og:updated_time" content="2018-06-27T23:59:53.807Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - YYKit">
 <meta name="twitter:description" content="微博 Demo 性能的优化抛弃了以往在 Controller 中保存 Model 数组的传统方法，而是添加了用于存放布局和数据对象的数组，其中的布局是从 API 获取到数据后，在后台线程中计算后并保存的，这样当 Cell 需要显示时直接从内存中获取，不需要再进行计算。优点显而易见，缺点是 UIKit 的控件不是线程安全的，所以依赖 YYText 中的控件实现。
@@ -345,13 +345,41 @@ static void YYRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAc
     _count = 0;
     // 显示 fps 的值 ...
 }
-</code></pre><h4 id="CADisplayLink-和-NSTimer-的区别"><a href="#CADisplayLink-和-NSTimer-的区别" class="headerlink" title="CADisplayLink 和 NSTimer 的区别"></a>CADisplayLink 和 NSTimer 的区别</h4><p>CADisplayLink 可以以屏幕刷新率相同的频率将内容绘制到屏幕上的定时器，精确度相当高，但是如果调用的方法比较耗时，超过了屏幕刷新周期，就会导致跳过若干次回调调用机会。</p>
+</code></pre><h3 id="CADisplayLink-和-NSTimer-的区别"><a href="#CADisplayLink-和-NSTimer-的区别" class="headerlink" title="CADisplayLink 和 NSTimer 的区别"></a>CADisplayLink 和 NSTimer 的区别</h3><p>CADisplayLink 可以以屏幕刷新率相同的频率将内容绘制到屏幕上的定时器，精确度相当高，但是如果调用的方法比较耗时，超过了屏幕刷新周期，就会导致跳过若干次回调调用机会。</p>
 <p>NSTimer 的精确度稍低，比如 NSTimer 触发时间到的时候，如果 runloop 出在阻塞状态，触发时间就会被延迟到下一个 runloop 周期。</p>
 <p>CADisplayLink 适合 UI 不停重绘，比如自定义动画引擎或者视频播放的渲染。NSTimer 适合需要单次或循环定时处理的任务。</p>
-<h4 id="CADisplayLink-的重要属性："><a href="#CADisplayLink-的重要属性：" class="headerlink" title="CADisplayLink 的重要属性："></a>CADisplayLink 的重要属性：</h4><p>timestamp：当前时间的时间戳</p>
-<p>frameInterval：NSInteger类型的值，用来设置间隔多少帧调用一次 selector方法 ，默认值是1，即每帧都调用一次。</p>
-<p>duration：readOnly 的 CFTimeInterval 值，表示两次屏幕刷新之间的时间间隔。需要注意的是，该属性在 target 的 selector 被首次调用以后才会被赋值。selector 的调用间隔时间计算方式是：调用间隔时间 = duration × frameInterval</p>
-<h2 id="奇技淫巧"><a href="#奇技淫巧" class="headerlink" title="奇技淫巧"></a>奇技淫巧</h2><p>人都趋向于犯懒的，只是有的人偷懒是靠动脑子的  </p>
+<h3 id="CADisplayLink-的重要属性"><a href="#CADisplayLink-的重要属性" class="headerlink" title="CADisplayLink 的重要属性"></a>CADisplayLink 的重要属性</h3><ul>
+<li><p>timestamp：当前时间的时间戳</p>
+</li>
+<li><p>frameInterval：NSInteger类型的值，用来设置间隔多少帧调用一次 selector方法 ，默认值是1，即每帧都调用一次。</p>
+</li>
+<li><p>duration：readOnly 的 CFTimeInterval 值，表示两次屏幕刷新之间的时间间隔。需要注意的是，该属性在 target 的 selector 被首次调用以后才会被赋值。selector 的调用间隔时间计算方式是：调用间隔时间 = duration × frameInterval</p>
+</li>
+</ul>
+<h3 id="Timer-内存泄漏的避免"><a href="#Timer-内存泄漏的避免" class="headerlink" title="Timer 内存泄漏的避免"></a>Timer 内存泄漏的避免</h3><p> YYWeakProxy，利用消息转发机制，将消息 转发给 target，解决了 self 被 timer 强引用，timer 又被 runloop 强引用的问题。调用方法如下</p>
+<pre><code>_link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWithTarget:self] selector:@selector(tick:)];
+[_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+</code></pre><p>实现机制</p>
+<pre><code>@property (nullable, nonatomic, weak, readonly) id target;
+
+- (instancetype)initWithTarget:(id)target {
+    _target = target;
+    return self;
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector {
+    return _target;
+}
+</code></pre><p>target 为 weak，如果 _target 为空 就会调用如下方法，不实现如下方法，则会崩溃，所以作者应该是随便调用两个函数，保证不崩溃</p>
+<pre><code>- (void)forwardInvocation:(NSInvocation *)invocation {
+    void *null = NULL;
+    [invocation setReturnValue:&amp;null];
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
+    return [NSObject instanceMethodSignatureForSelector:@selector(init)];
+} 
+</code></pre><h2 id="奇技淫巧"><a href="#奇技淫巧" class="headerlink" title="奇技淫巧"></a>奇技淫巧</h2><p>人都趋向于犯懒的，只是有的人偷懒是靠动脑子的  </p>
 <pre><code>{
     NSMutableAttributedString *one = [[NSMutableAttributedString alloc] initWithString:@&quot;Shadow&quot;];
     // ...
@@ -585,7 +613,7 @@ static void YYRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAc
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#微博-Demo-性能的优化"><span class="nav-number">1.</span> <span class="nav-text">微博 Demo 性能的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Macros-宏"><span class="nav-number">2.</span> <span class="nav-text">Macros 宏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务机制"><span class="nav-number">3.</span> <span class="nav-text">事务机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#好用的-YYFPSLabel"><span class="nav-number">4.</span> <span class="nav-text">好用的 YYFPSLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CADisplayLink-和-NSTimer-的区别"><span class="nav-number">4.0.1.</span> <span class="nav-text">CADisplayLink 和 NSTimer 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CADisplayLink-的重要属性："><span class="nav-number">4.0.2.</span> <span class="nav-text">CADisplayLink 的重要属性：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#奇技淫巧"><span class="nav-number">5.</span> <span class="nav-text">奇技淫巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#成员变量访问修饰符-package"><span class="nav-number">6.</span> <span class="nav-text">成员变量访问修饰符 @package</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">6.1.</span> <span class="nav-text">使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#微博-Demo-性能的优化"><span class="nav-number">1.</span> <span class="nav-text">微博 Demo 性能的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Macros-宏"><span class="nav-number">2.</span> <span class="nav-text">Macros 宏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务机制"><span class="nav-number">3.</span> <span class="nav-text">事务机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#好用的-YYFPSLabel"><span class="nav-number">4.</span> <span class="nav-text">好用的 YYFPSLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CADisplayLink-和-NSTimer-的区别"><span class="nav-number">4.1.</span> <span class="nav-text">CADisplayLink 和 NSTimer 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CADisplayLink-的重要属性"><span class="nav-number">4.2.</span> <span class="nav-text">CADisplayLink 的重要属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Timer-内存泄漏的避免"><span class="nav-number">4.3.</span> <span class="nav-text">Timer 内存泄漏的避免</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#奇技淫巧"><span class="nav-number">5.</span> <span class="nav-text">奇技淫巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#成员变量访问修饰符-package"><span class="nav-number">6.</span> <span class="nav-text">成员变量访问修饰符 @package</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">6.1.</span> <span class="nav-text">使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
           </div>
         </section>

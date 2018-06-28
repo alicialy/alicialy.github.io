@@ -1201,7 +1201,7 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 <p>上面说过 mach_header 中包含很多指令，其中包含了 LC_CODE_SIGNATURE 用于数字签名，iOS 强制要求代码签名，且代码签名和沙盒机制是绑定在一起的，也就是说必须放到沙盒中经过签名才能运行，非越狱的机器无法自行下载一个动态库并执行。</p>
 <p>mmap的作用是将一个文件或者其他对象映射进内存，普通文件被映射到进程地址空间后，进程可以像访问普通内存一样对文件进行访问。</p>
 <p>通常一个 App 需要加载 100 - 400 个 dylibs，但是其中的系统库加载会被优化，能在很快的时间内加载完成</p>
-<h5 id="优化-Load-dylibs-过程"><a href="#优化-Load-dylibs-过程" class="headerlink" title="优化 Load dylibs 过程"></a>优化 Load dylibs 过程</h5>
+<h4 id="优化-Load-dylibs-过程"><a href="#优化-Load-dylibs-过程" class="headerlink" title="优化 Load dylibs 过程"></a>优化 Load dylibs 过程</h4>
           <div class="post-more-link text-center">
             <a class="btn" href="/2017/02/22/Optimize-App-Startup-Time/#more" rel="contents">
               Read more &raquo;

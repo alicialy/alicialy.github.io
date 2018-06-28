@@ -85,33 +85,36 @@
 
 
 <meta name="description" content="Code tells everything，所以直接上代码
-ARC__weak 修饰符的效率{
+ARC先来看看 ARC 下的新产物
+weak 修饰符的效率{
     id __weak o = obj; 
     NSLog(@&amp;quot;1 %@&amp;quot;, o); 
     NSLog(@&amp;quot;2 %@&amp;quot;, o); 
 }
-当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak">
+当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pro Multilthreading and Memory Management for iOS">
 <meta property="og:url" content="http://yoursite.com/2016/03/21/Pro-Multilthreading-and-Memory-Management-for-iOS/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="Code tells everything，所以直接上代码
-ARC__weak 修饰符的效率{
+ARC先来看看 ARC 下的新产物
+weak 修饰符的效率{
     id __weak o = obj; 
     NSLog(@&amp;quot;1 %@&amp;quot;, o); 
     NSLog(@&amp;quot;2 %@&amp;quot;, o); 
 }
-当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak">
-<meta property="og:updated_time" content="2018-04-30T02:36:58.000Z">
+当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动">
+<meta property="og:updated_time" content="2018-06-14T13:11:36.063Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Pro Multilthreading and Memory Management for iOS">
 <meta name="twitter:description" content="Code tells everything，所以直接上代码
-ARC__weak 修饰符的效率{
+ARC先来看看 ARC 下的新产物
+weak 修饰符的效率{
     id __weak o = obj; 
     NSLog(@&amp;quot;1 %@&amp;quot;, o); 
     NSLog(@&amp;quot;2 %@&amp;quot;, o); 
 }
-当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak">
+当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动">
 
 
 
@@ -305,7 +308,8 @@ ARC__weak 修饰符的效率{
 
       
         <p>Code tells everything，所以直接上代码</p>
-<h3 id="ARC"><a href="#ARC" class="headerlink" title="ARC"></a>ARC</h3><h5 id="weak-修饰符的效率"><a href="#weak-修饰符的效率" class="headerlink" title="__weak 修饰符的效率"></a>__weak 修饰符的效率</h5><pre><code>{
+<h3 id="ARC"><a href="#ARC" class="headerlink" title="ARC"></a>ARC</h3><p>先来看看 ARC 下的新产物</p>
+<h4 id="weak-修饰符的效率"><a href="#weak-修饰符的效率" class="headerlink" title="weak 修饰符的效率"></a>weak 修饰符的效率</h4><pre><code>{
     id __weak o = obj; 
     NSLog(@&quot;1 %@&quot;, o); 
     NSLog(@&quot;2 %@&quot;, o); 
@@ -317,7 +321,7 @@ ARC__weak 修饰符的效率{
     NSLog(@&quot;1 %@&quot;, tmp); 
     NSLog(@&quot;2 %@&quot;, tmp);
 }
-</code></pre><h5 id="weak-如何在释放时赋值为-nil"><a href="#weak-如何在释放时赋值为-nil" class="headerlink" title="__weak 如何在释放时赋值为 nil"></a>__weak 如何在释放时赋值为 nil</h5><pre><code>{
+</code></pre><h4 id="weak-如何在释放时赋值为-nil"><a href="#weak-如何在释放时赋值为-nil" class="headerlink" title="weak 如何在释放时赋值为 nil"></a>weak 如何在释放时赋值为 nil</h4><pre><code>{
     id __weak obj1 = obj;
 }
 </code></pre><p>以上代码 clang 后为</p>
@@ -457,12 +461,14 @@ PRIVATE_EXTERN void arr_clear_deallocating(weak_table_t *weak_table, id referent
     weak_entry_remove_no_lock(weak_table, entry);
     weak_table-&gt;num_weak_refs--;
 }
-</code></pre><h3 id="Blocks"><a href="#Blocks" class="headerlink" title="Blocks"></a>Blocks</h3><p>标准 C 不支持匿名函数的，但是 GCC 和 Clang 是可以实现的，</p>
+</code></pre><p>如代码所示，遍历 weak_table 找到要释放的变量设置为 nil。</p>
+<h3 id="Blocks"><a href="#Blocks" class="headerlink" title="Blocks"></a>Blocks</h3><p>标准 C 不支持匿名函数的，但是 GCC 和 Clang 是可以实现的，</p>
 <p>GCC 的形式 </p>
 <pre><code>( { return_type anonymous_functions_name (parameters) { function_body } anonymous_functions_name; } )
 </code></pre><p>Clang 的形式 </p>
 <pre><code>^return_type ( parameters ) { function_body }
-</code></pre><h5 id="捕获局部变量"><a href="#捕获局部变量" class="headerlink" title="捕获局部变量"></a>捕获局部变量</h5><pre><code>int main()
+</code></pre><p>Blocks 就是利用匿名函数实现的。</p>
+<h4 id="捕获局部变量"><a href="#捕获局部变量" class="headerlink" title="捕获局部变量"></a>捕获局部变量</h4><pre><code>int main()
 {
     int val = 10;
     const char *fmt = &quot;val = %d\n&quot;;
@@ -484,7 +490,7 @@ void (^blk)(void) = ^{
 void (^blk)(void) = ^{
     array = [[NSMutableArray alloc] init]; 
 };
-</code></pre><h5 id="OC-gt-C"><a href="#OC-gt-C" class="headerlink" title="OC -&gt; C"></a>OC -&gt; C</h5><p>clang -rewrite-objc file_name_of_the_source_code</p>
+</code></pre><h4 id="OC-gt-C"><a href="#OC-gt-C" class="headerlink" title="OC -&gt; C"></a>OC -&gt; C</h4><p>clang -rewrite-objc file_name_of_the_source_code</p>
 <pre><code>int main()
 {
     void (^blk)(void) = ^{printf(&quot;Block\n&quot;);};
@@ -534,14 +540,14 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself)
 </code></pre><p>转换为</p>
 <pre><code>((void (*)(struct __block_impl *))(
     (struct __block_impl *)blk)-&gt;FuncPtr)((struct __block_impl *)blk);
-</code></pre><h5 id="可写变量"><a href="#可写变量" class="headerlink" title="可写变量"></a>可写变量</h5><p>如何在 Block 函数中改变变量的值，看如下逻辑，函数中 val 的值即使被改变，也不会把改变的值写回 cself 中，展开形式如下</p>
+</code></pre><h4 id="可写变量"><a href="#可写变量" class="headerlink" title="可写变量"></a>可写变量</h4><p>如何在 Block 函数中改变变量的值，看如下逻辑，函数中 val 的值即使被改变，也不会把改变的值写回 cself 中，展开形式如下</p>
 <pre><code>static void __main_block_func_0(struct __main_block_impl_0 *__cself)
 {
     const char *fmt = __cself-&gt;fmt; 
     int val = __cself-&gt;val;
     printf(fmt, val); 
 }
-</code></pre><h5 id="block-修饰符"><a href="#block-修饰符" class="headerlink" title="__block 修饰符"></a>__block 修饰符</h5><p>__block 修饰符类似 C 中的 static, auto, and register</p>
+</code></pre><h4 id="block-修饰符"><a href="#block-修饰符" class="headerlink" title="block 修饰符"></a>block 修饰符</h4><p>__block 修饰符类似 C 中的 static, auto, and register</p>
 <p>__block 如何实现修改变量</p>
 <pre><code>struct __Block_byref_val_0 { 
     void *__isa;
@@ -559,7 +565,7 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself)
     __Block_byref_val_0 *val = __cself-&gt;val;
     (val-&gt;__forwarding-&gt;val) = 1; 
 }
-</code></pre><p><a href="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B" target="_blank" rel="external">Anonymous function</a></p>
+</code></pre><h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B" target="_blank" rel="external">Anonymous function</a></p>
 
       
     </div>
@@ -751,7 +757,7 @@ static void __main_block_func_0(struct __main_block_impl_0 *__cself)
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ARC"><span class="nav-number">1.</span> <span class="nav-text">ARC</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#weak-修饰符的效率"><span class="nav-number">1.0.1.</span> <span class="nav-text">__weak 修饰符的效率</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#weak-如何在释放时赋值为-nil"><span class="nav-number">1.0.2.</span> <span class="nav-text">__weak 如何在释放时赋值为 nil</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Blocks"><span class="nav-number">2.</span> <span class="nav-text">Blocks</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#捕获局部变量"><span class="nav-number">2.0.1.</span> <span class="nav-text">捕获局部变量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#OC-gt-C"><span class="nav-number">2.0.2.</span> <span class="nav-text">OC -> C</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#可写变量"><span class="nav-number">2.0.3.</span> <span class="nav-text">可写变量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#block-修饰符"><span class="nav-number">2.0.4.</span> <span class="nav-text">__block 修饰符</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ARC"><span class="nav-number">1.</span> <span class="nav-text">ARC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#weak-修饰符的效率"><span class="nav-number">1.1.</span> <span class="nav-text">weak 修饰符的效率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#weak-如何在释放时赋值为-nil"><span class="nav-number">1.2.</span> <span class="nav-text">weak 如何在释放时赋值为 nil</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Blocks"><span class="nav-number">2.</span> <span class="nav-text">Blocks</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#捕获局部变量"><span class="nav-number">2.1.</span> <span class="nav-text">捕获局部变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OC-gt-C"><span class="nav-number">2.2.</span> <span class="nav-text">OC -> C</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可写变量"><span class="nav-number">2.3.</span> <span class="nav-text">可写变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#block-修饰符"><span class="nav-number">2.4.</span> <span class="nav-text">block 修饰符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
           </div>
         </section>

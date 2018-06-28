@@ -1186,7 +1186,8 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       
         
           <p>Code tells everything，所以直接上代码</p>
-<h3 id="ARC"><a href="#ARC" class="headerlink" title="ARC"></a>ARC</h3><h5 id="weak-修饰符的效率"><a href="#weak-修饰符的效率" class="headerlink" title="__weak 修饰符的效率"></a>__weak 修饰符的效率</h5><pre><code>{
+<h3 id="ARC"><a href="#ARC" class="headerlink" title="ARC"></a>ARC</h3><p>先来看看 ARC 下的新产物</p>
+<h4 id="weak-修饰符的效率"><a href="#weak-修饰符的效率" class="headerlink" title="weak 修饰符的效率"></a>weak 修饰符的效率</h4><pre><code>{
     id __weak o = obj; 
     NSLog(@&quot;1 %@&quot;, o); 
     NSLog(@&quot;2 %@&quot;, o); 
@@ -1198,7 +1199,7 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     NSLog(@&quot;1 %@&quot;, tmp); 
     NSLog(@&quot;2 %@&quot;, tmp);
 }
-</code></pre><h5 id="weak-如何在释放时赋值为-nil"><a href="#weak-如何在释放时赋值为-nil" class="headerlink" title="__weak 如何在释放时赋值为 nil"></a>__weak 如何在释放时赋值为 nil</h5><pre><code>{
+</code></pre><h4 id="weak-如何在释放时赋值为-nil"><a href="#weak-如何在释放时赋值为-nil" class="headerlink" title="weak 如何在释放时赋值为 nil"></a>weak 如何在释放时赋值为 nil</h4><pre><code>{
     id __weak obj1 = obj;
 }
 </code></pre><p>以上代码 clang 后为</p>

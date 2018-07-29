@@ -605,7 +605,7 @@
           <p>创建 iOS 项目之前不要忘记做好以下事情</p>
 <h2 id="设置编码规范"><a href="#设置编码规范" class="headerlink" title="设置编码规范"></a>设置编码规范</h2><p>一些编码规范推荐</p>
 <p>ObjC</p>
-<p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html">Apple 的 Cocoa 编码规范</a><br><a href="https://github.com/github/objective-c-style-guide">GitHub 基于 Apple Cocoa 的编码规范</a><br><a href="https://google.github.io/styleguide/objcguide.xml">Google 的 ObjC 编码规范(需翻墙)</a><br><a href="https://github.com/NYTimes/objective-c-style-guide">纽约时报的编码规范</a></p>
+<p><a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html">Apple 的 Cocoa 编码规范</a><br><a href="https://github.com/github/objective-c-style-guide">GitHub 基于 Apple Cocoa 的编码规范</a><br><a href="https://google.github.io/styleguide/objcguide.xml">Google 的 ObjC 编码规范(需翻墙)</a><br><a href="https://github.com/objc-zen/objc-zen-book">ObjC 之禅</a></p>
 <p>Swift</p>
 <p><a href="https://github.com/raywenderlich/swift-style-guide">Raywenderlich 官方编码规范</a><br><a href="https://github.com/github/swift-style-guide">GithHub 的编码规范</a></p>
 <h2 id="确定架构"><a href="#确定架构" class="headerlink" title="确定架构"></a>确定架构</h2><p>使用传统的 MVC 还是 MVVM 亦或是 VIPER</p>
@@ -1311,7 +1311,7 @@ objc_initWeak(&amp;obj1, obj);
 
       
         
-          <h2 id="NSURLSession-的最简单实用方法"><a href="#NSURLSession-的最简单实用方法" class="headerlink" title="NSURLSession 的最简单实用方法"></a>NSURLSession 的最简单实用方法</h2><p>NSURLSession的不同之处在于，它把 NSURLConnection替换为NSURLSession, NSURLSessionConfiguration，以及3个NSURLSessionTask的子类：NSURLSessionDataTask, NSURLSessionUploadTask, 和NSURLSessionDownloadTask</p>
+          <h2 id="NSURLSession-的最简单实用方法"><a href="#NSURLSession-的最简单实用方法" class="headerlink" title="NSURLSession 的最简单实用方法"></a>NSURLSession 的最简单实用方法</h2><p>NSURLSession 的不同之处在于，它把 NSURLConnection 替换为<br>NSURLSession<br>NSURLSessionConfiguration<br>NSURLSessionTask 子类：NSURLSessionDataTask、NSURLSessionUploadTask、NSURLSessionDownloadTask</p>
 <pre><code>NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
 
 NSOperationQueue *queue = [NSOperationQueue mainQueue];
@@ -1325,7 +1325,7 @@ NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithStri
 [NSURL URLWithString:@&quot;foo&quot; relativeToURL:baseURL];           
 // http://example.com/v1/foo?bar=baz    
 [NSURL URLWithString:@&quot;foo?bar=baz&quot; relativeToURL:baseURL];         
-</code></pre><h3 id="NSURLSession-和-NSURLConnection-的区别"><a href="#NSURLSession-和-NSURLConnection-的区别" class="headerlink" title="NSURLSession 和 NSURLConnection 的区别"></a>NSURLSession 和 NSURLConnection 的区别</h3><p>与 NSURLConnection 相比，NSURLSession 最直接的改善就是提供了配置每个会话的缓存，协议，Cookie 和证书政策（Credential Policies），甚至跨应用程序共享它们的能力。它把 NSURLConnection 替换为 NSURLSession， NSURLSessionConfiguration，以及三个 NSURLSessionTask 的子类 NSURLSessionDataTask，NSURLSessionUploadTask 和 NSURLSessionDownloadTask。</p>
+</code></pre><h3 id="NSURLSession-和-NSURLConnection-的区别"><a href="#NSURLSession-和-NSURLConnection-的区别" class="headerlink" title="NSURLSession 和 NSURLConnection 的区别"></a>NSURLSession 和 NSURLConnection 的区别</h3><p>与 NSURLConnection 相比，NSURLSession 最直接的改善就是提供了配置每个会话的缓存，协议，Cookie 和证书政策（Credential Policies），甚至跨应用程序共享它们的能力。</p>
 <h3 id="NSURLSessionConfiguration-的类型"><a href="#NSURLSessionConfiguration-的类型" class="headerlink" title="NSURLSessionConfiguration 的类型"></a>NSURLSessionConfiguration 的类型</h3>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/01/11/Source-Code-Learning-AFNetworking/#more" rel="contents">
@@ -1413,7 +1413,7 @@ NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithStri
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

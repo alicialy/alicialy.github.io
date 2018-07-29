@@ -93,7 +93,7 @@
 <meta property="og:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
 要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”">
 <meta property="og:image" content="http://yoursite.com/post_images/performance1.jpg">
-<meta property="og:updated_time" content="2018-06-14T14:37:32.568Z">
+<meta property="og:updated_time" content="2018-07-29T02:56:21.915Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Performance">
 <meta name="twitter:description" content="前言有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。
@@ -322,8 +322,14 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 <p>之后运行 Allocations，点击所有的页面，看看进入每个页面后退出，内存是否会下降回或者接近进入该页面前的内存数。如果进入某个页面，再退出，发现内存没有减少回初始状态，说明操作的页面应该是有内存泄漏的。</p>
 <p>那么如何哪里泄漏呢，这里可以使用 Generation Analysis。发现有问题后，一定要记住重现步骤，每次按照重现步骤操作，操作中在进入怀疑有内存泄漏的页面 Mark Gerneration，等待几秒钟，页面加载完毕后，再退出该页面，再 Mark Gerneration 下，如果 Snapshot 的 Growth 和 Persistent 一直增长，说明肯定是有问题的。如果这个时候你打开对应页面的代码，随便看一眼，看到某个 Block 中有循环引用或者其他错误，那么恭喜你问题找到了。但是如果问题太隐蔽怎么办？看我的下一篇文章吧。</p>
 <h2 id="卡顿的原因"><a href="#卡顿的原因" class="headerlink" title="卡顿的原因"></a>卡顿的原因</h2><p>界面需要绘制的时候，首先主线程开始在 CPU 中计算要显示的内容，如视图的创建、布局计算、图片解码、文本绘制等。随后 CPU 将计算好的内容交给 GPU，由 GPU 进行变换、合成、渲染，GPU 再把处理结果提交到帧缓冲区，等待垂直同步信号到来时显示到屏幕上。如果一个垂直同步信号时间内，CPU 或者 GPU 内容没有提交，就会导致丢帧，现象就会表现为卡顿，所以 CPU 和 GPU 的工作都可能会影响界面卡顿。</p>
-<h3 id="CPU-资源消耗调整"><a href="#CPU-资源消耗调整" class="headerlink" title="CPU 资源消耗调整"></a>CPU 资源消耗调整</h3><h4 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h4><p>尽量用轻量的对象代替重量的对象，例如用 CALayer 比 UIView 轻量<br>说一下 CALayer 和 UIView 的区别，首先看其继承结构图<br>NSObject<br>    |- UIResponder<br>        |- UIView<br>            |- UIWindow<br>            |- UILabel<br>    |- CALayer</p>
-<ul>
+<h3 id="CPU-资源消耗调整"><a href="#CPU-资源消耗调整" class="headerlink" title="CPU 资源消耗调整"></a>CPU 资源消耗调整</h3><h4 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h4><p>尽量用轻量的对象代替重量的对象，例如用 CALayer 比 UIView 轻量<br>说一下 CALayer 和 UIView 的区别，首先看其继承结构图</p>
+<pre><code>|- NSObject
+~~~|- UIResponder
+~~~~~~|- UIView  
+~~~~~~|- UIWindow 
+~~~~~~|- UILabel
+~~~|- CALayer
+</code></pre><ul>
 <li><p>从继承关系可以看出来，CALayer 是不能响应任何用户事件的。CALayer 为什么从 UIView 中分离出来，单独处理显示部分？Mac OS 和 iOS 的 视图都需要处理手势事件，但是 Mac 上是用鼠标操作， iOS 是手指点击，显然处理方式不同，所以分别用 NSView 和 UIView 处理，Layer 只用于显示，为了解耦和避免重复代码，所以两个平台处理展示层的代码都适用 CALayer</p>
 </li>
 <li><p>UIView 的绘制是建立在 Core Graphics 上的，CPU 负责其绘制，自下向上一层层进行绘制。CALayer 是用的是 Core Animation，处理的是 Texture，系统决定是用 CPU 还是 GPU 进行绘制。CPU (Central Processing Unit) 和 GPU (Graphics Processing Unit) 都是用来处理绘制和动画的。CPU 是基于软件处理图形的，GPU 部分的依靠硬件处理，但是 GPU 处理能力有限，如果超出了其操作容量，就会导致效率下降。</p>
@@ -552,7 +558,7 @@ view.layer.shadowOpacity = 0.6;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

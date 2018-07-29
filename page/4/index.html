@@ -886,37 +886,7 @@ Animal init
           <h3 id="dispatch-sync-dispatch-async-同步与异步"><a href="#dispatch-sync-dispatch-async-同步与异步" class="headerlink" title="dispatch_sync / dispatch_async 同步与异步"></a>dispatch_sync / dispatch_async 同步与异步</h3><p>dispatch_sync 提交 block 以供同步执行。这个接口会等到 block 执行结束才返回，所以不需要复制 block。</p>
 <p>可以利用串行队列实现锁的功能。比如多线程写同一数据库，需要保持写入的顺序和每次写入的完整性</p>
 <p>sync 和 async 区别<br>同步函数不论是并发队列还是串行队列，都不会开线程。一个任务开始后等待任务完成后返回<br>异步函数并发队列能开启多个线程，串行队列开启一个线程。异步方法会立即返回，不等待任务完成。</p>
-<p>如果在调用该接口在当前 queue 上指派任务，就会导致 deadlock。以下是死锁的例子</p>
-<pre><code>- (void)deadLock1 {
-    - (void)viewDidLoad {
-        [super viewDidLoad];
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            // 主线程中同步一个主队列，sync 是后加入到队列的，它阻止了主线程，同时 sync 等待主线程执行完毕后才能执行 block，主线程等待 sync 执行后才能执行，造成死锁
-            NSLog(@&quot;1&quot;);
-        });
-    }
-}
-
-- (void)deadLock2 {
-    dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.example.gcd.MySerialDispatchQueue&quot;, NULL);
-    dispatch_sync(serialQueue,^{
-        dispatch_sync(serialQueue,^{
-            // 串行队列同步一个串行队列，死锁
-            NSLog(@&quot;1&quot;);
-        });
-    });
-}
-
-- (void)deadLock3 {
-    dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.example.gcd.MySerialDispatchQueue&quot;, NULL);
-    dispatch_async(serialQueue, ^{
-        // 串行队列里面同步一个串行队列就会死锁
-        dispatch_sync(serialQueue, ^{
-            NSLog(@&quot;1&quot;);
-        });
-    });
-}
-</code></pre><h3 id="队列的创建或获取"><a href="#队列的创建或获取" class="headerlink" title="队列的创建或获取"></a>队列的创建或获取</h3><p>GCD的所有队列都是先进先出的，它的队列主要分三种，主队列 main_queue、全局并发队列 global_queue、自定义队列<br>串行队列：队列中的任务必须在前一个任务结束后才能执行<br>并发队列：队列中的任务必须在前一个任务开始后才能执行</p>
+<h3 id="dispatch-queue-create-队列的创建或获取"><a href="#dispatch-queue-create-队列的创建或获取" class="headerlink" title="dispatch_queue_create 队列的创建或获取"></a>dispatch_queue_create 队列的创建或获取</h3><p>GCD的所有队列都是先进先出的，它的队列主要分三种，主队列 main_queue、全局并发队列 global_queue、自定义队列<br>串行队列：队列中的任务必须在前一个任务结束后才能执行，包括 DISPATCH_QUEUE_SERIAL 和 主队列<br>并发队列：队列中的任务必须在前一个任务开始后才能执行，包括 DISPATCH_QUEUE_CONCURRENT 和 全局并发队列</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/05/29/GCD/#more" rel="contents">
               Read more &raquo;
@@ -1289,7 +1259,7 @@ return MAXFLOAT;\
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

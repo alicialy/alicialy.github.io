@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,Performance,Optimize," />
+  <meta name="keywords" content="iOS,Optimize,Performance," />
 
 
 
@@ -98,7 +98,7 @@ main 执行之后的时间通过 Time Profiler 查看即可，之前写过文章
 这篇文章主要讨论 main 执行之前的时间。
 main 之前 的加载过程Load dylibs =&amp;gt; Rebase =&amp;gt; Binding =&amp;gt; ObjC =&amp;gt; Initializers
 在 Xcode">
-<meta property="og:updated_time" content="2018-06-14T23:43:25.218Z">
+<meta property="og:updated_time" content="2018-07-29T05:55:54.716Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Optimize App Startup Time">
 <meta name="twitter:description" content="前言启动时间包括 main 执行之前的时间，以及 main 执行之后的时间。
@@ -326,12 +326,12 @@ __DATA：可读可写的数据
 ...
 </code></pre><p>LINKEDIT 段中保存了 Rebase 的相关信息，dylib 中的 LC_DYLD_INOF_ONLY 指定 rebase info 在文件中的偏移量。</p>
 <p>使用以下命令可以输出 rebase 信息<br>    xcrun dyldinfo -rebase -bind -lazy_bind myapp.app/myapp</p>
-<p>Mach-O 中包含了很多外部库和符号的引用，使用动态链接器加载外部库和符号的过程叫做符号绑定 binding。</p>
-<h4 id="优化-Rebase-Binding-过程"><a href="#优化-Rebase-Binding-过程" class="headerlink" title="优化 Rebase / Binding 过程"></a>优化 Rebase / Binding 过程</h4><p>减少 __DATA 指针<br>减少 OC 的 metadata，可以删除无用的 class/selector/category<br>减少 C++ 虚函数<br>使用 Swift 的 struct<br>为不需要写的属性添加 readonly</p>
-<h3 id="ObjC"><a href="#ObjC" class="headerlink" title="ObjC"></a>ObjC</h3><p>大部分 ObjC 的设置工作都在 Rebease 和 Binding 时做完<br>类的定义被注册<br>实例变量偏移的更新<br>Category 被插入到方法列表<br>Selector 的唯一性</p>
+<p>Mach-O 中包含了很多外部库和符号的引用，使用动态链接器加载外部库和符号的过程叫做符号绑定 binding。Rebasing 处理那些指向 Mach-O 文件内部调整指针的内容，Biding 负责指向 Mac-O 外部库的内容。</p>
+<h4 id="优化-Rebase-Binding-过程"><a href="#优化-Rebase-Binding-过程" class="headerlink" title="优化 Rebase / Binding 过程"></a>优化 Rebase / Binding 过程</h4><p>减少 <strong>DATA 指针，即<br>减少 OC 的 metadata，可以删除无用的 class/selector/category<br>减少 C++ 虚函数，因为虚函数会在 </strong>DATA 段创建虚函数表<br>使用 Swift 的 struct<br>为不需要写的属性添加 readonly</p>
+<h3 id="ObjC-Setup"><a href="#ObjC-Setup" class="headerlink" title="ObjC Setup"></a>ObjC Setup</h3><p>大部分 ObjC 的设置工作都在 Rebease 和 Binding 时做完<br>类的定义被注册<br>实例变量偏移的更新<br>Category 被插入到方法列表<br>Selector 的唯一性</p>
 <h3 id="Initializers"><a href="#Initializers" class="headerlink" title="Initializers"></a>Initializers</h3><p>C++ 为静态变量初始化<br>执行 +load 方法<br>执行 main()</p>
-<h4 id="优化-Initializers-过程"><a href="#优化-Initializers-过程" class="headerlink" title="优化 Initializers 过程"></a>优化 Initializers 过程</h4><p>减少 +load() 方法，尽量使用 +initialize() 代替<br>使用 dispatch_one() pthread_once() std::once() 代替 C/C++ <strong>attribute</strong>(constructor)<br>减少 静态构造函数<br>初始化方法中不要使用 dlopen()<br>初始化方法中不要创建线程</p>
-<h3 id="总结优化的点"><a href="#总结优化的点" class="headerlink" title="总结优化的点"></a>总结优化的点</h3><p>减少非系统的framework依赖，如果framework 在当前 App 支持的所有 iOS 系统版本中都存在则设为 required，否则设置为 optional，optional 会有额外检查<br>合并非系统库<br>可以删除无用的 class/selector/category，删除无用的方法调用、静态变量等<br>减少 C++ 虚函数（减少创建虚函数表时间）<br>使用 Swift 的 struct (从而减少符号数量)<br>为不需要写的属性添加 readonly<br>减少 +load() 方法，尽量使用 +initialize() 代替<br>使用 dispatch_one() pthread_once() std::once() 代替 C/C++ <strong>attribute</strong>(constructor)<br>减少 静态构造函数<br>初始化方法中不要使用 dlopen()</p>
+<h4 id="优化-Initializers-过程"><a href="#优化-Initializers-过程" class="headerlink" title="优化 Initializers 过程"></a>优化 Initializers 过程</h4><p>减少 +load() 方法，尽量使用 +initialize() 代替<br>使用 dispatch_one() pthread_once() std::once() 代替 C/C++ <strong>attribute</strong>(constructor)<br>减少静态构造函数<br>初始化方法中不要使用 dlopen()<br>初始化方法中不要创建线程，由于创建线程后系统不得不加锁，从而影响性能</p>
+<h3 id="总结优化的点"><a href="#总结优化的点" class="headerlink" title="总结优化的点"></a>总结优化的点</h3><p>减少非系统的framework依赖，如果framework 在当前 App 支持的所有 iOS 系统版本中都存在则设为 required，否则设置为 optional，optional 会有额外检查<br>合并非系统库<br>可以删除无用的 class/selector/category，删除无用的方法调用、静态变量等<br>减少 C++ 虚函数（减少创建虚函数表时间）<br>使用 Swift 的 struct (从而减少符号数量)<br>为不需要写的属性添加 readonly<br>减少 +load() 方法，尽量使用 +initialize() 代替<br>使用 dispatch_one() pthread_once() std::once() 代替 C/C++ <strong>attribute</strong>(constructor)<br>减少静态构造函数<br>初始化方法中不要使用 dlopen()，不要创建线程</p>
 
       
     </div>
@@ -377,9 +377,9 @@ __DATA：可读可写的数据
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
-            <a href="/tags/Performance/" rel="tag">#Performance</a>
-          
             <a href="/tags/Optimize/" rel="tag">#Optimize</a>
+          
+            <a href="/tags/Performance/" rel="tag">#Performance</a>
           
         </div>
       
@@ -476,7 +476,7 @@ __DATA：可读可写的数据
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -525,7 +525,7 @@ __DATA：可读可写的数据
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main-之前-的加载过程"><span class="nav-number">2.</span> <span class="nav-text">main 之前 的加载过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Load-dylibs"><span class="nav-number">3.</span> <span class="nav-text">Load dylibs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优化-Load-dylibs-过程"><span class="nav-number">3.1.</span> <span class="nav-text">优化 Load dylibs 过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rebase-Binding"><span class="nav-number">4.</span> <span class="nav-text">Rebase / Binding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优化-Rebase-Binding-过程"><span class="nav-number">4.1.</span> <span class="nav-text">优化 Rebase / Binding 过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjC"><span class="nav-number">5.</span> <span class="nav-text">ObjC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Initializers"><span class="nav-number">6.</span> <span class="nav-text">Initializers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优化-Initializers-过程"><span class="nav-number">6.1.</span> <span class="nav-text">优化 Initializers 过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结优化的点"><span class="nav-number">7.</span> <span class="nav-text">总结优化的点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main-之前-的加载过程"><span class="nav-number">2.</span> <span class="nav-text">main 之前 的加载过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Load-dylibs"><span class="nav-number">3.</span> <span class="nav-text">Load dylibs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优化-Load-dylibs-过程"><span class="nav-number">3.1.</span> <span class="nav-text">优化 Load dylibs 过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rebase-Binding"><span class="nav-number">4.</span> <span class="nav-text">Rebase / Binding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优化-Rebase-Binding-过程"><span class="nav-number">4.1.</span> <span class="nav-text">优化 Rebase / Binding 过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjC-Setup"><span class="nav-number">5.</span> <span class="nav-text">ObjC Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Initializers"><span class="nav-number">6.</span> <span class="nav-text">Initializers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优化-Initializers-过程"><span class="nav-number">6.1.</span> <span class="nav-text">优化 Initializers 过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结优化的点"><span class="nav-number">7.</span> <span class="nav-text">总结优化的点</span></a></li></ol></div>
             
           </div>
         </section>

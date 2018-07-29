@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="微博 Demo 性能的优化抛弃了以往在 Controller 中保存 Model 数组的传统方法，而是添加了用于存放布局和数据对象的数组，其中的布局是从 API 获取到数据后，在后台线程中计算后并保存的，这样当 Cell 需要显示时直接从内存中获取，不需要再进行计算。优点显而易见，缺点是 UIKit 的控件不是线程安全的，所以依赖 YYText 中的控件实现。
 头像图片的圆角实现方式是在图片下载后">
-<meta property="og:updated_time" content="2018-06-27T23:59:53.807Z">
+<meta property="og:updated_time" content="2018-07-29T02:35:30.309Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - YYKit">
 <meta name="twitter:description" content="微博 Demo 性能的优化抛弃了以往在 Controller 中保存 Model 数组的传统方法，而是添加了用于存放布局和数据对象的数组，其中的布局是从 API 获取到数据后，在后台线程中计算后并保存的，这样当 Cell 需要显示时直接从内存中获取，不需要再进行计算。优点显而易见，缺点是 UIKit 的控件不是线程安全的，所以依赖 YYText 中的控件实现。
@@ -326,6 +326,22 @@ static void YYRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAc
 }
 </code></pre><a id="more"></a>
 <p>YYTransactionSetup 中创建一个RunLoop 的监听，当 Runloop 空闲或者即将退出时执行事务的 selector 即上面的 _updateIfNeeded 方法。</p>
+<h2 id="全局并发控制"><a href="#全局并发控制" class="headerlink" title="全局并发控制"></a>全局并发控制</h2><p>使用 YYDispatchQueuePool 会创建一个指定优先级，MAX_QUEUE_COUNT 为 32 个串行队列分发池代替并行队列。使用串行队列可以控制线程数量，避免创建过多线程影响性能，但是串行队列又不能利用多核 CPU 优势，所以使用队列池来管理队列。</p>
+<p>获取队列的实现如下</p>
+<pre><code>static dispatch_queue_t YYDispatchContextGetQueue(YYDispatchContext *context) {
+    int32_t counter = OSAtomicIncrement32(&amp;context-&gt;counter);
+    // 如果越界，变为负数，则转为正数
+    if (counter &lt; 0) counter = -counter;
+    void *queue = context-&gt;queues[counter % context-&gt;queueCount];
+    return (__bridge dispatch_queue_t)(queue);
+}
+</code></pre><p>参数 YYDispatchContext 定义如下</p>
+<p>typedef struct {<br>    const char <em>name;       // 分发名称<br>    void *</em>queues;          // 队列数组指针<br>    uint32_t queueCount;    // 队列个数<br>    int32_t counter;        // 获取队列的次数<br>} YYDispatchContext;</p>
+<h3 id="C-语言的知识"><a href="#C-语言的知识" class="headerlink" title="C 语言的知识"></a>C 语言的知识</h3><p>strdup / strcpy / memcpy 的区别</p>
+<pre><code>if (name) {
+     context-&gt;name = strdup(name);
+}
+</code></pre><p>strcpy 从源字符串中查找不是结束符 ‘\0’ 的内存都复制过去，如果目标字符串空间不够则会导致崩溃；memcpy 内存拷贝，不考虑字符串结束符，strdup 先用 malloc 函数分配与源字符串相同大小空间，然后将源字符串的内容复制到该内存地址，再将该地址返回。</p>
 <h2 id="好用的-YYFPSLabel"><a href="#好用的-YYFPSLabel" class="headerlink" title="好用的 YYFPSLabel"></a>好用的 YYFPSLabel</h2><p>使用 Instruments 查看帧率不如直接在应用中查看来的直接，YYFPSLabel 可以直接显示帧率。</p>
 <pre><code>CADisplayLink _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWithTarget:self] selector:@selector(tick:)];
 [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
@@ -564,7 +580,7 @@ static void YYRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAc
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -613,7 +629,7 @@ static void YYRunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopAc
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#微博-Demo-性能的优化"><span class="nav-number">1.</span> <span class="nav-text">微博 Demo 性能的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Macros-宏"><span class="nav-number">2.</span> <span class="nav-text">Macros 宏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务机制"><span class="nav-number">3.</span> <span class="nav-text">事务机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#好用的-YYFPSLabel"><span class="nav-number">4.</span> <span class="nav-text">好用的 YYFPSLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CADisplayLink-和-NSTimer-的区别"><span class="nav-number">4.1.</span> <span class="nav-text">CADisplayLink 和 NSTimer 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CADisplayLink-的重要属性"><span class="nav-number">4.2.</span> <span class="nav-text">CADisplayLink 的重要属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Timer-内存泄漏的避免"><span class="nav-number">4.3.</span> <span class="nav-text">Timer 内存泄漏的避免</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#奇技淫巧"><span class="nav-number">5.</span> <span class="nav-text">奇技淫巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#成员变量访问修饰符-package"><span class="nav-number">6.</span> <span class="nav-text">成员变量访问修饰符 @package</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">6.1.</span> <span class="nav-text">使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#微博-Demo-性能的优化"><span class="nav-number">1.</span> <span class="nav-text">微博 Demo 性能的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Macros-宏"><span class="nav-number">2.</span> <span class="nav-text">Macros 宏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务机制"><span class="nav-number">3.</span> <span class="nav-text">事务机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局并发控制"><span class="nav-number">4.</span> <span class="nav-text">全局并发控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-语言的知识"><span class="nav-number">4.1.</span> <span class="nav-text">C 语言的知识</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#好用的-YYFPSLabel"><span class="nav-number">5.</span> <span class="nav-text">好用的 YYFPSLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CADisplayLink-和-NSTimer-的区别"><span class="nav-number">5.1.</span> <span class="nav-text">CADisplayLink 和 NSTimer 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CADisplayLink-的重要属性"><span class="nav-number">5.2.</span> <span class="nav-text">CADisplayLink 的重要属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Timer-内存泄漏的避免"><span class="nav-number">5.3.</span> <span class="nav-text">Timer 内存泄漏的避免</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#奇技淫巧"><span class="nav-number">6.</span> <span class="nav-text">奇技淫巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#成员变量访问修饰符-package"><span class="nav-number">7.</span> <span class="nav-text">成员变量访问修饰符 @package</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">7.1.</span> <span class="nav-text">使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">8.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
           </div>
         </section>

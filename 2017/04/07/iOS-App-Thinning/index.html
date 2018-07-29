@@ -98,7 +98,7 @@
 大图片不要使用 PNG，用 JPG 替换
 删除掉 1x 图片
 代码精简查找无用的 OC 类维护时间较长的代码，可能会出现废弃的类出现在代">
-<meta property="og:updated_time" content="2017-04-07T13:00:52.000Z">
+<meta property="og:updated_time" content="2018-07-29T06:19:43.110Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS App Thinning">
 <meta name="twitter:description" content="图片资源删减使用工具查找未引用资源LSUnusedResources 比之前的 Unused 好用，对于大型工程来说 Unused 效率太低
@@ -298,18 +298,21 @@
       
 
       
-        <h3 id="图片资源删减"><a href="#图片资源删减" class="headerlink" title="图片资源删减"></a>图片资源删减</h3><h5 id="使用工具查找未引用资源"><a href="#使用工具查找未引用资源" class="headerlink" title="使用工具查找未引用资源"></a>使用工具查找未引用资源</h5><p><a href="https://github.com/tinymind/LSUnusedResources/" target="_blank" rel="external">LSUnusedResources</a> 比之前的 Unused 好用，对于大型工程来说 Unused 效率太低</p>
-<h5 id="压缩-PNG"><a href="#压缩-PNG" class="headerlink" title="压缩 PNG"></a>压缩 PNG</h5><p>按照文件大小排列，看看是否有上百 K 的 PNG 图片，使用工具进行压缩，可以使用 JPG 的不要用 PNG</p>
+        <h3 id="图片资源删减"><a href="#图片资源删减" class="headerlink" title="图片资源删减"></a>图片资源删减</h3><h4 id="使用工具查找未引用资源"><a href="#使用工具查找未引用资源" class="headerlink" title="使用工具查找未引用资源"></a>使用工具查找未引用资源</h4><p><a href="https://github.com/tinymind/LSUnusedResources/" target="_blank" rel="external">LSUnusedResources</a> 比之前的 Unused 好用，对于大型工程来说 Unused 效率太低</p>
+<h4 id="压缩-PNG"><a href="#压缩-PNG" class="headerlink" title="压缩 PNG"></a>压缩 PNG</h4><p>按照文件大小排列，看看是否有上百 K 的 PNG 图片，使用工具进行压缩，可以使用 JPG 的不要用 PNG</p>
 <p>大图片不要使用 PNG，用 JPG 替换</p>
 <p>删除掉 1x 图片</p>
-<h3 id="代码精简"><a href="#代码精简" class="headerlink" title="代码精简"></a>代码精简</h3><h5 id="查找无用的-OC-类"><a href="#查找无用的-OC-类" class="headerlink" title="查找无用的 OC 类"></a>查找无用的 OC 类</h5><p>维护时间较长的代码，可能会出现废弃的类出现在代码中，这种无用的文件比较难找，可以通过 linkMap 文件来分析。</p>
+<h3 id="代码精简"><a href="#代码精简" class="headerlink" title="代码精简"></a>代码精简</h3><h4 id="查找无用的-OC-类"><a href="#查找无用的-OC-类" class="headerlink" title="查找无用的 OC 类"></a>查找无用的 OC 类</h4><p>维护时间较长的代码，可能会出现废弃的类出现在代码中，这种无用的文件比较难找，可以通过 linkMap 文件来分析。</p>
 <p>设置 Project -&gt; Build Settings -&gt; Write Link Map File 为 YES，并设置 Path to Link Map File，build 完后找到 linkMap 文件，来分析该文件，该文件默认位于</p>
 <p>~/Library/Developer/Xcode/DerivedData/XXX-eumsvrzbvgfofvbfsoqokmjprvuh/Build/Intermediates/XXX.build/Debug-iphoneos/XXX.build/</p>
 <p>该文件的介绍，可以参考下 <a href="http://blog.cnbang.net/tech/2296/" target="_blank" rel="external">这里</a></p>
 <p>在 bang 同学的脚本基础上作了改进，原脚本支持第三方库大小统计，在该脚本的基础上，添加了分析 objc-class-ref 段，查找未引用的类的方法，代码<a href="https://github.com/alicialy/LTAppThinningScript" target="_blank" rel="external">点击这里</a></p>
-<h5 id="查找无用的函数"><a href="#查找无用的函数" class="headerlink" title="查找无用的函数"></a>查找无用的函数</h5><p>无用函数，可能是暂时无用，或者不确定是否以后会用到的，可以通过工具来查找无用函数，<a href="https://github.com/ming1016/SMCheckProject" target="_blank" rel="external">推荐工具点这里</a></p>
+<h4 id="查找无用的函数"><a href="#查找无用的函数" class="headerlink" title="查找无用的函数"></a>查找无用的函数</h4><p>无用函数，可能是暂时无用，或者不确定是否以后会用到的，可以通过工具来查找无用函数，<a href="https://github.com/ming1016/SMCheckProject" target="_blank" rel="external">推荐工具点这里</a></p>
 <p>或者按照查找无用 OC 类的方式写脚本分析 selrefs 段</p>
-<h5 id="编译选项优化"><a href="#编译选项优化" class="headerlink" title="编译选项优化"></a>编译选项优化</h5><p>Strip Link Product 是否为 YES<br>Make Strings Read-Only 是否 为YES<br>去掉异常支持，Enable C++ Exceptions 和 Enable Objective-C Exceptions 设为 NO，并且Other C Flags 添加 -fno-exceptions </p>
+<h4 id="编译选项优化"><a href="#编译选项优化" class="headerlink" title="编译选项优化"></a>编译选项优化</h4><p>Strip Link Product 是否为 YES<br>Make Strings Read-Only 是否 为YES<br>去掉异常支持，Enable C++ Exceptions 和 Enable Objective-C Exceptions 设为 NO，并且Other C Flags 添加 -fno-exceptions </p>
+<h3 id="iOS-9-以上的-App-Thnning"><a href="#iOS-9-以上的-App-Thnning" class="headerlink" title="iOS 9 以上的 App Thnning"></a>iOS 9 以上的 App Thnning</h3><p>Slicing 仅向设备传送与之相关的资源</p>
+<p>On-Demand Resources(ODR) 不重要的资源不下载，使用的时候下载</p>
+<p>Bitcode 更新应用时，仅下载更新的内容。</p>
 
       
     </div>
@@ -452,7 +455,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -501,7 +504,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#图片资源删减"><span class="nav-number">1.</span> <span class="nav-text">图片资源删减</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用工具查找未引用资源"><span class="nav-number">1.0.1.</span> <span class="nav-text">使用工具查找未引用资源</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#压缩-PNG"><span class="nav-number">1.0.2.</span> <span class="nav-text">压缩 PNG</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码精简"><span class="nav-number">2.</span> <span class="nav-text">代码精简</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#查找无用的-OC-类"><span class="nav-number">2.0.1.</span> <span class="nav-text">查找无用的 OC 类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查找无用的函数"><span class="nav-number">2.0.2.</span> <span class="nav-text">查找无用的函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#编译选项优化"><span class="nav-number">2.0.3.</span> <span class="nav-text">编译选项优化</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#图片资源删减"><span class="nav-number">1.</span> <span class="nav-text">图片资源删减</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用工具查找未引用资源"><span class="nav-number">1.1.</span> <span class="nav-text">使用工具查找未引用资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#压缩-PNG"><span class="nav-number">1.2.</span> <span class="nav-text">压缩 PNG</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码精简"><span class="nav-number">2.</span> <span class="nav-text">代码精简</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查找无用的-OC-类"><span class="nav-number">2.1.</span> <span class="nav-text">查找无用的 OC 类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找无用的函数"><span class="nav-number">2.2.</span> <span class="nav-text">查找无用的函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编译选项优化"><span class="nav-number">2.3.</span> <span class="nav-text">编译选项优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-9-以上的-App-Thnning"><span class="nav-number">3.</span> <span class="nav-text">iOS 9 以上的 App Thnning</span></a></li></ol></div>
             
           </div>
         </section>

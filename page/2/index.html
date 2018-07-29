@@ -443,7 +443,7 @@ NSString *_title;
     if (title) {
         _title = [title copy];
     } else {
-        _title = NSLocalizedString(@&quot;提示&quot;, nil);
+        _title = NSLocalizedString(@&quot;Alert&quot;, nil);
     }
 }
 </code></pre><p>接下来的事情是这样的，某个页面在多次调用 initWithTitle 的时候会发生崩溃，错误信息是这样子的：</p>
@@ -1361,11 +1361,13 @@ dispatch_resume(timer);
           <p>使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。</p>
 <h2 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h2><p>原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 </p>
 <pre><code>void retain() {
-    OSAtomicIncrement64(&amp;retainCount);    // retainCount 为实例变量，相当于 retainCount++
+    // retainCount 为实例变量，相当于 retainCount++
+    OSAtomicIncrement64(&amp;retainCount);    
 }
 void release() {
     unit32_t originalValue;
-    orginalValue = OSAtomicDecrement64(&amp;retainCount); // 相当于 retainCount--
+    // 相当于 retainCount--
+    orginalValue = OSAtomicDecrement64(&amp;retainCount); 
     if (originalValue == 1) {
         this-&gt;free();
     }
@@ -1458,7 +1460,7 @@ void release() {
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

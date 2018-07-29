@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,Concurrent,Lock," />
+  <meta name="keywords" content="iOS,MultiThreading," />
 
 
 
@@ -87,7 +87,8 @@
 <meta name="description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
-    OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
+    // retainCount 为实例变量，相当于 retainCount++
+    OSAtomicIncreme">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Concurrent Programming and Synchronization">
 <meta property="og:url" content="http://yoursite.com/2016/06/24/Concurrent-Programming-and-Synchronization/index.html">
@@ -95,14 +96,16 @@ void retain() {
 <meta property="og:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
-    OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
-<meta property="og:updated_time" content="2018-06-05T13:48:31.178Z">
+    // retainCount 为实例变量，相当于 retainCount++
+    OSAtomicIncreme">
+<meta property="og:updated_time" content="2018-07-28T10:26:16.224Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Concurrent Programming and Synchronization">
 <meta name="twitter:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
 原子操作原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 
 void retain() {
-    OSAtomicIncrement64(&amp;amp;retainCount);    // retainCount 为">
+    // retainCount 为实例变量，相当于 retainCount++
+    OSAtomicIncreme">
 
 
 
@@ -298,11 +301,13 @@ void retain() {
         <p>使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。</p>
 <h2 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h2><p>原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 </p>
 <pre><code>void retain() {
-    OSAtomicIncrement64(&amp;retainCount);    // retainCount 为实例变量，相当于 retainCount++
+    // retainCount 为实例变量，相当于 retainCount++
+    OSAtomicIncrement64(&amp;retainCount);    
 }
 void release() {
     unit32_t originalValue;
-    orginalValue = OSAtomicDecrement64(&amp;retainCount); // 相当于 retainCount--
+    // 相当于 retainCount--
+    orginalValue = OSAtomicDecrement64(&amp;retainCount); 
     if (originalValue == 1) {
         this-&gt;free();
     }
@@ -723,9 +728,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
-            <a href="/tags/Concurrent/" rel="tag">#Concurrent</a>
-          
-            <a href="/tags/Lock/" rel="tag">#Lock</a>
+            <a href="/tags/MultiThreading/" rel="tag">#MultiThreading</a>
           
         </div>
       
@@ -822,7 +825,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

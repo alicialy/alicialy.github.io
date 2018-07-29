@@ -94,7 +94,7 @@
 <meta property="og:description" content="前言最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。
 话说，这一次的问题主要是发生在 MRC 环境下，除了发现调试工具，还回忆了一下 MRC。感兴趣的话，可以当作面试题来看看下面代码有什么问题。
 上一次用到 MRC 恐怕还是 2011 年，这次是因为公司有个老代码使用的是很早以前别人写的库，一直没">
-<meta property="og:updated_time" content="2016-12-31T12:22:04.000Z">
+<meta property="og:updated_time" content="2018-07-29T05:06:57.741Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="About Message send to dealloc instance">
 <meta name="twitter:description" content="前言最近，遇到一个崩溃问题，崩溃前控制台打印出 “message send to dealloc instance”，在解决问题的过程中发现一个调试工具。
@@ -314,7 +314,7 @@ NSString *_title;
     if (title) {
         _title = [title copy];
     } else {
-        _title = NSLocalizedString(@&quot;提示&quot;, nil);
+        _title = NSLocalizedString(@&quot;Alert&quot;, nil);
     }
 }
 </code></pre><p>接下来的事情是这样的，某个页面在多次调用 initWithTitle 的时候会发生崩溃，错误信息是这样子的：</p>
@@ -488,7 +488,7 @@ ALLOC 0x7b786d90-0x7b786d9f [size=16]: thread_92ec000 | start | main | UIApplica
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS," />
+  <meta name="keywords" content="iOS,MultiThreading," />
 
 
 
@@ -94,7 +94,7 @@ sync 和 async 区别同步函数不论是并发队列还是串行队列，都�
 <meta property="og:description" content="dispatch_sync / dispatch_async 同步与异步dispatch_sync 提交 block 以供同步执行。这个接口会等到 block 执行结束才返回，所以不需要复制 block。
 可以利用串行队列实现锁的功能。比如多线程写同一数据库，需要保持写入的顺序和每次写入的完整性
 sync 和 async 区别同步函数不论是并发队列还是串行队列，都不会开线程。一个任务开始后等待任务">
-<meta property="og:updated_time" content="2018-05-29T14:07:16.025Z">
+<meta property="og:updated_time" content="2018-07-29T01:49:45.723Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GCD">
 <meta name="twitter:description" content="dispatch_sync / dispatch_async 同步与异步dispatch_sync 提交 block 以供同步执行。这个接口会等到 block 执行结束才返回，所以不需要复制 block。
@@ -295,7 +295,28 @@ sync 和 async 区别同步函数不论是并发队列还是串行队列，都�
         <h3 id="dispatch-sync-dispatch-async-同步与异步"><a href="#dispatch-sync-dispatch-async-同步与异步" class="headerlink" title="dispatch_sync / dispatch_async 同步与异步"></a>dispatch_sync / dispatch_async 同步与异步</h3><p>dispatch_sync 提交 block 以供同步执行。这个接口会等到 block 执行结束才返回，所以不需要复制 block。</p>
 <p>可以利用串行队列实现锁的功能。比如多线程写同一数据库，需要保持写入的顺序和每次写入的完整性</p>
 <p>sync 和 async 区别<br>同步函数不论是并发队列还是串行队列，都不会开线程。一个任务开始后等待任务完成后返回<br>异步函数并发队列能开启多个线程，串行队列开启一个线程。异步方法会立即返回，不等待任务完成。</p>
-<p>如果在调用该接口在当前 queue 上指派任务，就会导致 deadlock。以下是死锁的例子</p>
+<h3 id="dispatch-queue-create-队列的创建或获取"><a href="#dispatch-queue-create-队列的创建或获取" class="headerlink" title="dispatch_queue_create 队列的创建或获取"></a>dispatch_queue_create 队列的创建或获取</h3><p>GCD的所有队列都是先进先出的，它的队列主要分三种，主队列 main_queue、全局并发队列 global_queue、自定义队列<br>串行队列：队列中的任务必须在前一个任务结束后才能执行，包括 DISPATCH_QUEUE_SERIAL 和 主队列<br>并发队列：队列中的任务必须在前一个任务开始后才能执行，包括 DISPATCH_QUEUE_CONCURRENT 和 全局并发队列</p>
+<a id="more"></a>
+<pre><code>// dispatch_queue_create
+dispatch_queue_t mySerialDispatchQueue = dispatch_queue_create(&quot;com.example.gcd.MySerialDispatchQueue&quot;, NULL);
+
+// Serial dispatch queue,Executed on the main thread
+dispatch_queue_t mainDispatchQueue = dispatch_get_main_queue();
+
+// How to get a global dispatch queue of high priority 
+dispatch_queue_t globalDispatchQueueHigh = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+
+// How to get a global dispatch queue of default priority
+dispatch_queue_t globalDispatchQueueDefault = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+// How to get a global dispatch queue of low priority
+dispatch_queue_t globalDispatchQueueLow = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+
+// How to get a global dispatch queue of background priority 
+dispatch_queue_t globalDispatchQueueBackground = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+</code></pre><p>将上述的同步、异步、串行、并发四种方式组合成以下几种情况<br>同步串行：不开启新线程，串行执行队列中的任务<br>同步并发：不开启新线程，串行执行队列中的任务，并发失效<br>异步串行：开启新线程，串行执行队列中的任务<br>异步并发：开启新线程，并发执行任务</p>
+<p>另外主队列中会有些特殊：<br>同步主队列：主线程调用会导致死锁；其他线程调用，不开启新线程，串行执行任务<br>异步主队列：不开启新线程，串行执行任务</p>
+<p>例如，如果在调用该接口在当前 queue 上指派任务，就会导致 deadlock。以下是死锁的例子</p>
 <pre><code>- (void)deadLock1 {
     - (void)viewDidLoad {
         [super viewDidLoad];
@@ -325,26 +346,7 @@ sync 和 async 区别同步函数不论是并发队列还是串行队列，都�
         });
     });
 }
-</code></pre><h3 id="队列的创建或获取"><a href="#队列的创建或获取" class="headerlink" title="队列的创建或获取"></a>队列的创建或获取</h3><p>GCD的所有队列都是先进先出的，它的队列主要分三种，主队列 main_queue、全局并发队列 global_queue、自定义队列<br>串行队列：队列中的任务必须在前一个任务结束后才能执行<br>并发队列：队列中的任务必须在前一个任务开始后才能执行</p>
-<a id="more"></a>
-<pre><code>// dispatch_queue_create
-dispatch_queue_t mySerialDispatchQueue = dispatch_queue_create(&quot;com.example.gcd.MySerialDispatchQueue&quot;, NULL);
-
-// Serial dispatch queue,Executed on the main thread
-dispatch_queue_t mainDispatchQueue = dispatch_get_main_queue();
-
-// How to get a global dispatch queue of high priority 
-dispatch_queue_t globalDispatchQueueHigh = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-
-// How to get a global dispatch queue of default priority
-dispatch_queue_t globalDispatchQueueDefault = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
-// How to get a global dispatch queue of low priority
-dispatch_queue_t globalDispatchQueueLow = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-
-// How to get a global dispatch queue of background priority 
-dispatch_queue_t globalDispatchQueueBackground = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-</code></pre><p>对于 DISPATCH_QUEUE_PRIORITY_BACKGROUND 级别，文档解释说 Such a thread has the lowest priority and any disk I/O is throttled to minimize the impact on the system，也就是该级别最低，文件的读写等可以视情况使用该级别</p>
+</code></pre><p>全局并发队列可以设置优先级，对于 DISPATCH_QUEUE_PRIORITY_BACKGROUND 级别，文档解释说 Such a thread has the lowest priority and any disk I/O is throttled to minimize the impact on the system，也就是该级别最低，文件的读写等可以视情况使用该级别</p>
 <p><code>更新一些关于锁的内容，如下</code></p>
 <p>另外按照<a href="https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="external">不再安全的 OSSpinLock</a>文中所述，如果使用不同优先级别的并发队列，自旋锁是不安全的。</p>
 <pre><code>- (void)test {
@@ -477,7 +479,7 @@ dispatch_after(time, dispatch_get_main_queue(), ^{
      NSLog(@&quot;waited at least three seconds.&quot;);
 });
 </code></pre><p>注意：这里不是在规定时间后就执行，因为主分发队列是在主线程的 RunLoop 中，例如如果 RunLoop 是 1/60 秒间隔，那么 Block 会在 3 + 1/60 秒后执行</p>
-<h3 id="Dispatch-Group-组任务"><a href="#Dispatch-Group-组任务" class="headerlink" title="Dispatch Group  组任务"></a>Dispatch Group  组任务</h3><p>允许我们监听一组任务是否完成</p>
+<h3 id="dispatch-group-t-组任务"><a href="#dispatch-group-t-组任务" class="headerlink" title="dispatch_group_t  组任务"></a>dispatch_group_t  组任务</h3><p>允许我们监听一组任务是否完成</p>
 <pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 dispatch_group_t group = dispatch_group_create();
 dispatch_group_async(group, queue, ^{
@@ -647,7 +649,7 @@ dispatch_source_set_event_handler(timer, ^() {
 dispatch_resume(timer);
 // cancel timer
 dispatch_source_cancel(timer);
-</code></pre><p>只执行一次的话，不需要定时器可使用dispatch_after</p>
+</code></pre><p>只执行一次的话，不需要定时器可使用 dispatch_after</p>
 <h3 id="dispatch-semaphore"><a href="#dispatch-semaphore" class="headerlink" title="dispatch_semaphore"></a>dispatch_semaphore</h3><pre><code>//创建信号量，信号量的初值如果小于0则会返回NULL
 dispatch_semaphore_create（信号量值）
 
@@ -687,7 +689,7 @@ NSOperationQueue *queue = [[NSOperationQueue alloc] init];
 });
 </code></pre><p>区别：</p>
 <ul>
-<li>【优先级】，GCD 仅仅支持 FIFO 队列，而 NSOperationQueue 可以被设置优先级。我们可以让一个 Operation 依赖于另一个 Operation，这样的话尽管两个 Operation 处于同一个并行队列中，但前者会直到后者执行完毕后再执行。</li>
+<li>【优先级】，NSOperationQueue 可以被设置优先级。我们可以让一个 Operation 依赖于另一个 Operation，这样的话尽管两个 Operation 处于同一个并行队列中，但前者会直到后者执行完毕后再执行；GCD 全局并发队列不能设置具体哪个队列依赖哪个队列，但是可以设置优先级别，</li>
 <li>【KVO】，NSOperationQueue 支持 KVO，意味着我们可以观察任务的执行状态，如 operations，operationCount，maxConcurrentOperationCount，suspended，name。</li>
 <li>【取消操作】，NSOperation 可以监听一个 Operation 是否完成或取消，我们可以随时取消已经设定要准备执行的任务(当然，已经开始的任务就无法阻止了)，而 GCD 没法停止已经加入 queue 的 Block(其实是有的，但需要许多复杂的代码)</li>
 <li>【继承】，我们能够对 NSOperation 进行继承，在这之上添加成员变量与成员方法，提高整个代码的复用度，这比简单地将 block 任务排入执行队列更有自由度，能够在其之上添加更多自定制的功能。</li>
@@ -737,6 +739,8 @@ NSOperationQueue *queue = [[NSOperationQueue alloc] init];
         <div class="post-tags">
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/MultiThreading/" rel="tag">#MultiThreading</a>
           
         </div>
       
@@ -833,7 +837,7 @@ NSOperationQueue *queue = [[NSOperationQueue alloc] init];
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -882,7 +886,7 @@ NSOperationQueue *queue = [[NSOperationQueue alloc] init];
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-sync-dispatch-async-同步与异步"><span class="nav-number">1.</span> <span class="nav-text">dispatch_sync / dispatch_async 同步与异步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#队列的创建或获取"><span class="nav-number">2.</span> <span class="nav-text">队列的创建或获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-set-target-queue-控制队列"><span class="nav-number">3.</span> <span class="nav-text">dispatch_set_target_queue 控制队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-after-延迟执行"><span class="nav-number">4.</span> <span class="nav-text">dispatch_after 延迟执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Group-组任务"><span class="nav-number">5.</span> <span class="nav-text">Dispatch Group  组任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-barrier-async-屏障"><span class="nav-number">6.</span> <span class="nav-text">dispatch_barrier_async 屏障</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-apply-执行某个代码片段若干次"><span class="nav-number">7.</span> <span class="nav-text">dispatch_apply 执行某个代码片段若干次</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-suspend-dispatch-resume-挂起-重新开始一个队列"><span class="nav-number">8.</span> <span class="nav-text">dispatch_suspend/dispatch_resume 挂起/重新开始一个队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-queue-set-specific-dispatch-queue-get-specific-设置标识符"><span class="nav-number">9.</span> <span class="nav-text">dispatch_queue_set_specific / dispatch_queue_get_specific 设置标识符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-once"><span class="nav-number">10.</span> <span class="nav-text">dispatch_once</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-source-set-timer-CGD-的-timer"><span class="nav-number">11.</span> <span class="nav-text">dispatch_source_set_timer CGD 的 timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-semaphore"><span class="nav-number">12.</span> <span class="nav-text">dispatch_semaphore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSThread-NSOperationQueue-GCD"><span class="nav-number">13.</span> <span class="nav-text">NSThread / NSOperationQueue / GCD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">14.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-sync-dispatch-async-同步与异步"><span class="nav-number">1.</span> <span class="nav-text">dispatch_sync / dispatch_async 同步与异步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-queue-create-队列的创建或获取"><span class="nav-number">2.</span> <span class="nav-text">dispatch_queue_create 队列的创建或获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-set-target-queue-控制队列"><span class="nav-number">3.</span> <span class="nav-text">dispatch_set_target_queue 控制队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-after-延迟执行"><span class="nav-number">4.</span> <span class="nav-text">dispatch_after 延迟执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-group-t-组任务"><span class="nav-number">5.</span> <span class="nav-text">dispatch_group_t  组任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-barrier-async-屏障"><span class="nav-number">6.</span> <span class="nav-text">dispatch_barrier_async 屏障</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-apply-执行某个代码片段若干次"><span class="nav-number">7.</span> <span class="nav-text">dispatch_apply 执行某个代码片段若干次</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-suspend-dispatch-resume-挂起-重新开始一个队列"><span class="nav-number">8.</span> <span class="nav-text">dispatch_suspend/dispatch_resume 挂起/重新开始一个队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-queue-set-specific-dispatch-queue-get-specific-设置标识符"><span class="nav-number">9.</span> <span class="nav-text">dispatch_queue_set_specific / dispatch_queue_get_specific 设置标识符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-once"><span class="nav-number">10.</span> <span class="nav-text">dispatch_once</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-source-set-timer-CGD-的-timer"><span class="nav-number">11.</span> <span class="nav-text">dispatch_source_set_timer CGD 的 timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-semaphore"><span class="nav-number">12.</span> <span class="nav-text">dispatch_semaphore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSThread-NSOperationQueue-GCD"><span class="nav-number">13.</span> <span class="nav-text">NSThread / NSOperationQueue / GCD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章"><span class="nav-number">14.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
           </div>
         </section>

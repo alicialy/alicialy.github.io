@@ -96,7 +96,7 @@ timer 的设置">
 // cancel previous dismissing &amp;amp; remove animations
 [[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
 timer 的设置">
-<meta property="og:updated_time" content="2018-01-12T14:10:17.000Z">
+<meta property="og:updated_time" content="2018-07-29T03:54:01.517Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - JDStatusBarNotification">
 <meta name="twitter:description" content="RunLoop 和 NSTimer每次显示时先要将之前设置过的 timer 取消
@@ -326,7 +326,7 @@ UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
 #define UIKIT_EXTERN            extern __attribute__((visibility (&quot;default&quot;)))
 #endif
 </code></pre><p>这几个变量的定义在该文件中可见</p>
-<p>extern “C”是连接申明(linkage declaration),被extern “C”修饰的变量和函数是按照C语言方式编译和连接的</p>
+<p>extern “C” 是连接申明(linkage declaration)，被 extern “C” 修饰的变量和函数是按照 C 语言方式编译和连接的</p>
 <p>所以我们如果用 AppDelegate 中创建的这个最低级别作为显示状态栏的窗口的话，很可能会被遮盖，所以首先要创建一个状态栏级别的窗口，创建窗口的代码见 - (UIWindow *)overlayWindow; 方法。</p>
 <pre><code>self.overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 self.overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -481,7 +481,7 @@ self.overlayWindow.hidden = NO;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

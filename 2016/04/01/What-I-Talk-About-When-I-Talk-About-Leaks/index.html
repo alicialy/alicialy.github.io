@@ -94,7 +94,7 @@
 一种麻烦的检查内存泄漏方式为什么麻烦还要介绍呢，因为看到有人这样调">
 <meta property="og:image" content="http://yoursite.com/post_images/leak1.jpg">
 <meta property="og:image" content="http://yoursite.com/post_images/leak2.jpg">
-<meta property="og:updated_time" content="2018-06-05T13:19:04.800Z">
+<meta property="og:updated_time" content="2018-07-28T01:33:40.387Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="What I Talk About When I Talk About Leaks">
 <meta name="twitter:description" content="前言最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，读后很有感触，但是那些对于 Instruments 使用不太熟练的读者可能由于 Bishop 忽略了一些细节，看后估计会觉得喝白水般不能解渴，所以写一篇自己的经历将 Bishop 忽略的细节补全作为“译后感”吧。
@@ -337,7 +337,9 @@ RetainCycleModel *model2 = [[RetainCycleModel alloc] init];
                                                     selector:@selector(updateProgressTimer:)
                                                     userInfo:nil
                                                      repeats:YES];
-</code></pre><p>refreshTimer 初始化时指定了 target 为 self，同时会被默认加入到当前的 Runloop 中，所以 self 被 timer 强引用了，timer 又被 Runloop 强引用，造成循环引用。所以必须在恰当的地方调用 invalidate 将其释放。invalidate 的作用如下：</p>
+</code></pre><p>scheduledTimerWithTimeInterval 方法的 target 参数说明如下</p>
+<p><code>The object to which to send the message specified by aSelector when the timer fires. The timer maintains a strong reference to target until it (the timer) is invalidated.</code></p>
+<p>timer 持有 self(target) 强引用，同时 self.refreshTimer 是 self 强引用了 timer，出现了循环引用。所以必须在恰当的地方调用 invalidate 将其释放。invalidate 的作用如下：</p>
 <p><code>Removes the object from all runloop modes (releasing the receiver if it has been implicitly retained) and releases the &#39;target&#39; object.</code></p>
 <p>注意下述方法当计数器的 repeats 设置为 YES 的时候， self 的引用计数会加 1。可能会导致 self 不能 release，dealloc 无法被执行</p>
 <pre><code>- (void)method {
@@ -507,7 +509,7 @@ RetainCycleModel *model2 = [[RetainCycleModel alloc] init];
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

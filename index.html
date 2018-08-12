@@ -1,15 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
   
 
 
-<html class="theme-next mist use-motion">
+<html class="theme-next muse use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
 
 
 
@@ -27,45 +34,38 @@
 
 
 
-  
-  
-  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
 
   
   
-  
-  
-
-  
-    
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    
-    
-    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
 
 
 
-<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
 
 
   <meta name="keywords" content="Leaf Photo, iOS" />
@@ -73,11 +73,6 @@
 
 
 
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
 
 
 
@@ -96,31 +91,42 @@
 
 
 
-<script type="text/javascript" id="hexo.configuration">
+<script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    scheme: 'Mist',
-    sidebar: {"position":"left","display":"post"},
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
-    motion: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
-      userId: 6267334170712737000,
-      author: 'Alicia'
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     }
   };
 </script>
 
 
 
-
   <link rel="canonical" href="http://yoursite.com/"/>
 
-  <title> Alicia's Blog </title>
-</head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
+
+
+  <title>Alicia's Blog</title>
   
+
+
 
 
 
@@ -128,7 +134,7 @@
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      hm.src = "https://hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
@@ -137,40 +143,43 @@
 
 
 
+</head>
 
-
-
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
   
   
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
 
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">Alicia's Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alicia's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">［LEAF Photo］作者</p>
+      
   </div>
-  <p class="site-subtitle">［LEAF Photo］作者</p>
-</div>
 
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
 </div>
 
 <nav class="site-nav">
@@ -190,22 +199,22 @@
         </li>
       
         
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
+          <a href="/tags/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
           </a>
         </li>
       
@@ -216,6 +225,8 @@
 
   
 </nav>
+
+
 
  </div>
     </header>
@@ -230,13 +241,27 @@
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/11/Test-Driven-iOS-Development/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -244,27 +269,27 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/05/11/Test-Driven-iOS-Development/" itemprop="url">
-                  Test Driven iOS Development
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/05/11/Test-Driven-iOS-Development/" itemprop="url">Test Driven iOS Development</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2018-05-11T10:52:00+08:00" content="2018-05-11">
-              2018-05-11
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T10:52:00+08:00">
+                2018-05-11
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -274,16 +299,21 @@
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -325,16 +355,19 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -344,6 +377,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -351,13 +388,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/13/Design-Pattern-and-Refactoring/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -365,27 +416,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2018/01/13/Design-Pattern-and-Refactoring/" itemprop="url">
-                  Design Pattern and Refactoring
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2018/01/13/Design-Pattern-and-Refactoring/" itemprop="url">Design Pattern and Refactoring</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2018-01-13T21:06:25+08:00" content="2018-01-13">
-              2018-01-13
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-13T21:06:25+08:00">
+                2018-01-13
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -395,16 +446,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -412,43 +468,47 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 
       
         
-          <p>总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。</p>
-<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="重构的原因"><a href="#重构的原因" class="headerlink" title="重构的原因"></a>重构的原因</h3><p>最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，使新入职的同事很难快速上手，一旦有老员工离职，组内就会出现一阵忙乱的状态。</p>
+          <p>总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。<br>PS: 本文没有写完，部分内容待完善，不定期更新</p>
+<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="重构的原因"><a href="#重构的原因" class="headerlink" title="重构的原因"></a>重构的原因</h3><p>最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，新入职的员工来了半年也不能接手新业务。解决方案就是重构拆分，模块独立，降低系统耦合性。</p>
 <h3 id="重构和重写"><a href="#重构和重写" class="headerlink" title="重构和重写"></a>重构和重写</h3><p>大多数人都喜欢看自己写的代码，觉得别人的代码不容易理解，维护以前的代码浪费时间，所以一说到重构他们首先想到的是重写。不说重写会造成多少资源的浪费，但是我相信重写引入的 Bug 肯定会比合理重构造成的 Bug 只多不少。《Refactoring》书中给了我们很好的说明什么时候应该重写</p>
 <blockquote>
 <p>现有代码根本不能正常运作。你可能只是试着做点测试，然后就发现代码中满是错误，根本无法稳定运作。</p>
 </blockquote>
-<h3 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h3><p>再次看 《Refactoring》 时候突然意识到作者总结的真是全面，很多问题都是自己遇到过的但是让我突然说一下肯定想不全面，所以平时还是应该多总结。</p>
-<ul>
-<li>重复代码、修改一处代码相关逻辑也要修改(抽出公共函数调用)</li>
-<li>过长函数、参数列、过大的类 (分解长内容)</li>
-<li>继承关系混乱，父类中的方法子类不愿意支持（《设计模式》中提到，“优先使用对象组合，而不是类继承”）</li>
-<li>过多的注释</li>
+<h3 id="重构的目标"><a href="#重构的目标" class="headerlink" title="重构的目标"></a>重构的目标</h3><ul>
+<li>解耦，减少 Bug</li>
+<li>组件化，将可以共用的部分抽离，避免重复代码散落多处维护困难</li>
+<li>模块化，按照业务功能拆分，做到高内聚低耦合</li>
+<li>逻辑结构要清晰。变量、方法放合适的地方</li>
+<li>接口合理化，不好用的接口的表现是，调用者又写了一些逻辑去弥补接口应该完成的工作</li>
+<li>梳理混乱的目录结构</li>
+<li>使用 CocoaPods 发布，每个模块打包成单独的 Pod</li>
 </ul>
-<p>关于注释，我个人也不喜欢写注释，好的代码注释就是把变量函数名用连贯的词汇表述出来，只有有问题的代码才需要注释，那么有问题的代码就不应该出现，所以我喜欢下面这句</p>
-<blockquote>
-<p>当你感觉需要撰写注释时，请先尝试重构，试着让所有注释变得多余。</p>
-</blockquote>
-<p>以上问题的重构方案步骤参见 《Refactoring》 一书即可，书中很详细的介绍了如何一小步一小步的修改，最终达成目的。</p>
-<p>除了以上，违反设计模式的六大原则也对目前项目造成一万点伤害</p>
-          <div class="post-more-link text-center">
+<p>另外，即使使用 MVC 结构，大家都清楚 C 层不应该放 V 和 M 层的逻辑，但是一些初级的开发人员很容易就会把 V 或者 M 层的逻辑写到 C 层。</p>
+<p><img src="/post_images/Refactoring.jpg" width="300px" class="fancybox"></p>
+<p>如上图橙黄色层为业务模块，绿色为中间层，红色为第三方开源库和底层 API，绿色是对红色层的封装，橙黄色只能调用绿色层和底层，红色部分是不可以修改的部分。调用关系如白线所示，模块间不能通过硬编码互相调用，模块间的重复部分可以下沉到组件。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2018/01/13/Design-Pattern-and-Refactoring/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -458,6 +518,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -465,13 +529,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/29/2017-book-list/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -479,27 +557,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/12/29/2017-book-list/" itemprop="url">
-                  2017 book list
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/12/29/2017-book-list/" itemprop="url">2017 book list</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-12-29T22:12:11+08:00" content="2017-12-29">
-              2017-12-29
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-29T22:12:11+08:00">
+                2017-12-29
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -509,16 +587,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -566,16 +649,19 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -585,6 +671,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -592,13 +682,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/14/Using-OpenCV/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -606,27 +710,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/12/14/Using-OpenCV/" itemprop="url">
-                  Using OpenCV
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/12/14/Using-OpenCV/" itemprop="url">Using OpenCV</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-12-14T20:59:11+08:00" content="2017-12-14">
-              2017-12-14
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-14T20:59:11+08:00">
+                2017-12-14
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -636,16 +740,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -661,24 +770,29 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 <p><img src="https://github.com/alicialy/LTImageAnalysis/raw/master/readme.gif" alt="img"></p>
 <h3 id="书籍推荐"><a href="#书籍推荐" class="headerlink" title="书籍推荐"></a>书籍推荐</h3><p>如果想用好 OpenCV，就要对 OpenCV 能做什么有非常清楚的了解，所以 《Learning OpenCV 3》 是个人感觉最有用的书，第三版好像还没有中文版，所以看了英文版，对比了下中文版的第一版，第三版内容更丰富目录结构更合理。另外推荐 《Mastering OpenCV with Practical Computer Vision Projects》，在没有思路的时候可以借鉴一下。</p>
 <h3 id="OpenCV-安装和使用"><a href="#OpenCV-安装和使用" class="headerlink" title="OpenCV 安装和使用"></a>OpenCV 安装和使用</h3><p>OpenCV 是 Open source computer vision 的缩写，它的目的是提供一种更简单的方式来快速处理复杂的视觉应用。</p>
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/12/14/Using-OpenCV/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -688,6 +802,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -695,13 +813,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/07/An-Organic-Problem-Solving-Approach/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -709,27 +841,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/08/07/An-Organic-Problem-Solving-Approach/" itemprop="url">
-                  An Organic Problem Solving Approach
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/08/07/An-Organic-Problem-Solving-Approach/" itemprop="url">An Organic Problem Solving Approach</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-08-07T21:25:51+08:00" content="2017-08-07">
-              2017-08-07
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-07T21:25:51+08:00">
+                2017-08-07
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -739,16 +871,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -766,24 +903,29 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 <p>创意：应当具备创意并且能够接受他人想法。</p>
 <p>要保证领导力的效果，就必须在激励、组织和创新之间求平衡，太偏向一边就不是好的领导者。</p>
 <h2 id="解决问题的方式"><a href="#解决问题的方式" class="headerlink" title="解决问题的方式"></a>解决问题的方式</h2><p>本书是介绍解决问题的方式的，作者认为遇到问题应当从以下几个方面着手</p>
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/08/07/An-Organic-Problem-Solving-Approach/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -793,6 +935,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -800,13 +946,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/31/Optimize-App-Performance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -814,27 +974,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/07/31/Optimize-App-Performance/" itemprop="url">
-                  Optimize App Performance
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/07/31/Optimize-App-Performance/" itemprop="url">Optimize App Performance</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-07-31T22:25:28+08:00" content="2017-07-31">
-              2017-07-31
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-31T22:25:28+08:00">
+                2017-07-31
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -844,16 +1004,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -880,24 +1045,29 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 <h3 id="执行与响应速度"><a href="#执行与响应速度" class="headerlink" title="执行与响应速度"></a>执行与响应速度</h3><p>可借助工具：Instruments -&gt; Time Profiler</p>
 <p>通过 Time Profiler 可以找到调用时间较长的 API，对消耗时间较长的代码进行优化，找到可优化代码只是第一步，比较困难的可能是如何优化，下面就几个方面讨论下优化途径</p>
 <h4 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h4>
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/07/31/Optimize-App-Performance/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -907,6 +1077,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -914,13 +1088,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/07/iOS-App-Thinning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -928,27 +1116,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/04/07/iOS-App-Thinning/" itemprop="url">
-                  iOS App Thinning
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/04/07/iOS-App-Thinning/" itemprop="url">iOS App Thinning</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-04-07T20:55:05+08:00" content="2017-04-07">
-              2017-04-07
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-07T20:55:05+08:00">
+                2017-04-07
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -958,16 +1146,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -996,16 +1189,19 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -1015,6 +1211,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1022,13 +1222,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/27/Source-Code-Learning-NullSafe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -1036,27 +1250,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/03/27/Source-Code-Learning-NullSafe/" itemprop="url">
-                  Source Code Learning - NullSafe
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/03/27/Source-Code-Learning-NullSafe/" itemprop="url">Source Code Learning - NullSafe</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-03-27T22:51:48+08:00" content="2017-03-27">
-              2017-03-27
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-27T22:51:48+08:00">
+                2017-03-27
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -1066,16 +1280,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1094,24 +1313,29 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 </code></pre><p>如果后台本来应该下发数组，而写代码的时候没有判断数据类型，例如直接获取 [array length]，肯定会崩溃，出错原因是 [NSNull length] 没有对应的响应方法。</p>
 <p>如何不手动判断类型，又能避免崩溃？NullSafe 就是为了解决这个问题而诞生的。</p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>NullSafe 只有短短的一百行代码。实现的方式是，创建 NSNull 的类别，在该类别中首先查找 NSNull 是否能响应某方法，如果不可以响应的话，就查找系统中是否有某个类可以处理调用的方法，如果可以的话，该方法转发给 nil，当作 nil 处理这个方法，例如 nil 调用 [nil length] 是不会抛出异常的。代码如下：</p>
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/03/27/Source-Code-Learning-NullSafe/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -1121,6 +1345,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1128,13 +1356,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/22/Optimize-App-Startup-Time/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -1142,27 +1384,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/02/22/Optimize-App-Startup-Time/" itemprop="url">
-                  Optimize App Startup Time
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/02/22/Optimize-App-Startup-Time/" itemprop="url">Optimize App Startup Time</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-02-22T08:10:45+08:00" content="2017-02-22">
-              2017-02-22
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-22T08:10:45+08:00">
+                2017-02-22
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -1172,16 +1414,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1206,24 +1453,29 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 <p>mmap的作用是将一个文件或者其他对象映射进内存，普通文件被映射到进程地址空间后，进程可以像访问普通内存一样对文件进行访问。</p>
 <p>通常一个 App 需要加载 100 - 400 个 dylibs，但是其中的系统库加载会被优化，能在很快的时间内加载完成</p>
 <h4 id="优化-Load-dylibs-过程"><a href="#优化-Load-dylibs-过程" class="headerlink" title="优化 Load dylibs 过程"></a>优化 Load dylibs 过程</h4>
-          <div class="post-more-link text-center">
+          <!--noindex-->
+          <div class="post-button text-center">
             <a class="btn" href="/2017/02/22/Optimize-App-Startup-Time/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
+          <!--/noindex-->
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -1233,6 +1485,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1240,13 +1496,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
       
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/27/Source-Code-Learning-IQKeyboardManager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -1254,27 +1524,27 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/01/27/Source-Code-Learning-IQKeyboardManager/" itemprop="url">
-                  Source Code Learning - IQKeyboardManager
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/01/27/Source-Code-Learning-IQKeyboardManager/" itemprop="url">Source Code Learning - IQKeyboardManager</a></h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2017-01-27T21:34:24+08:00" content="2017-01-27">
-              2017-01-27
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-27T21:34:24+08:00">
+                2017-01-27
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -1284,16 +1554,21 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1321,16 +1596,19 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
+
+    
 
     <footer class="post-footer">
+      
+
       
 
       
@@ -1340,6 +1618,10 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1372,74 +1654,97 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
 
       
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/avatar.jpg"
-               alt="Alicia" />
-          <p class="site-author-name" itemprop="name">Alicia</p>
-          <p class="site-description motion-element" itemprop="description"></p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">38</span>
-              <span class="site-state-item-name">posts</span>
-            </a>
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alicia" />
+            
+              <p class="site-author-name" itemprop="name">Alicia</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
           
 
           
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">23</span>
-                <span class="site-state-item-name">tags</span>
-              </a>
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/alicialy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:alicialy@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/alicialy" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>weibo</a>
+                  </span>
+                
             </div>
           
 
-        </nav>
-
-        
-
-        <div class="links-of-author motion-element">
           
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
-                  
-                    <i class="fa fa-fw fa-globe"></i>
-                  
-                  weibo
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="mailto:alicialy@qq.com" target="_blank" title="mail">
-                  
-                    <i class="fa fa-fw fa-globe"></i>
-                  
-                  mail
-                </a>
-              </span>
-            
           
+
+          
+          
+
+          
+
         </div>
-
-        
-        
-
-        
-        
-
       </section>
+
+      
 
       
 
@@ -1453,36 +1758,50 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy; 
-  <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
-    <i class="fa fa-heart"></i>
+    <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Alicia</span>
+
+  
 </div>
 
-<div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
-</div>
 
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Mist
-  </a>
-</div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
 
         
+
+
+
+
+
+
 
         
       </div>
     </footer>
 
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
-    </div>
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
   </div>
 
   
@@ -1505,54 +1824,111 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 
 
 
-  
-  <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  
-  <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  
-  <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
-  
 
 
-  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
 
-  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
 
 
 
   
   
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
 
   
 
   
 
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
-
-
-
   
-
-
-
-  
-
-
-
 
   
   

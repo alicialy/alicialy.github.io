@@ -1,15 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
   
 
 
-<html class="theme-next mist use-motion">
+<html class="theme-next muse use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
 
 
 
@@ -27,45 +34,38 @@
 
 
 
-  
-  
-  <link href="/libs/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
 
   
   
-  
-  
-
-  
-    
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    
-    
-    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
 
 
 
-<link href="/libs/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
 
 
   <meta name="keywords" content="iOS,Refactoring," />
@@ -77,59 +77,62 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
 
 
-
-
-
-
-<meta name="description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。
-重构重构的原因最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，使新入职的同事很难快速上手，一旦有老员工离职，组内就会出现一阵忙乱的状态。
-重构和重写大多数">
+<meta name="description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。PS: 本文没有写完，部分内容待完善，不定期更新
+重构重构的原因最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，新入职的员工来了半年也不能接手新业务。解决方">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Design Pattern and Refactoring">
 <meta property="og:url" content="http://yoursite.com/2018/01/13/Design-Pattern-and-Refactoring/index.html">
 <meta property="og:site_name" content="Alicia's Blog">
-<meta property="og:description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。
-重构重构的原因最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，使新入职的同事很难快速上手，一旦有老员工离职，组内就会出现一阵忙乱的状态。
-重构和重写大多数">
+<meta property="og:description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。PS: 本文没有写完，部分内容待完善，不定期更新
+重构重构的原因最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，新入职的员工来了半年也不能接手新业务。解决方">
 <meta property="og:image" content="http://yoursite.com/post_images/Refactoring.jpg">
-<meta property="og:updated_time" content="2018-06-12T12:56:31.073Z">
+<meta property="og:updated_time" content="2018-08-12T02:18:15.112Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Design Pattern and Refactoring">
-<meta name="twitter:description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。
-重构重构的原因最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，使新入职的同事很难快速上手，一旦有老员工离职，组内就会出现一阵忙乱的状态。
-重构和重写大多数">
+<meta name="twitter:description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。PS: 本文没有写完，部分内容待完善，不定期更新
+重构重构的原因最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，新入职的员工来了半年也不能接手新业务。解决方">
 <meta name="twitter:image" content="http://yoursite.com/post_images/Refactoring.jpg">
 
 
 
-<script type="text/javascript" id="hexo.configuration">
+<script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    scheme: 'Mist',
-    sidebar: {"position":"left","display":"post"},
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
-    motion: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
-      userId: 6267334170712737000,
-      author: 'Alicia'
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     }
   };
 </script>
 
 
 
-
   <link rel="canonical" href="http://yoursite.com/2018/01/13/Design-Pattern-and-Refactoring/"/>
 
-  <title> Design Pattern and Refactoring | Alicia's Blog </title>
-</head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
+
+
+  <title>Design Pattern and Refactoring | Alicia's Blog</title>
   
+
+
 
 
 
@@ -137,7 +140,7 @@
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      hm.src = "https://hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
       var s = document.getElementsByTagName("script")[0];
       s.parentNode.insertBefore(hm, s);
     })();
@@ -146,38 +149,42 @@
 
 
 
+</head>
 
-
-
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
   
   
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
 
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">Alicia's Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alicia's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">［LEAF Photo］作者</p>
+      
   </div>
-  <p class="site-subtitle">［LEAF Photo］作者</p>
-</div>
 
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
 </div>
 
 <nav class="site-nav">
@@ -197,22 +204,22 @@
         </li>
       
         
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
+          <a href="/tags/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
           </a>
         </li>
       
@@ -223,6 +230,8 @@
 
   
 </nav>
+
+
 
  </div>
     </header>
@@ -237,38 +246,53 @@
     
 
   
-  
 
   
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/13/Design-Pattern-and-Refactoring/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
 
     
       <header class="post-header">
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                Design Pattern and Refactoring
-              
-            
-          </h1>
+          <h1 class="post-title" itemprop="name headline">Design Pattern and Refactoring</h1>
         
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">Posted on</span>
-            <time itemprop="dateCreated" datetime="2018-01-13T21:06:25+08:00" content="2018-01-13">
-              2018-01-13
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-13T21:06:25+08:00">
+                2018-01-13
+              </time>
+            
+
+            
+
+            
           </span>
 
           
@@ -278,50 +302,33 @@
           
 
           
-
-          
           
 
           
+
+          
+
+          
+
         </div>
       </header>
     
 
-
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
       
 
       
-        <p>总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。</p>
-<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="重构的原因"><a href="#重构的原因" class="headerlink" title="重构的原因"></a>重构的原因</h3><p>最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，使新入职的同事很难快速上手，一旦有老员工离职，组内就会出现一阵忙乱的状态。</p>
+        <p>总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。<br>PS: 本文没有写完，部分内容待完善，不定期更新</p>
+<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="重构的原因"><a href="#重构的原因" class="headerlink" title="重构的原因"></a>重构的原因</h3><p>最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，新入职的员工来了半年也不能接手新业务。解决方案就是重构拆分，模块独立，降低系统耦合性。</p>
 <h3 id="重构和重写"><a href="#重构和重写" class="headerlink" title="重构和重写"></a>重构和重写</h3><p>大多数人都喜欢看自己写的代码，觉得别人的代码不容易理解，维护以前的代码浪费时间，所以一说到重构他们首先想到的是重写。不说重写会造成多少资源的浪费，但是我相信重写引入的 Bug 肯定会比合理重构造成的 Bug 只多不少。《Refactoring》书中给了我们很好的说明什么时候应该重写</p>
 <blockquote>
 <p>现有代码根本不能正常运作。你可能只是试着做点测试，然后就发现代码中满是错误，根本无法稳定运作。</p>
 </blockquote>
-<h3 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h3><p>再次看 《Refactoring》 时候突然意识到作者总结的真是全面，很多问题都是自己遇到过的但是让我突然说一下肯定想不全面，所以平时还是应该多总结。</p>
-<ul>
-<li>重复代码、修改一处代码相关逻辑也要修改(抽出公共函数调用)</li>
-<li>过长函数、参数列、过大的类 (分解长内容)</li>
-<li>继承关系混乱，父类中的方法子类不愿意支持（《设计模式》中提到，“优先使用对象组合，而不是类继承”）</li>
-<li>过多的注释</li>
-</ul>
-<p>关于注释，我个人也不喜欢写注释，好的代码注释就是把变量函数名用连贯的词汇表述出来，只有有问题的代码才需要注释，那么有问题的代码就不应该出现，所以我喜欢下面这句</p>
-<blockquote>
-<p>当你感觉需要撰写注释时，请先尝试重构，试着让所有注释变得多余。</p>
-</blockquote>
-<p>以上问题的重构方案步骤参见 《Refactoring》 一书即可，书中很详细的介绍了如何一小步一小步的修改，最终达成目的。</p>
-<p>除了以上，违反设计模式的六大原则也对目前项目造成一万点伤害</p>
-<a id="more"></a>
-<ul>
-<li>单一职责原则，一个类就负责一件事</li>
-<li>里氏替换原则，子类可以扩展父类的功能，父类的功能应该是所有子类都需要包含的</li>
-<li>依赖倒置原则，高层模块不应该依赖低层模块，二者都应该依赖其抽象，抽象不应该依赖细节，细节应该依赖抽象</li>
-<li>接口隔离原则，适当的进行接口拆分</li>
-<li>迪米特原则，一个对象应该对其他对象保持最少的了解</li>
-<li>开闭原则，类、模块、函数应该对扩展开放，对修改关闭</li>
-</ul>
 <h3 id="重构的目标"><a href="#重构的目标" class="headerlink" title="重构的目标"></a>重构的目标</h3><ul>
 <li>解耦，减少 Bug</li>
 <li>组件化，将可以共用的部分抽离，避免重复代码散落多处维护困难</li>
@@ -334,58 +341,126 @@
 <p>另外，即使使用 MVC 结构，大家都清楚 C 层不应该放 V 和 M 层的逻辑，但是一些初级的开发人员很容易就会把 V 或者 M 层的逻辑写到 C 层。</p>
 <p><img src="/post_images/Refactoring.jpg" width="300px" class="fancybox"></p>
 <p>如上图橙黄色层为业务模块，绿色为中间层，红色为第三方开源库和底层 API，绿色是对红色层的封装，橙黄色只能调用绿色层和底层，红色部分是不可以修改的部分。调用关系如白线所示，模块间不能通过硬编码互相调用，模块间的重复部分可以下沉到组件。</p>
+<a id="more"></a>
 <p>重构的目标有了，框架也有了，但是如果每个类内部实现的方式很糟糕， 再完美的框架也只是个摆设。模块的高内聚低耦合还是需要利用好的模式来实现。</p>
 <h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><p>采用大家最熟悉的 MVC，未采用 MVVM / MVP / VIPER 等模式是由于公司现有的业务就需要一段时间，再使用一些框架会加长适应时间，再者 RAC 可能会导致不方便查找 Bug，所以新开发的小模块有兴趣的话可以采用 MVP／ VIPER，整体框架沿用 MVC。</p>
-<p>为了实现模块间解耦，引入 BeeHive。</p>
-<p>待完成</p>
+<p>为了实现组件化，引入 BeeHive。</p>
+<h3 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h3><p>再次看 《Refactoring》 时候突然意识到作者总结的真是全面，很多问题都是自己遇到过的但是让我突然说一下肯定想不全面，所以平时还是应该多总结。</p>
+<ul>
+<li>重复代码、修改一处代码相关逻辑也要修改(抽出公共函数调用)</li>
+<li>过长函数、参数列、过大的类 (分解长内容)</li>
+<li>继承关系混乱，父类中的方法子类不愿意支持（《设计模式》中提到，“优先使用对象组合，而不是类继承”）</li>
+<li>过多的注释</li>
+</ul>
+<p>关于注释，我个人也不喜欢写注释，好的代码注释就是把变量函数名用连贯的词汇表述出来，只有有问题的代码才需要注释，那么有问题的代码就不应该出现，所以我喜欢下面这句</p>
+<blockquote>
+<p>当你感觉需要撰写注释时，请先尝试重构，试着让所有注释变得多余。</p>
+</blockquote>
+<p>以上问题的重构方案步骤参见 《Refactoring》 一书即可，书中很详细的介绍了如何一小步一小步的修改，最终达成目的。</p>
+<h3 id="设计模式六大原则"><a href="#设计模式六大原则" class="headerlink" title="设计模式六大原则"></a>设计模式六大原则</h3><p>除了以上，违反设计模式的六大原则也对目前项目造成一万点伤害</p>
+<ul>
+<li>单一职责原则，一个类就负责一件事</li>
+<li>里氏替换原则，子类可以扩展父类的功能，父类的功能应该是所有子类都需要包含的</li>
+<li>依赖倒置原则，高层模块不应该依赖低层模块，二者都应该依赖其抽象，抽象不应该依赖细节，细节应该依赖抽象</li>
+<li>接口隔离原则，适当的进行接口拆分</li>
+<li>迪米特原则，一个对象应该对其他对象保持最少的了解</li>
+<li>开闭原则，类、模块、函数应该对扩展开放，对修改关闭</li>
+</ul>
+<h3 id="继承的滥用"><a href="#继承的滥用" class="headerlink" title="继承的滥用"></a>继承的滥用</h3><p>项目中有很多层次很深的继承关系，以前的同事已经习惯，只要一说复用，就用继承解决，再加上一些新手不太理解继承的用法，当需求变化，子类和父类需要有差异，就复制父类的代码覆盖父类方法，继承又违反里氏替换和接口隔离原则等等，导致继承滥用，代码混乱。</p>
+<p>可以使用对象组合、利用 protocol 接口化、Category 等方式实现。</p>
+<h4 id="对象组合"><a href="#对象组合" class="headerlink" title="对象组合"></a>对象组合</h4><p>即 is-a 改为 has-a，例如一个小控件 Widget，包含左侧显示标题 TitlePanel，右侧显示内容的控件 TextPanel 或者 PhotoPanel，原有的继承关系如下</p>
+<pre><code>|- Widget
+~~~|- BasePanel
+~~~~~~|- TitlePanel
+~~~~~~~~~|- TextFieldPanel
+~~~~~~~~~|- PhotoPanel
+</code></pre><p>BasePanel 应该是包含了一个 title，TextPanel 和 PhonePanel 也不是 TitlePanel，他们之间的关系应该是平行的，不是从属关系，修改之后原本的 4 层继承关系，变为了 3 层，结构为</p>
+<pre><code>|- Widget
+~~~|- TitlePanel
+~~~|- BasePanel
+~~~~~~|- TextFieldPanel
+~~~~~~|- PhotoPanel
+
+@interface BasePanel : Widget
+@property (nonatomic, strong) TitlePanel *titlePanel;
+@end
+</code></pre><h4 id="protocol"><a href="#protocol" class="headerlink" title="protocol"></a>protocol</h4><p>如果两个类的实现没有重复逻辑，但是需要公共函数统一调用，可以使用 protocol 定义公共接口</p>
+<p>再如上述 TextFieldPanel 中获取文本内容的数据可能来自两个对象模型，一个是字典项 DictionaryModel, 一个是产品数据 ProductModel，这两个 Model 如果都继承自同一个父类，父类暴露 getContent 方法，基类不实现该方法，子类覆盖该方法即可实现，但是由于两个模型没有任何可复用代码，所以使用 protocol 定义接口的方式实现更加合适。</p>
+<pre><code>@protocol WidgetContent &lt;NSObject&gt;
+- (void)getContent;
+@end
+
+@interface DictionaryModel : NSObject &lt;WidgetContent&gt;
+@end
+@interface ProductModel : NSObject &lt;WidgetContent&gt;
+@end
+</code></pre><h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>重构代码的同时，还对原有项目进行了优化，主要从以下几个方面进行</p>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>诊断日志可以帮助开发人员定位问题，之前项目中有诊断日志的上传功能，系统崩溃的时候会记录调用堆栈，下次应用启动的时候自动上传到后台。如果数据出错，用户还可以手动上传诊断日志到服务器。</p>
+<p>优化后添加以下功能：</p>
+<ul>
+<li>截屏监测，截屏后弹出意见反馈的提示，将截图和诊断日志手动上传。</li>
+<li>后台可以根据配置，收集指定用户的诊断日志信息。</li>
+</ul>
+<h3 id="工具推荐"><a href="#工具推荐" class="headerlink" title="工具推荐"></a>工具推荐</h3><p>静态分析工具<br>OCLint<br>Infer</p>
+<p>重复代码查询<br>PMD</p>
+<p>代码格式化工具<br>Clang Format</p>
+<h3 id="数据库优化"><a href="#数据库优化" class="headerlink" title="数据库优化"></a>数据库优化</h3><p>目前项目中用的 FMDB 来操作数据库，其最大缺点就是不支持 ORM，数据表有变动的时候需要改动的代码很多，修改不全则会引发 Bug，所以改用 GYDataCenter 解决该问题，并且该库增加了缓存机制。后期可能会使用 WCDB。</p>
+<h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><p>增加单元测试代码</p>
 
       
     </div>
+    
+    
+    
 
-    <div>
-      
-        
+    
 
-      
-    </div>
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>请我喝汽水儿</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
 
-    <div>
-      
-        
-  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-    <div>请我喝汽水儿</div>
-    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-      <span>赏</span>
-    </button>
-    <div id="QR" style="display: none;">
-      
-        <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
-          <p>微信打赏</p>
-        </div>
-      
-      
-        <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
-          <p>支付宝打赏</p>
-        </div>
-      
-    </div>
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
   </div>
+</div>
 
+      </div>
+    
 
-      
-    </div>
+    
 
     <footer class="post-footer">
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
           
-            <a href="/tags/Refactoring/" rel="tag">#Refactoring</a>
+            <a href="/tags/Refactoring/" rel="tag"># Refactoring</a>
           
         </div>
+      
+
+      
+      
       
 
       
@@ -397,6 +472,8 @@
               </a>
             
           </div>
+
+          <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
@@ -411,6 +488,10 @@
       
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -426,9 +507,14 @@
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zODgwOS8xNTMzNw=="></div>
+    </div>
+
+  
+
 
 
         </div>
@@ -444,95 +530,123 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
             Overview
           </li>
         </ul>
       
 
-      <section class="site-overview sidebar-panel ">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/avatar.jpg"
-               alt="Alicia" />
-          <p class="site-author-name" itemprop="name">Alicia</p>
-          <p class="site-description motion-element" itemprop="description"></p>
-        </div>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">38</span>
-              <span class="site-state-item-name">posts</span>
-            </a>
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alicia" />
+            
+              <p class="site-author-name" itemprop="name">Alicia</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
           
 
           
-            <div class="site-state-item site-state-tags">
-              <a href="/tags">
-                <span class="site-state-item-count">23</span>
-                <span class="site-state-item-name">tags</span>
-              </a>
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/alicialy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:alicialy@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/alicialy" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>weibo</a>
+                  </span>
+                
             </div>
           
 
-        </nav>
-
-        
-
-        <div class="links-of-author motion-element">
           
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
-                  
-                    <i class="fa fa-fw fa-globe"></i>
-                  
-                  weibo
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="mailto:alicialy@qq.com" target="_blank" title="mail">
-                  
-                    <i class="fa fa-fw fa-globe"></i>
-                  
-                  mail
-                </a>
-              </span>
-            
           
+
+          
+          
+
+          
+
         </div>
-
-        
-        
-
-        
-        
-
       </section>
 
       
+      <!--noindex-->
         <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
           <div class="post-toc">
+
             
               
             
+
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重构"><span class="nav-number">1.</span> <span class="nav-text">重构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的原因"><span class="nav-number">1.1.</span> <span class="nav-text">重构的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构和重写"><span class="nav-number">1.2.</span> <span class="nav-text">重构和重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码的坏味道"><span class="nav-number">1.3.</span> <span class="nav-text">代码的坏味道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的目标"><span class="nav-number">1.4.</span> <span class="nav-text">重构的目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#框架"><span class="nav-number">1.5.</span> <span class="nav-text">框架</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重构"><span class="nav-number">1.</span> <span class="nav-text">重构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的原因"><span class="nav-number">1.1.</span> <span class="nav-text">重构的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构和重写"><span class="nav-number">1.2.</span> <span class="nav-text">重构和重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的目标"><span class="nav-number">1.3.</span> <span class="nav-text">重构的目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#框架"><span class="nav-number">1.4.</span> <span class="nav-text">框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码的坏味道"><span class="nav-number">1.5.</span> <span class="nav-text">代码的坏味道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式六大原则"><span class="nav-number">1.6.</span> <span class="nav-text">设计模式六大原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承的滥用"><span class="nav-number">1.7.</span> <span class="nav-text">继承的滥用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象组合"><span class="nav-number">1.7.1.</span> <span class="nav-text">对象组合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#protocol"><span class="nav-number">1.7.2.</span> <span class="nav-text">protocol</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">2.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#错误处理"><span class="nav-number">2.1.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具推荐"><span class="nav-number">2.2.</span> <span class="nav-text">工具推荐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库优化"><span class="nav-number">2.3.</span> <span class="nav-text">数据库优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单元测试"><span class="nav-number">2.4.</span> <span class="nav-text">单元测试</span></a></li></ol></li></ol></div>
             
+
           </div>
         </section>
+      <!--/noindex-->
+      
+
       
 
     </div>
@@ -545,36 +659,50 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy; 
-  <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
-    <i class="fa fa-heart"></i>
+    <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Alicia</span>
+
+  
 </div>
 
-<div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
-</div>
 
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Mist
-  </a>
-</div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
 
         
+
+
+
+
+
+
 
         
       </div>
     </footer>
 
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
-    </div>
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
   </div>
 
   
@@ -597,47 +725,82 @@
 
 
 
-  
-  <script type="text/javascript" src="/libs/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script type="text/javascript" src="/libs/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  
-  <script type="text/javascript" src="/libs/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-
-  
-  <script type="text/javascript" src="/libs/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/libs/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/libs/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
-  
 
 
-  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
 
-  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
 
 
 
   
   
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
-
-
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
   
 
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
 
 
 
@@ -645,10 +808,43 @@
 
 
 
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 
 
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
 
   
   

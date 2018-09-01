@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="en">
+<html class="theme-next mist use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -95,7 +95,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -237,6 +237,149 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/01/Source-Code-Learning-BeeHive/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/01/Source-Code-Learning-BeeHive/" itemprop="url">Source Code Learning - BeeHive</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-01T16:44:38+08:00">
+                2018-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>BeeHive 是一款阿里开源的解耦框架，通过模块和服务（Service）的方式实现组件化。</p>
+<h3 id="Module-和-Service-的调用方式"><a href="#Module-和-Service-的调用方式" class="headerlink" title="Module 和 Service 的调用方式"></a>Module 和 Service 的调用方式</h3><h4 id="Annotation（标注）方式"><a href="#Annotation（标注）方式" class="headerlink" title="Annotation（标注）方式"></a>Annotation（标注）方式</h4><p>Service 与 Module 的调用方式类似，只是 Service 有两个参数 ServiceName (以 Protocol 方式表示)以及实现的 IMP，以模块的调用方式为例</p>
+<pre><code>@BeeHiveMod(ShopModule)
+</code></pre><p>该宏的定义为</p>
+<pre><code>#define BeeHiveMod(name) \
+class BeeHive; char * k##name##_mod BeeHiveDATA(BeehiveMods) = &quot;&quot;#name”&quot;;
+
+#define BeeHiveDATA(sectname) __attribute((used, section(&quot;__DATA,&quot;#sectname&quot; &quot;)))
+</code></pre><p>将宏展开</p>
+<pre><code>class BeeHive;
+char *kShopModule_mod __attribute(used, section(&quot;__DATA_,&quot;BeehiveMods&quot; &quot;)) = “ShopModule&quot;
+</code></pre><h5 id="宏-和-的使用方式"><a href="#宏-和-的使用方式" class="headerlink" title="宏 ## 和 # 的使用方式"></a>宏 ## 和 # 的使用方式</h5><p>‘#’ 参数字符串化    </p>
+<pre><code>#define SINGLE_SHARP(x) #x
+SINGLE_SHARP(hello)
+// &quot;hello&quot;
+</code></pre><p>‘## 连两个字符串</p>
+<pre><code>#define DOUBLE_SHARP(x, y) x##y
+DOUBLE_SHARP(&quot;hello&quot;, &quot;world&quot;);
+// hello word
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/01/Source-Code-Learning-BeeHive/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1493,139 +1636,6 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/27/Source-Code-Learning-IQKeyboardManager/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alicia">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alicia's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/01/27/Source-Code-Learning-IQKeyboardManager/" itemprop="url">Source Code Learning - IQKeyboardManager</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-27T21:34:24+08:00">
-                2017-01-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="OC-中如何做到不加一行代码就实现功能的"><a href="#OC-中如何做到不加一行代码就实现功能的" class="headerlink" title="OC 中如何做到不加一行代码就实现功能的"></a>OC 中如何做到不加一行代码就实现功能的</h3><p>IQKeyboardManager </p>
-<pre><code>+(void)load
-{
-    //Enabling IQKeyboardManager. Loading asynchronous on main thread
-    [self performSelectorOnMainThread:@selector(sharedManager) withObject:nil waitUntilDone:NO];
-}
-</code></pre><p>利用 +load 方法来实现不调用就执行的功能</p>
-<p>另： +load 方法<br>每个类在 OC runtime 中会自动调用两个方法，+load 方法是类初始化的时候调用， +initialize 是类或者实例的方法第一次被调用的时候调用。但是，在 Swift 桥接到 C 的代码中自定义的 +load 方法不会自动被调用，所以 Swift 需要写一行代码来实现，OC 不用。</p>
-<p>父类先执行 +load，子类后执行。类的+load 先执行，Category 的该方法后执行。</p>
-<p>+load 和 +initialize 是线程安全的，但是 IQKeyboardManager 中有 UI 操作说一要保证其在主线程中执行。</p>
-<p>初始化中会调用注册方法，注册监听键盘和展开和收起事件，并为 UITextField 和 UITextView 分别注册开始编辑和结束编辑事件。事件中处理 adjustFrame 方法调整 Frame。</p>
-<p>手动开关设置的处理都在初始化中进行，可以设置的功能见文档，<a href="https://github.com/hackiftekhar/IQKeyboardManager/wiki/Manual-Management" target="_blank" rel="external">自定义设置方法</a></p>
-<p>// … 待完成</p>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="http://nshipster.com/method-swizzling/" target="_blank" rel="external">+load 方法</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1680,7 +1690,7 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1776,7 +1786,7 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 

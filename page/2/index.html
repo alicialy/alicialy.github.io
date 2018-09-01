@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="en">
+<html class="theme-next mist use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -95,7 +95,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -237,6 +237,139 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/27/Source-Code-Learning-IQKeyboardManager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/01/27/Source-Code-Learning-IQKeyboardManager/" itemprop="url">Source Code Learning - IQKeyboardManager</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-27T21:34:24+08:00">
+                2017-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="OC-中如何做到不加一行代码就实现功能的"><a href="#OC-中如何做到不加一行代码就实现功能的" class="headerlink" title="OC 中如何做到不加一行代码就实现功能的"></a>OC 中如何做到不加一行代码就实现功能的</h3><p>IQKeyboardManager </p>
+<pre><code>+(void)load
+{
+    //Enabling IQKeyboardManager. Loading asynchronous on main thread
+    [self performSelectorOnMainThread:@selector(sharedManager) withObject:nil waitUntilDone:NO];
+}
+</code></pre><p>利用 +load 方法来实现不调用就执行的功能</p>
+<p>另： +load 方法<br>每个类在 OC runtime 中会自动调用两个方法，+load 方法是类初始化的时候调用， +initialize 是类或者实例的方法第一次被调用的时候调用。但是，在 Swift 桥接到 C 的代码中自定义的 +load 方法不会自动被调用，所以 Swift 需要写一行代码来实现，OC 不用。</p>
+<p>父类先执行 +load，子类后执行。类的+load 先执行，Category 的该方法后执行。</p>
+<p>+load 和 +initialize 是线程安全的，但是 IQKeyboardManager 中有 UI 操作说一要保证其在主线程中执行。</p>
+<p>初始化中会调用注册方法，注册监听键盘和展开和收起事件，并为 UITextField 和 UITextView 分别注册开始编辑和结束编辑事件。事件中处理 adjustFrame 方法调整 Frame。</p>
+<p>手动开关设置的处理都在初始化中进行，可以设置的功能见文档，<a href="https://github.com/hackiftekhar/IQKeyboardManager/wiki/Manual-Management" target="_blank" rel="external">自定义设置方法</a></p>
+<p>// … 待完成</p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="http://nshipster.com/method-swizzling/" target="_blank" rel="external">+load 方法</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1549,145 +1682,6 @@ dispatch_resume(timer);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/24/Concurrent-Programming-and-Synchronization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alicia">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alicia's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/24/Concurrent-Programming-and-Synchronization/" itemprop="url">Concurrent Programming and Synchronization</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-24T21:26:38+08:00">
-                2016-06-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。</p>
-<h2 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h2><p>原子操作是同步的一个简单的形式，它处理简单的数据类型。其优势是不妨碍竞争的线程。对于简单操作，比如递增一个计数器，原子操作比使用锁具有更高的性能优势。 </p>
-<pre><code>void retain() {
-    // retainCount 为实例变量，相当于 retainCount++
-    OSAtomicIncrement64(&amp;retainCount);    
-}
-void release() {
-    unit32_t originalValue;
-    // 相当于 retainCount--
-    orginalValue = OSAtomicDecrement64(&amp;retainCount); 
-    if (originalValue == 1) {
-        this-&gt;free();
-    }
-}
-</code></pre><p>查看支持原子操作的列表，参阅/user/include/libkern/OSAtomic.h头文件和参见 <a href="https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/OSAtomicTestAndSet.3.html">atomic主页</a>。</p>
-<p>顺带提一下 iOS 中常用的属性关键字 atomic，它是默认值，能够保证线程安全，同时我们为了提高效率，在单线程下都会给变量属性声明为 nonatomic。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/24/Concurrent-Programming-and-Synchronization/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1742,7 +1736,7 @@ void release() {
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1838,7 +1832,7 @@ void release() {
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 

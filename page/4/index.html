@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="en">
+<html class="theme-next mist use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -95,7 +95,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -237,6 +237,145 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/11/Source-Code-Learning-AFNetworking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/01/11/Source-Code-Learning-AFNetworking/" itemprop="url">Source Code Learning - AFNetworking</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-01-11T19:41:33+08:00">
+                2016-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="NSURLSession-的最简单实用方法"><a href="#NSURLSession-的最简单实用方法" class="headerlink" title="NSURLSession 的最简单实用方法"></a>NSURLSession 的最简单实用方法</h2><p>NSURLSession 的不同之处在于，它把 NSURLConnection 替换为<br>NSURLSession<br>NSURLSessionConfiguration<br>NSURLSessionTask 子类：NSURLSessionDataTask、NSURLSessionUploadTask、NSURLSessionDownloadTask</p>
+<pre><code>NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+
+NSOperationQueue *queue = [NSOperationQueue mainQueue];
+NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:queue];
+
+NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithString:@&quot;https://www.baidu.com&quot;]];
+[task resume];
+</code></pre><p>可以用这个最简单的例子跟 AF 对比下，看看别人怎么写一个库</p>
+<h3 id="设置-NSURL-的几种方式"><a href="#设置-NSURL-的几种方式" class="headerlink" title="设置 NSURL 的几种方式"></a>设置 NSURL 的几种方式</h3><pre><code>NSURL *baseURL = [NSURL URLWithString:@&quot;http://example.com/v1/&quot;];
+// http://example.com/v1/foo
+[NSURL URLWithString:@&quot;foo&quot; relativeToURL:baseURL];           
+// http://example.com/v1/foo?bar=baz    
+[NSURL URLWithString:@&quot;foo?bar=baz&quot; relativeToURL:baseURL];         
+</code></pre><h3 id="NSURLSession-和-NSURLConnection-的区别"><a href="#NSURLSession-和-NSURLConnection-的区别" class="headerlink" title="NSURLSession 和 NSURLConnection 的区别"></a>NSURLSession 和 NSURLConnection 的区别</h3><p>与 NSURLConnection 相比，NSURLSession 最直接的改善就是提供了配置每个会话的缓存，协议，Cookie 和证书政策（Credential Policies），甚至跨应用程序共享它们的能力。</p>
+<h3 id="NSURLSessionConfiguration-的类型"><a href="#NSURLSessionConfiguration-的类型" class="headerlink" title="NSURLSessionConfiguration 的类型"></a>NSURLSessionConfiguration 的类型</h3>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/01/11/Source-Code-Learning-AFNetworking/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1489,7 +1628,7 @@ return MAXFLOAT;\
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1585,7 +1724,7 @@ return MAXFLOAT;\
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 

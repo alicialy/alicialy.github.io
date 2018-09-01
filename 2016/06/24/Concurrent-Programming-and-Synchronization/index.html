@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="en">
+<html class="theme-next mist use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -93,7 +93,7 @@ void retain() {
 void retain() {
     // retainCount 为实例变量，相当于 retainCount++
     OSAtomicIncreme">
-<meta property="og:updated_time" content="2018-07-28T10:26:16.224Z">
+<meta property="og:updated_time" content="2018-08-18T01:29:40.488Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Concurrent Programming and Synchronization">
 <meta name="twitter:description" content="使用多线程时，要注意防止不同线程意外修改数据的问题，下面总结一下常用的同步方式。
@@ -108,7 +108,7 @@ void retain() {
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -598,7 +598,6 @@ while (true) {
     [condLock unlockWithCondition:NO_DATA];
 }
 </code></pre><h2 id="锁-递归锁"><a href="#锁-递归锁" class="headerlink" title="锁 - 递归锁"></a>锁 - 递归锁</h2><p>NSRecursiveLock 类定义的锁可以在同一线程多次获得，而不会造成死锁，即多次调用不会阻塞已获取该锁的线程。一个递归锁会跟踪它被多少次成功获得了。每次成功的获得该锁都必须平衡调用锁住和解锁的操作。只有所有的锁住和解锁操作都平衡的时候，锁才真正被释放给其他线程获得。</p>
-<p>正如它名字所言，这种类型的锁通常被用在一个递归函数里面来防止递归造成阻塞线程。你可以类似的在非递归的情况下使用他来调用函数，这些函数的语义要求它们使用锁。以下是一个简单递归函数，它在递归中获取锁。如果你不在该代码里使用 NSRecursiveLock 对象，当函数被再次调用的时候线程将会出现死锁。</p>
 <pre><code>NSRecursiveLock *theLock = [[NSRecursiveLock alloc] init];
 
 void MyRecursiveFunction(int value) {
@@ -611,7 +610,9 @@ void MyRecursiveFunction(int value) {
 }
 
 MyRecursiveFunction(5);
-</code></pre><h2 id="锁-读写锁"><a href="#锁-读写锁" class="headerlink" title="锁 - 读写锁"></a>锁 - 读写锁</h2><p>// TODO: 待完善… </p>
+</code></pre><p>如果把 NSRecursiveLock 换成 NSLock 就会出现死锁，由于第一次调用 MyRecursiveFunction(5) 时，加锁，该函数内部递归调用自己，第二次调用自己的时候，由于之前的锁还没有解锁，它会等待锁解除从而导致死锁。</p>
+<p>正如它名字所言，这种类型的锁通常被用在一个递归函数里面来防止递归造成阻塞线程。你可以类似的在非递归的情况下使用他来调用函数，这些函数的语义要求它们使用锁。以下是一个简单递归函数，它在递归中获取锁。如果你不在该代码里使用 NSRecursiveLock 对象，当函数被再次调用的时候线程将会出现死锁。</p>
+<h2 id="锁-读写锁"><a href="#锁-读写锁" class="headerlink" title="锁 - 读写锁"></a>锁 - 读写锁</h2><p>// TODO: 待完善… </p>
 <h2 id="锁-分布锁"><a href="#锁-分布锁" class="headerlink" title="锁 - 分布锁"></a>锁 - 分布锁</h2><p>NSDistributedLock 分布锁，文件方式实现，可以跨进程用 tryLock 方法获取锁。用 unlock 方法释放锁。</p>
 <p>NSDistributedLock 类可以被多台主机上的多个应用程序使用来限制对某些共享资源的访问，比如一个文件。锁本身是一个高效的互斥锁，它使用文件系统项目来实现，比如一个文件或目录。对于一个可用的NSDistributedLock对象，锁必须由所有使用它的程序写入。这通常意味着把它放在文件系统，该文件系统可以被所有运行在计算机上面的应用程序访问。</p>
 <p>不像其他类型的锁，NSDistributedLock 并没有实现 NSLocking 协议，所有它没有lock 方法。一个 lock 方法将会阻塞线程的执行，并要求系统以预定的速度轮询锁。以其在你的代码中实现这种约束，NSDistributedLock 提供了一个 tryLock 方法，并让你决定是否轮询。</p>
@@ -874,7 +875,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -986,7 +987,7 @@ dispatch_async(dispatch_get_main_queue(), ^{
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 

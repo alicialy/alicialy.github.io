@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="en">
+<html class="theme-next mist use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -87,7 +87,7 @@ NSURLSessi">
 <meta property="og:site_name" content="Alicia's Blog">
 <meta property="og:description" content="NSURLSession 的最简单实用方法NSURLSession 的不同之处在于，它把 NSURLConnection 替换为NSURLSessionNSURLSessionConfigurationNSURLSessionTask 子类：NSURLSessionDataTask、NSURLSessionUploadTask、NSURLSessionDownloadTask
 NSURLSessi">
-<meta property="og:updated_time" content="2018-07-29T02:42:20.883Z">
+<meta property="og:updated_time" content="2018-08-18T01:27:10.415Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source Code Learning - AFNetworking">
 <meta name="twitter:description" content="NSURLSession 的最简单实用方法NSURLSession 的不同之处在于，它把 NSURLConnection 替换为NSURLSessionNSURLSessionConfigurationNSURLSessionTask 子类：NSURLSessionDataTask、NSURLSessionUploadTask、NSURLSessionDownloadTask
@@ -99,7 +99,7 @@ NSURLSessi">
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -343,6 +343,43 @@ NSURLSessionDownloadTask *task = [session downloadTaskWithURL:[NSURL URLWithStri
 </code></pre><p>返回一个预设配置，没有持久性存储的缓存，Cookie或证书。这对于实现像“秘密浏览”功能的功能来说，是很理想的。</p>
 <pre><code>+ (NSURLSessionConfiguration *)backgroundSessionConfigurationWithIdentifier:(NSString *)identifier     NS_AVAILABLE(10_10, 8_0);
 </code></pre><p>独特之处在于，它会创建一个后台会话。后台会话不同于常规的，普通的会话，它甚至可以在应用程序挂起，退出，崩溃的情况下运行上传和下载任务。初始化时指定的标识符，被用于向任何可能在进程外恢复后台传输的守护进程提供上下文。</p>
+<h2 id="线程保活"><a href="#线程保活" class="headerlink" title="线程保活"></a>线程保活</h2><pre><code>- (void)start {
+    // NSRecursiveLock 递归锁的说明见 [GCD](http://alicialy.github.io/2016/06/24/Concurrent-Programming-and-Synchronization/)
+    [self.lock lock];
+    // ...
+    [self performSelector:@selector(operationDidStart) onThread:[[self class] networkRequestThread] withObject:nil waitUntilDone:NO modes:[self.runLoopModes allObjects]];
+    [self.lock unlock];
+}
+
+- (void)operationDidStart {
+    [self.lock lock];
+    if (![self isCancelled]) {
+        self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:NO];
+        // ...
+    }
+    [self.lock unlock];
+    // ...
+}
+</code></pre><p>创建一个线程，在线程中创建 NSURLConnection，NSURLConnection 请求后的回调也会是在这个子线程中，如果不使用线程保活方式，线程结束就退出了，无法收到回调信息，线程保活则是在子线程中添加了一个 Runloop</p>
+<pre><code>+ (void)networkRequestThreadEntryPoint:(id)__unused object {
+    @autoreleasepool {
+        [[NSThread currentThread] setName:@&quot;AFNetworking&quot;];
+        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+        [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
+        [runLoop run];
+    }
+}
+
++ (NSThread *)networkRequestThread {
+    static NSThread *_networkRequestThread = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&amp;oncePredicate, ^{
+        _networkRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(networkRequestThreadEntryPoint:) object:nil];
+        [_networkRequestThread start];
+    });
+    return _networkRequestThread;
+}
+</code></pre><p>如果每个请求就开一个线程，保活这个线程的话，开销太大，所以使用一个单例</p>
 <h2 id="KVO-的手动触发"><a href="#KVO-的手动触发" class="headerlink" title="KVO 的手动触发"></a>KVO 的手动触发</h2><pre><code>- (void)setAllowsCellularAccess:(BOOL)allowsCellularAccess {
     [self willChangeValueForKey:NSStringFromSelector(@selector(allowsCellularAccess))];
 
@@ -575,7 +612,7 @@ NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -649,7 +686,7 @@ NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURLSession-的最简单实用方法"><span class="nav-number">1.</span> <span class="nav-text">NSURLSession 的最简单实用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置-NSURL-的几种方式"><span class="nav-number">1.1.</span> <span class="nav-text">设置 NSURL 的几种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSURLSession-和-NSURLConnection-的区别"><span class="nav-number">1.2.</span> <span class="nav-text">NSURLSession 和 NSURLConnection 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSURLSessionConfiguration-的类型"><span class="nav-number">1.3.</span> <span class="nav-text">NSURLSessionConfiguration 的类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KVO-的手动触发"><span class="nav-number">2.</span> <span class="nav-text">KVO 的手动触发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可变参数"><span class="nav-number">3.</span> <span class="nav-text">可变参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常量的定义"><span class="nav-number">4.</span> <span class="nav-text">常量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开闭原则"><span class="nav-number">5.</span> <span class="nav-text">开闭原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#断言"><span class="nav-number">6.</span> <span class="nav-text">断言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#归档"><span class="nav-number">7.</span> <span class="nav-text">归档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tips"><span class="nav-number">8.</span> <span class="nav-text">Tips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURLSession-的最简单实用方法"><span class="nav-number">1.</span> <span class="nav-text">NSURLSession 的最简单实用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置-NSURL-的几种方式"><span class="nav-number">1.1.</span> <span class="nav-text">设置 NSURL 的几种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSURLSession-和-NSURLConnection-的区别"><span class="nav-number">1.2.</span> <span class="nav-text">NSURLSession 和 NSURLConnection 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSURLSessionConfiguration-的类型"><span class="nav-number">1.3.</span> <span class="nav-text">NSURLSessionConfiguration 的类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程保活"><span class="nav-number">2.</span> <span class="nav-text">线程保活</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KVO-的手动触发"><span class="nav-number">3.</span> <span class="nav-text">KVO 的手动触发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可变参数"><span class="nav-number">4.</span> <span class="nav-text">可变参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常量的定义"><span class="nav-number">5.</span> <span class="nav-text">常量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开闭原则"><span class="nav-number">6.</span> <span class="nav-text">开闭原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#断言"><span class="nav-number">7.</span> <span class="nav-text">断言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#归档"><span class="nav-number">8.</span> <span class="nav-text">归档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tips"><span class="nav-number">9.</span> <span class="nav-text">Tips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">10.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -687,7 +724,7 @@ NSUInteger const kAFUploadStream3GSuggestedPacketSize = 1024 * 16;
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 

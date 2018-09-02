@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Books,Management," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="《人月神话》是七八年前就被推荐要看的书，但是那个时候对这种月亮啊、神话、科幻类的书籍不是很感兴趣，所以一直没有翻阅（好吧，我只能说这本书的书名太容易误导人了）。很惋惜初作管理时就应该读的书，现在才拜读第一遍，读后意犹未尽，所以又看了《人件》，这篇文章会对书的内容和自己的理解做个总结。
+人月神话焦油坑编程就像是一个许多大型系统和开发人员在其中痛苦挣扎的焦油坑。
+但无数人进入这个行业也是因为它还存在着">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Mythical Man-Month">
+<meta property="og:url" content="http://yoursite.com/2018/08/18/The-Mythical-Man-Month/index.html">
+<meta property="og:site_name" content="Alicia's Blog">
+<meta property="og:description" content="《人月神话》是七八年前就被推荐要看的书，但是那个时候对这种月亮啊、神话、科幻类的书籍不是很感兴趣，所以一直没有翻阅（好吧，我只能说这本书的书名太容易误导人了）。很惋惜初作管理时就应该读的书，现在才拜读第一遍，读后意犹未尽，所以又看了《人件》，这篇文章会对书的内容和自己的理解做个总结。
+人月神话焦油坑编程就像是一个许多大型系统和开发人员在其中痛苦挣扎的焦油坑。
+但无数人进入这个行业也是因为它还存在着">
+<meta property="og:updated_time" content="2018-09-02T14:10:17.291Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Mythical Man-Month">
+<meta name="twitter:description" content="《人月神话》是七八年前就被推荐要看的书，但是那个时候对这种月亮啊、神话、科幻类的书籍不是很感兴趣，所以一直没有翻阅（好吧，我只能说这本书的书名太容易误导人了）。很惋惜初作管理时就应该读的书，现在才拜读第一遍，读后意犹未尽，所以又看了《人件》，这篇文章会对书的内容和自己的理解做个总结。
+人月神话焦油坑编程就像是一个许多大型系统和开发人员在其中痛苦挣扎的焦油坑。
+但无数人进入这个行业也是因为它还存在着">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/18/The-Mythical-Man-Month/"/>
+
+
+
+
+
+  <title>The Mythical Man-Month | Alicia's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alicia's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">［LEAF Photo］作者</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/18/The-Mythical-Man-Month/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">The Mythical Man-Month</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-18T15:28:32+08:00">
+                2018-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>《人月神话》是七八年前就被推荐要看的书，但是那个时候对这种月亮啊、神话、科幻类的书籍不是很感兴趣，所以一直没有翻阅（好吧，我只能说这本书的书名太容易误导人了）。很惋惜初作管理时就应该读的书，现在才拜读第一遍，读后意犹未尽，所以又看了《人件》，这篇文章会对书的内容和自己的理解做个总结。</p>
+<h3 id="人月神话"><a href="#人月神话" class="headerlink" title="人月神话"></a>人月神话</h3><h4 id="焦油坑"><a href="#焦油坑" class="headerlink" title="焦油坑"></a>焦油坑</h4><p>编程就像是一个许多大型系统和开发人员在其中痛苦挣扎的焦油坑。</p>
+<p>但无数人进入这个行业也是因为它还存在着乐趣，这些乐趣包括：创造新事物、创造对他人有用的东西、持续学习、将想象创造为现实，作为领导者可以根据员工的乐趣偏好进行激励。</p>
+<h4 id="人月神话-1"><a href="#人月神话-1" class="headerlink" title="人月神话"></a>人月神话</h4><p>项目滞后的主要原因：</p>
+<ul>
+<li>乐观主义。估算出的时间多为假设一切运作良好的情况下的完成时间，但是总有一些意外或者没有想到的事情会发生。</li>
+<li>人月。误认为估算的人和月可以互换，将进度与工作量相互混淆。在任务不可分解的情况下，以及需要沟通才能完成的任务中，时间不会随着人员的增多而减少。</li>
+<li>软件经理通常不会有耐心持续的估算这项工作。</li>
+<li>对进度缺少跟踪和监督。</li>
+<li>当意识到进度有偏差时，错误的认为增加人力就能解决问题。</li>
+</ul>
+<p>软件进度安排的经验法则：</p>
+<ul>
+<li>1/3 计划</li>
+<li>1/6 编码</li>
+<li>1/4 构件测试和早期系统测试</li>
+<li>1/4 系统测试，所有的构件已完成</li>
+</ul>
+<p>最后，任务不应该由顾客对完成时间紧迫程度来决定，为了在顾客要求的紧迫时间内完成任务，必定会影响质量。开发并推行生产率图表、缺陷率图表、估算规则可以有助于项目经理根据可靠数据来说明强行上线可能带来的风险。</p>
+<p><code>Brooks 法则：向进度落后的项目中增加人手，只会使进度更加落后</code></p>
+<a id="more"></a>
+<h4 id="外科手术队伍"><a href="#外科手术队伍" class="headerlink" title="外科手术队伍"></a>外科手术队伍</h4><p>编程队伍可以借鉴外科手术队伍的人员配置</p>
+<pre><code>            外科医生
+管理员及其文秘        副手
+编辑及其文秘          程序员    
+                    工具维护人员
+                    测试人员
+                    语言专家
+</code></pre><h4 id="贵族专制、民主政治和系统设计"><a href="#贵族专制、民主政治和系统设计" class="headerlink" title="贵族专制、民主政治和系统设计"></a>贵族专制、民主政治和系统设计</h4><p>要保证概念的完整性要求设计必须由一个人，或者非常少数互有默契的人员来实现。</p>
+<p>公司的一个领导，曾经总是喜欢让所有人参与需求设计，殊不知团队里的很多人觉得自己没有设计的能力，一来能力不够得不到好的效果，大家还觉得觉得劳心劳神，二来参与设计的人太多交流浪费很多时间，并不是所有人需要这种“民主”。</p>
+<h4 id="第二个系统的效果"><a href="#第二个系统的效果" class="headerlink" title="第二个系统的效果"></a>第二个系统的效果</h4><p>架构师“完美”的设计完一个项目后，估算出的完成时间一般是无法被接受的，这个时候如果要求架构师压缩时间，他们一般会选择采用成本更低的实现方式，更好的选择是让其削减设计。选择削减设计完成第一个版本后，进行第二个版本时，架构师应当注意不要过度设计、画蛇添足。</p>
+<h4 id="顺畅沟通"><a href="#顺畅沟通" class="headerlink" title="顺畅沟通"></a>顺畅沟通</h4><p>架构师的决策要确保每个人都理解，需要说明文档、会议等。独立的产品测试小组要按照说明文档检查程序，并寻找出软件缺陷。</p>
+<h4 id="为什么巴别塔会失败"><a href="#为什么巴别塔会失败" class="headerlink" title="为什么巴别塔会失败"></a>为什么巴别塔会失败</h4><p>在实践中得到成功的项目组织架构：</p>
+<ul>
+<li>产品负责人和技术主管是同一个人。</li>
+<li>产品负责人作为总指挥，技术主管充当其左右手。</li>
+<li>技术主管作为总指挥，产品责任人充当其左右手。</li>
+</ul>
+<p>清晰的文档，明确的组织架构、合理的职责分配是大型项目成功的保证。</p>
+<h4 id="文档假设"><a href="#文档假设" class="headerlink" title="文档假设"></a>文档假设</h4><p>软件项目的文档可以记录决策、作为沟通渠道、可以作为数据基础和检查列表<br>软件项目的文档可以包括</p>
+<ul>
+<li>内容：目标</li>
+<li>内容：产品技术说明</li>
+<li>时间：进度</li>
+<li>地点：工作空间分配</li>
+<li>人员：组织图</li>
+</ul>
+<h4 id="未雨绸缪"><a href="#未雨绸缪" class="headerlink" title="未雨绸缪"></a>未雨绸缪</h4><p>唯一不变的只有变化，需求会不断变化，系统架构要适应变化，组织结构也要能适应变化。</p>
+<h4 id="磨刀不误砍柴工"><a href="#磨刀不误砍柴工" class="headerlink" title="磨刀不误砍柴工"></a>磨刀不误砍柴工</h4><p>作者提供了适合当年的实用工具</p>
+<h4 id="整体和部分"><a href="#整体和部分" class="headerlink" title="整体和部分"></a>整体和部分</h4><p>开发可用的系统，要尽早引入测试，编写代码之前就应当确认测试规格说明，编码过程中要构建单元测试。</p>
+<h4 id="潜在祸患"><a href="#潜在祸患" class="headerlink" title="潜在祸患"></a>潜在祸患</h4><p>项目经理应在制定进度时确认里程碑，并定期确认项目进展，及时调整计划、资源</p>
+<h4 id="另外一面"><a href="#另外一面" class="headerlink" title="另外一面"></a>另外一面</h4><p>程序应该有一份使用说明文档，包括</p>
+<ul>
+<li>目的</li>
+<li>环境</li>
+<li>范围</li>
+<li>实现功能和使用的算法</li>
+<li>“输入-输出”格式</li>
+<li>操作指令</li>
+<li>选项</li>
+<li>运行时间</li>
+<li>精度和校验</li>
+</ul>
+<p>程序代码可以书写成自文档化的</p>
+<h3 id="人件"><a href="#人件" class="headerlink" title="人件"></a>人件</h3><h4 id="管理人力资源"><a href="#管理人力资源" class="headerlink" title="管理人力资源"></a>管理人力资源</h4><p>技术管理者大多因为良好绩效而被提拔，但是对自己合适的管理方式未必适合他人。</p>
+<p>大多数管理者管理的重点是技术的因素而非人的因素，因为管理技术比管理人更简单。</p>
+<p>脑力工作和体力工作不同，所以管理方式通常也截然相反。作为管理者应不时问问大家遇到了什么死胡同，并让大家知道最佳答案不是“没有”，应当鼓励他们说出困难，并且鼓励大家犯错；向人施压只能增加短期产出，长远看是无效的。</p>
+<p>领导者应当尽力避免让员工加班，为了一个项目让员工不停加班，项目作为基本上所有人都会离职。此外，时间压力只能会降低产品质量。</p>
+<p>管理者的作用不是让大家去工作，而是创造环境，让大家可以顺利开展工作。</p>
+<h4 id="办公环境"><a href="#办公环境" class="headerlink" title="办公环境"></a>办公环境</h4><p>独立且空间较大、安静、较少被打扰的工作环境能使人更好、更快的完成工作</p>
+<p>开放式办公环境并不利于工作效率的提高，即使是一起工作的员工也应该将格子间改为共同的小套间。办公环境中应划分出工作去、讨论区、社交区。</p>
+<h4 id="正确的人"><a href="#正确的人" class="headerlink" title="正确的人"></a>正确的人</h4><p>人们在短时间内很难做出改变，所以一开始就要找到合适的人。</p>
+<p>团队成员的离开换用新人要付出很高的成本。</p>
+<h4 id="高效团队养成"><a href="#高效团队养成" class="headerlink" title="高效团队养成"></a>高效团队养成</h4><p>“团队自毁”的清单</p>
+<ul>
+<li>防御式管理</li>
+<li>官僚主义</li>
+<li>物理分割</li>
+<li>时间碎片</li>
+<li>牺牲产品质量</li>
+<li>伪造截止日期</li>
+<li>团伙控制</li>
+<li>加班</li>
+<li>年度薪酬评审</li>
+<li>目标管理法</li>
+<li>表彰个别员工的突出成就</li>
+<li>任何形式的绩效考核</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>请我喝汽水儿</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Books/" rel="tag"># Books</a>
+          
+            <a href="/tags/Management/" rel="tag"># Management</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/11/Test-Driven-iOS-Development/" rel="next" title="Test Driven iOS Development">
+                <i class="fa fa-chevron-left"></i> Test Driven iOS Development
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/01/Source-Code-Learning-BeeHive/" rel="prev" title="Source Code Learning - BeeHive">
+                Source Code Learning - BeeHive <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zODgwOS8xNTMzNw=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alicia" />
+            
+              <p class="site-author-name" itemprop="name">Alicia</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/alicialy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:alicialy@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/alicialy" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>weibo</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#人月神话"><span class="nav-number">1.</span> <span class="nav-text">人月神话</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#焦油坑"><span class="nav-number">1.1.</span> <span class="nav-text">焦油坑</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#人月神话-1"><span class="nav-number">1.2.</span> <span class="nav-text">人月神话</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外科手术队伍"><span class="nav-number">1.3.</span> <span class="nav-text">外科手术队伍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#贵族专制、民主政治和系统设计"><span class="nav-number">1.4.</span> <span class="nav-text">贵族专制、民主政治和系统设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二个系统的效果"><span class="nav-number">1.5.</span> <span class="nav-text">第二个系统的效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#顺畅沟通"><span class="nav-number">1.6.</span> <span class="nav-text">顺畅沟通</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么巴别塔会失败"><span class="nav-number">1.7.</span> <span class="nav-text">为什么巴别塔会失败</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文档假设"><span class="nav-number">1.8.</span> <span class="nav-text">文档假设</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#未雨绸缪"><span class="nav-number">1.9.</span> <span class="nav-text">未雨绸缪</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#磨刀不误砍柴工"><span class="nav-number">1.10.</span> <span class="nav-text">磨刀不误砍柴工</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#整体和部分"><span class="nav-number">1.11.</span> <span class="nav-text">整体和部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#潜在祸患"><span class="nav-number">1.12.</span> <span class="nav-text">潜在祸患</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#另外一面"><span class="nav-number">1.13.</span> <span class="nav-text">另外一面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#人件"><span class="nav-number">2.</span> <span class="nav-text">人件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#管理人力资源"><span class="nav-number">2.1.</span> <span class="nav-text">管理人力资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#办公环境"><span class="nav-number">2.2.</span> <span class="nav-text">办公环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正确的人"><span class="nav-number">2.3.</span> <span class="nav-text">正确的人</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高效团队养成"><span class="nav-number">2.4.</span> <span class="nav-text">高效团队养成</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alicia</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

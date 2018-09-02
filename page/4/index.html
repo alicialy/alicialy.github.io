@@ -251,6 +251,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/21/Pro-Multilthreading-and-Memory-Management-for-iOS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/03/21/Pro-Multilthreading-and-Memory-Management-for-iOS/" itemprop="url">Pro Multilthreading and Memory Management for iOS</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-21T20:02:26+08:00">
+                2016-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Code tells everything，所以直接上代码</p>
+<h3 id="ARC"><a href="#ARC" class="headerlink" title="ARC"></a>ARC</h3><p>先来看看 ARC 下的新产物</p>
+<h4 id="weak-修饰符的效率"><a href="#weak-修饰符的效率" class="headerlink" title="weak 修饰符的效率"></a>weak 修饰符的效率</h4><pre><code>{
+    id __weak o = obj; 
+    NSLog(@&quot;1 %@&quot;, o); 
+    NSLog(@&quot;2 %@&quot;, o); 
+}
+</code></pre><p>当使用 __weak 修饰符的时候，对象会被自动加到自动释放池里，这样自动释放池能将其自动释放，调用多次 weak 对象，对象就会被多次放到自动释放池中，如上 o 被加入两次，所以建议使用添加加一个强引用来优化如下：</p>
+<pre><code>{
+    id __weak o = obj; 
+    id tmp = o; 
+    NSLog(@&quot;1 %@&quot;, tmp); 
+    NSLog(@&quot;2 %@&quot;, tmp);
+}
+</code></pre><h4 id="weak-如何在释放时赋值为-nil"><a href="#weak-如何在释放时赋值为-nil" class="headerlink" title="weak 如何在释放时赋值为 nil"></a>weak 如何在释放时赋值为 nil</h4><pre><code>{
+    id __weak obj1 = obj;
+}
+</code></pre><p>以上代码 clang 后为</p>
+<pre><code>id obj1;
+objc_initWeak(&amp;obj1, obj); 
+</code></pre><p>objc_initWeak 定义如下</p>
+<pre><code>id objc_initWeak(id *location, id newObj) {
+    if (!newObj) {
+        *location = nil;
+        return nil;
+    }
+    //  这里的 template 用法是非类型的类模板参数 
+    return storeWeak&lt;false/*old*/, true/*new*/, true/*crash*/&gt;
+        (location, (objc_object*)newObj);
+}
+</code></pre><p>关于上面 非类型的类模板参数 也有叫非类型形参，可以优化性能，但是具体原因网上没搜索到，有空看看 《C++ Templates》 应该有具体介绍，可以探究下提升性能的原因。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/03/21/Pro-Multilthreading-and-Memory-Management-for-iOS/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/11/Source-Code-Learning-AFNetworking/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1628,7 +1782,7 @@ return MAXFLOAT;\
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

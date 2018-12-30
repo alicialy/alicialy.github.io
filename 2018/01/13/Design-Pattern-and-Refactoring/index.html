@@ -88,7 +88,7 @@
 <meta property="og:description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。PS: 本文没有写完，部分内容待完善，不定期更新
 重构重构的原因最近负责的项目已经运行了六年，一套代码支持了几十个项目。时常出现一改动代码就引发新 Bug，功能或者项目之间很容易互相影响。这套结构混乱、耦合度高、复用性不强，逻辑混乱的代码给现今的工作带来种种不便。再加上缺乏需求和设计文档，新入职的员工来了半年也不能接手新业务。解决方">
 <meta property="og:image" content="http://yoursite.com/post_images/Refactoring.jpg">
-<meta property="og:updated_time" content="2018-08-18T02:49:54.219Z">
+<meta property="og:updated_time" content="2018-09-15T12:06:55.293Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Design Pattern and Refactoring">
 <meta name="twitter:description" content="总结下过去这段时间在重构过程中看过书中的知识点，以及一些经验教训。PS: 本文没有写完，部分内容待完善，不定期更新
@@ -413,12 +413,14 @@
 <li>查询语句优化，不要在循环里调用数据库，将循环改成一次 SQL 查询</li>
 <li>使用更好用的轮子，例如 FMDB不支持 ORM，数据表有变动的时候需要改动的代码很多，修改不全则会引发 Bug，可以改用 GYDataCenter，并且该库增加了缓存机制。后期可能会使用 WCDB。</li>
 </ul>
-<h3 id="可用性"><a href="#可用性" class="headerlink" title="可用性"></a>可用性</h3><h4 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h4><p>诊断日志可以帮助开发人员定位问题，之前项目中有诊断日志的上传功能，系统崩溃的时候会记录调用堆栈，下次应用启动的时候自动上传到后台。如果数据出错，用户还可以手动上传诊断日志到服务器。</p>
+<h3 id="架构原则"><a href="#架构原则" class="headerlink" title="架构原则"></a>架构原则</h3><h4 id="重构开关"><a href="#重构开关" class="headerlink" title="重构开关"></a>重构开关</h4><p>重构的同时要保证之前的功能还能正常运转，重写的功能可以通过开关来控制。测试通过重写的代码后，并上线一段时间后则可删除开关和原有代码。</p>
+<h4 id="监控处理"><a href="#监控处理" class="headerlink" title="监控处理"></a>监控处理</h4><p>诊断日志可以帮助开发人员定位问题，之前项目中有诊断日志的上传功能，系统崩溃的时候会记录调用堆栈，下次应用启动的时候自动上传到后台。如果数据出错，用户还可以手动上传诊断日志到服务器。</p>
 <p>优化后添加以下功能：</p>
 <ul>
 <li>截屏监测，截屏后弹出意见反馈的提示，将截图和诊断日志手动上传。</li>
 <li>后台可以根据配置，收集指定用户的诊断日志信息。</li>
 </ul>
+<p>此外可以对性能、用户行为等数据进行监控。</p>
 <h4 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h4><p>增加单元测试代码，详情参见(Test Driven iOS Development)[<a href="http://alicialy.github.io/2018/05/11/Test-Driven-iOS-Development/" target="_blank" rel="external">http://alicialy.github.io/2018/05/11/Test-Driven-iOS-Development/</a>]</p>
 <h4 id="依靠工具提高代码质量"><a href="#依靠工具提高代码质量" class="headerlink" title="依靠工具提高代码质量"></a>依靠工具提高代码质量</h4><p>静态分析工具<br>OCLint<br>Infer</p>
 <p>重复代码查询<br>PMD</p>
@@ -582,7 +584,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -595,7 +597,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -656,7 +658,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重构"><span class="nav-number">1.</span> <span class="nav-text">重构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的原因"><span class="nav-number">1.1.</span> <span class="nav-text">重构的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构和重写"><span class="nav-number">1.2.</span> <span class="nav-text">重构和重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的目标"><span class="nav-number">1.3.</span> <span class="nav-text">重构的目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#框架"><span class="nav-number">1.4.</span> <span class="nav-text">框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码的坏味道"><span class="nav-number">1.5.</span> <span class="nav-text">代码的坏味道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式六大原则"><span class="nav-number">1.6.</span> <span class="nav-text">设计模式六大原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承的滥用"><span class="nav-number">1.7.</span> <span class="nav-text">继承的滥用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象组合"><span class="nav-number">1.7.1.</span> <span class="nav-text">对象组合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#protocol"><span class="nav-number">1.7.2.</span> <span class="nav-text">protocol</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">2.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#页面加载速度"><span class="nav-number">2.1.</span> <span class="nav-text">页面加载速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器和客户端通信"><span class="nav-number">2.2.</span> <span class="nav-text">服务器和客户端通信</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PorotoBuf"><span class="nav-number">2.2.1.</span> <span class="nav-text">PorotoBuf</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库优化"><span class="nav-number">2.3.</span> <span class="nav-text">数据库优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可用性"><span class="nav-number">2.4.</span> <span class="nav-text">可用性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#错误处理"><span class="nav-number">2.4.1.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单元测试"><span class="nav-number">2.4.2.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#依靠工具提高代码质量"><span class="nav-number">2.4.3.</span> <span class="nav-text">依靠工具提高代码质量</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重构"><span class="nav-number">1.</span> <span class="nav-text">重构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的原因"><span class="nav-number">1.1.</span> <span class="nav-text">重构的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构和重写"><span class="nav-number">1.2.</span> <span class="nav-text">重构和重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重构的目标"><span class="nav-number">1.3.</span> <span class="nav-text">重构的目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#框架"><span class="nav-number">1.4.</span> <span class="nav-text">框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码的坏味道"><span class="nav-number">1.5.</span> <span class="nav-text">代码的坏味道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式六大原则"><span class="nav-number">1.6.</span> <span class="nav-text">设计模式六大原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承的滥用"><span class="nav-number">1.7.</span> <span class="nav-text">继承的滥用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象组合"><span class="nav-number">1.7.1.</span> <span class="nav-text">对象组合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#protocol"><span class="nav-number">1.7.2.</span> <span class="nav-text">protocol</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">2.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#页面加载速度"><span class="nav-number">2.1.</span> <span class="nav-text">页面加载速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器和客户端通信"><span class="nav-number">2.2.</span> <span class="nav-text">服务器和客户端通信</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PorotoBuf"><span class="nav-number">2.2.1.</span> <span class="nav-text">PorotoBuf</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库优化"><span class="nav-number">2.3.</span> <span class="nav-text">数据库优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#架构原则"><span class="nav-number">2.4.</span> <span class="nav-text">架构原则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重构开关"><span class="nav-number">2.4.1.</span> <span class="nav-text">重构开关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#监控处理"><span class="nav-number">2.4.2.</span> <span class="nav-text">监控处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单元测试"><span class="nav-number">2.4.3.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#依靠工具提高代码质量"><span class="nav-number">2.4.4.</span> <span class="nav-text">依靠工具提高代码质量</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

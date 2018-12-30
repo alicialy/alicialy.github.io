@@ -251,6 +251,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/" itemprop="url">What I Talk About When I Talk About Performance</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-30T22:13:34+08:00">
+                2016-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有一句箴言说：“如果一个产品不注重性能，再华丽也是难用。” ——什么？你没听说过？好吧，这句话是我说的。</p>
+<p>要解决一个问题，大多数情况不是我们不知道如何解决，而是我们不知道问题在哪，所以定位问题是非常重要的。突然想到美剧［House］豪斯医生（啊，其实我好久没有看过美剧了，之前太忙了，请忽略我的废话），很多疾病也是很容易解决的，只是那些平庸的医生找不到症结所在。在 iOS 的世界里，查找“病因”的关键工具就是 Instruments 了。这篇文章主要说说如何通过 Instruments 找到问题所在。</p>
+<p>另外，由于最近为［伯乐在线］翻译一篇文章（该文章尚未发布），作者 Russ Bishop 谈到自己查找内存泄漏的一次痛苦经历，所以单开一篇文章说如何检测内存泄漏，如果你对下文中的 <em>Allocations &amp; Leaks</em> 章节感觉一览未尽的话，接下来我会写一篇关于调试内存泄漏的文章，里面会讲的更加详尽。</p>
+<p>自己设计和编码的项目［LEAF Photo］（一款拼图应用）基本完成等待上线前的收尾工作中，其中有一些优化还是挺有代表性的，就拿它作为 Demo 吧。 </p>
+<h2 id="Time-Profiler"><a href="#Time-Profiler" class="headerlink" title="Time Profiler"></a>Time Profiler</h2><p>调优一般我都是从 Time Profiler 开始<br><img src="/post_images/performance1.jpg" alt="img"><br>打开 Time Profiler，将控制面板 Call Tree 中的 Seperate by Thread、 Hide System Libraries 勾选，Invert Call Tree 也可以选中，查看耗时最多的调用，看看是否有可以调整的地方，下面以我的 Demo 为例，谈谈如何调整。</p>
+<p>显然，[MainTplTableViewCell setTplCoverModel] 中有些图片处理的耗时操作，这个可以放到线程中去做，使其不影响主线程。</p>
+<pre><code>NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+[toImageView setImage:scaledImage];
+</code></pre><p>将上面的方法放到线程中，另外由于 imageWithContentsOfFile 方法不会进行缓存，所以加载图片后将其加到缓存 (类型是 NSCache )中。</p>
+<pre><code>UIImage *tplImage = [self.cache objectForKey:indexPath];
+if (tplImage) {
+    [toImageView setImage:tplImage];
+}
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *coverPath = [[NSBundle mainBundle] pathForResource:cover ofType:@&quot;jpg&quot;];
+    UIImage *tplImage = [UIImage imageWithContentsOfFile:coverPath];
+    UIImage *scaledImage = [tplImage scaleImageAspectFitToSize:toImageView.bounds.size];
+    [self.cache setObject:scaledImage forKey:indexPath];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [toImageView setImage:scaledImage];
+    });
+});
+</code></pre><p>这样优化后，setTplCoverModel 方法由原来的 32ms 降低到了 2ms。</p>
+<p>通过 Time Profiler 找到最耗时的调用，不影响主线程的操作放到应当线程中；需要优化算法的通过算法降低时间复杂度；经常访问的数据放到缓存中，通过以上方法做调整。</p>
+<p>看完 Timer Profiler 接下来看看 Allocations 和 Leaks 的使用。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/03/30/What-I-Talk-About-When-I-Talk-About-Performance/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/21/Pro-Multilthreading-and-Memory-Management-for-iOS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1597,142 +1747,11 @@ return MAXFLOAT;\
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/01/15/Mobile-Client-Development-Notice/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alicia">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alicia's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2014/01/15/Mobile-Client-Development-Notice/" itemprop="url">Mobile Client Development Notice</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2014-01-15T01:48:01+08:00">
-                2014-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>这是一篇关于移动客户端开发中容易出现的 Bug 及问题以及产品方面的大杂烩。</p>
-<h2 id="修改代码时应当注意的问题"><a href="#修改代码时应当注意的问题" class="headerlink" title="修改代码时应当注意的问题"></a>修改代码时应当注意的问题</h2><ul>
-<li>代码是否可能存在重复，修复一个地方，其他的地方没有修复完全，要把重复的代码抽到公共的地方</li>
-<li>修改前和修改后是否功能是一致的没有出现变化。</li>
-<li>属性是否应该是只读的，一旦把只读变成非只读，要考虑修改了内存中常驻的变量时是否会有功能影响</li>
-<li>有时候写完一个功能测试下没问题，再写另一个功能时可能影响了之前的功能，所以再提测前要对所有功能重新走一遍完整的自测流程。</li>
-</ul>
-<h2 id="提交代码前的自测应检查的内容"><a href="#提交代码前的自测应检查的内容" class="headerlink" title="提交代码前的自测应检查的内容"></a>提交代码前的自测应检查的内容</h2><p>总结下通用的测试用例</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2014/01/15/Mobile-Client-Development-Notice/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1782,7 +1801,7 @@ return MAXFLOAT;\
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1795,7 +1814,7 @@ return MAXFLOAT;\
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

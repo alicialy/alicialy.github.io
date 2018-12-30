@@ -251,6 +251,140 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/27/Source-Code-Learning-NullSafe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/27/Source-Code-Learning-NullSafe/" itemprop="url">Source Code Learning - NullSafe</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-27T22:51:48+08:00">
+                2017-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h3><p>代码中有时会处理跟 NSNull 相关的逻辑，有时候我们并不想要 NSNull，我们希望的是 nil，例如后台下发 json 出现如下数据</p>
+<pre><code>{
+    &quot;nullValue&quot;: null
+}
+</code></pre><p>这个时候用一般的库转换 JSON 为对象的时候，就会变为</p>
+<pre><code>{
+    &quot;nullValue&quot;: &quot;&lt;null&gt;&quot;
+}
+</code></pre><p>如果后台本来应该下发数组，而写代码的时候没有判断数据类型，例如直接获取 [array length]，肯定会崩溃，出错原因是 [NSNull length] 没有对应的响应方法。</p>
+<p>如何不手动判断类型，又能避免崩溃？NullSafe 就是为了解决这个问题而诞生的。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>NullSafe 只有短短的一百行代码。实现的方式是，创建 NSNull 的类别，在该类别中首先查找 NSNull 是否能响应某方法，如果不可以响应的话，就查找系统中是否有某个类可以处理调用的方法，如果可以的话，该方法转发给 nil，当作 nil 处理这个方法，例如 nil 调用 [nil length] 是不会抛出异常的。代码如下：</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/03/27/Source-Code-Learning-NullSafe/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/22/Optimize-App-Startup-Time/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1539,163 +1673,11 @@ self.bezelView.alpha = self.opacity;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/24/GCD-Timer-and-Leaks/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alicia">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alicia's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/24/GCD-Timer-and-Leaks/" itemprop="url">GCD Timer and Leaks</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-24T21:11:18+08:00">
-                2016-08-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>GCD 的 Timer 相对于 NSTimer 更加灵活、高效（无需在主线程和后台线程之间进行切换），而且 NSTimer 需要在合适的地方调用 invalid 以避免内存泄漏，所以平时比较常用。但是发现 GCD Timer 随便调用 API 的话也会造成内存泄漏。</p>
-<p>GCD Timer 通过 Dispatch Source 实现，调用方法如：</p>
-<pre><code>dispatch_queue_t queue = dispatch_get_main_queue();
-dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 
-    2.0 * NSEC_PER_SEC, 0.1 * NSEC_PER_SEC);
-dispatch_source_set_event_handler(timer, ^() {
-    // do something
-});
-dispatch_resume(timer);
-</code></pre><p>如果需要暂停定时器调用</p>
-<pre><code>dispatch_suspend(timer);
-</code></pre><p>dispatch_suspend 和 dispatch_resume 应该是成对出现的。两者分别会减少和增加 dispatch 对象的挂起计数，但是没有 API 获取当前是挂起还是执行状态，所以需要自己记录。</p>
-<h3 id="dispatch-suspend-暂停队列并不意味着当前执行的-block-暂停"><a href="#dispatch-suspend-暂停队列并不意味着当前执行的-block-暂停" class="headerlink" title="dispatch_suspend 暂停队列并不意味着当前执行的 block 暂停"></a>dispatch_suspend 暂停队列并不意味着当前执行的 block 暂停</h3><p>当暂停派发队列时需要注意，调用 dispatch_suspend 暂停一个队列，并不意味着暂停当前正在执行的 block，而是 block 可以执行完，但是接下来的 block 会被暂停，直到 dispatch_resume 被调用。</p>
-<p>如果添加 dispatch_suspend 的调用后 timer 是无法被释放的。一般情况下会发生崩溃并报“EXC_BAD_INSTRUCTION”错误，看下 <a href="http://opensource.apple.com/source/libdispatch/libdispatch-187.7/src/source.c" target="_blank" rel="external">GCD 源码 Source 释放的处理</a> dispatch source release 的时候判断了当前是否是在暂停状态。</p>
-<pre><code>void _dispatch_source_xref_release(dispatch_source_t ds) {
-    if (slowpath(DISPATCH_OBJECT_SUSPENDED(ds))) {
-        // Arguments for and against this assert are within 6705399
-        DISPATCH_CLIENT_CRASH(&quot;Release of a suspended object&quot;);
-    }
-    _dispatch_wakeup(ds);
-    _dispatch_release(ds);
-}
-</code></pre><p><a href="http://libdispatch.macosforge.org/" target="_blank" rel="external">GCD 完整源码点击这里</a></p>
-<h3 id="dispatch-suspend-状态下无法释放"><a href="#dispatch-suspend-状态下无法释放" class="headerlink" title="dispatch_suspend 状态下无法释放"></a><span id="dispatch_suspend_dealloc">dispatch_suspend 状态下无法释放</span></h3><p>但是还有不一般的情况，如果暂停的代码加到 dispatch_source_set_event_handler 的 block 中，并不会发生崩溃，但是这个时候页面会无法释放造成内存泄漏！内存泄漏！内存泄漏！。</p>
-<pre><code>dispatch_source_set_event_handler(timer, ^() {
-    // do something
-    dispatch_suspend(timer);
-});
-</code></pre><p><a href="https://github.com/alicialy/MemoryLeaks" target="_blank" rel="external">Demo 代码点击这里</a>，Demo 中进入“GCD Timer” 页面再退出，通过 Allocations 工具可以发现 GCDTimerViewController 没有释放，dealloc 无法执行。</p>
-<p>怎么破？如果有需求按照上面这种方式写的话，添加个变量记录下 dispatch_suspend 是否被调用的状态，在 dealloc 时判断下，调用过 dispatch_suspend 则再调用下 dispatch_resume。或者暂停后不需要重新运行 timer 的话，取消 timer，一旦取消则不能再重新运行 timer，只能重建。</p>
-<pre><code>dispatch_source_cancel(timer);
-</code></pre><h3 id="参考内容"><a href="#参考内容" class="headerlink" title="参考内容"></a>参考内容</h3><p><a href="https://www.mikeash.com/pyblog/friday-qa-2009-09-18-intro-to-grand-central-dispatch-part-iv-odds-and-ends.html" target="_blank" rel="external">Mikeash GCD 介绍</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1745,7 +1727,7 @@ dispatch_resume(timer);
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1758,7 +1740,7 @@ dispatch_resume(timer);
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

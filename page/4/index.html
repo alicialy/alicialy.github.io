@@ -251,6 +251,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/" itemprop="url">Lighter View Controllers For LEAFPhoto</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-19T19:15:52+08:00">
+                2016-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>[LEAF Photo] 整个 app 的大部分功能都是在 LPCollageViewController 中实现的，随着时间的推移，这个 Controller 开始变得臃肿代码很长，记录下瘦身的各种策略。</p>
+<h2 id="ViewModel-及组合模式的使用"><a href="#ViewModel-及组合模式的使用" class="headerlink" title="ViewModel 及组合模式的使用"></a>ViewModel 及组合模式的使用</h2><p>[LEAF Photo] 为用户提供了拼接图片的不同模板，模板中包含了选择照片的视图、文字视图以及线条等，模板以 json 文件方式保存，将这些元素显示到视图上简单的逻辑就是判断 json 中是否存在节点，如果存在则创建对应的元素，这样创建模板的过程就会变的臃肿。</p>
+<p>借鉴下 MVVM 的方式，将 MVC 中的 C 拆分成 VM，使用 ViewModel 的方式处理展示，在利用组合的方式将每种元素的展示方法拆分到各自类中实现，这样创建元素的这个冗长的过程就可以被分散到每个元素的 ViewModel 类中了。</p>
+<pre><code>@interface CollageComponentViewModel : NSObject
+- (void)showToView:(CollageContainerView *)view target:(id)target;
+@end
+@interface CollageViewModel : CollageComponentViewModel
+@end
+@implementation CollageViewModel
+- (instancetype)initWithCollageModel:(CollageModel *)collageModel {
+    self = [super init];
+    if (self) {
+        _collageModel = collageModel;
+    }
+    return self;
+}
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    NSArray *textDecArray = self.collageModel.textDec;
+    if (textDecArray) {
+        [self showToView:view target:target array:textDecArray];
+    }
+    // ...
+}
+@end
+@interface CollageTextDecViewModel : CollageComponentViewModel
+@end
+- (void)showToView:(CollageContainerView *)view target:(id)target {
+    CollageLabel *textLabel = [[CollageLabel alloc] initWithFrame:frame];
+    textLabel.text = self.collageTextDecModel.text;
+    textLabel.font = [UIFont fontWithName:self.collageTextDecModel.fontName size:fontSize];
+    // ...
+    [view addSubview:textLabel];
+}
+</code></pre><p>原本在 Controller 和 View 中的很多代码，被分散到 CollageTextDecViewModel 等 ViewModel 中去。</p>
+<p>除了此例外，通常的应用中一些网络请求的处理和页面设置也可以使用 ViewModel 的方式。</p>
+<h2 id="将子视图独立成单独的类"><a href="#将子视图独立成单独的类" class="headerlink" title="将子视图独立成单独的类"></a>将子视图独立成单独的类</h2><p>子视图独立成一个类，并使用懒加载的方式创建。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/19/Lighter-View-Controllers-For-LEAFPhoto/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/01/What-I-Talk-About-When-I-Talk-About-Leaks/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1548,133 +1707,6 @@ Animal init
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/29/GCD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alicia">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alicia's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/05/29/GCD/" itemprop="url">GCD</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-05-29T20:15:48+08:00">
-                2015-05-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="dispatch-sync-dispatch-async-同步与异步"><a href="#dispatch-sync-dispatch-async-同步与异步" class="headerlink" title="dispatch_sync / dispatch_async 同步与异步"></a>dispatch_sync / dispatch_async 同步与异步</h3><p>dispatch_sync 提交 block 以供同步执行。这个接口会等到 block 执行结束才返回，所以不需要复制 block。</p>
-<p>可以利用串行队列实现锁的功能。比如多线程写同一数据库，需要保持写入的顺序和每次写入的完整性</p>
-<p>sync 和 async 区别<br>同步函数不论是并发队列还是串行队列，都不会开线程。一个任务开始后等待任务完成后返回<br>异步函数并发队列能开启多个线程，串行队列开启一个线程。异步方法会立即返回，不等待任务完成。</p>
-<h3 id="dispatch-queue-create-队列的创建或获取"><a href="#dispatch-queue-create-队列的创建或获取" class="headerlink" title="dispatch_queue_create 队列的创建或获取"></a>dispatch_queue_create 队列的创建或获取</h3><p>GCD的所有队列都是先进先出的，它的队列主要分三种，主队列 main_queue、全局并发队列 global_queue、自定义队列<br>串行队列：队列中的任务必须在前一个任务结束后才能执行，包括 DISPATCH_QUEUE_SERIAL 和 主队列<br>并发队列：队列中的任务必须在前一个任务开始后才能执行，包括 DISPATCH_QUEUE_CONCURRENT 和 全局并发队列</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/05/29/GCD/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1729,7 +1761,7 @@ Animal init
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-count">43</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

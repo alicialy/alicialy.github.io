@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近在看后台相关的技术书籍，总结一下架构相关的知识。
+复杂度软件架构：一些列相关的抽象模式，用于指导大型软件系统各个方面的设计。
+架构设计的目的：解决软件系统复杂度带来的问题
+高性能高性能带来的复杂度主要体现在：单机计算机内内部为了高性能带来的复杂度；多台计算机集群为了高性能带来的复杂度
+单机复杂度最关键的地方就是操作系统，操作系统和性能相关的就是进程和线程。
+要考虑高性能的软件系统，需要考虑如多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Architecture">
+<meta property="og:url" content="http://yoursite.com/2019/07/24/Architecture/index.html">
+<meta property="og:site_name" content="Alicia's Blog">
+<meta property="og:description" content="最近在看后台相关的技术书籍，总结一下架构相关的知识。
+复杂度软件架构：一些列相关的抽象模式，用于指导大型软件系统各个方面的设计。
+架构设计的目的：解决软件系统复杂度带来的问题
+高性能高性能带来的复杂度主要体现在：单机计算机内内部为了高性能带来的复杂度；多台计算机集群为了高性能带来的复杂度
+单机复杂度最关键的地方就是操作系统，操作系统和性能相关的就是进程和线程。
+要考虑高性能的软件系统，需要考虑如多">
+<meta property="og:updated_time" content="2019-07-24T05:08:32.814Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Architecture">
+<meta name="twitter:description" content="最近在看后台相关的技术书籍，总结一下架构相关的知识。
+复杂度软件架构：一些列相关的抽象模式，用于指导大型软件系统各个方面的设计。
+架构设计的目的：解决软件系统复杂度带来的问题
+高性能高性能带来的复杂度主要体现在：单机计算机内内部为了高性能带来的复杂度；多台计算机集群为了高性能带来的复杂度
+单机复杂度最关键的地方就是操作系统，操作系统和性能相关的就是进程和线程。
+要考虑高性能的软件系统，需要考虑如多">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/24/Architecture/"/>
+
+
+
+
+
+  <title>Architecture | Alicia's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?cbbd9aa76d6f5e7b8019ca96dba4e7e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alicia's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">［LEAF Photo］作者</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/24/Architecture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Architecture</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-24T13:04:34+08:00">
+                2019-07-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在看后台相关的技术书籍，总结一下架构相关的知识。</p>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><p>软件架构：一些列相关的抽象模式，用于指导大型软件系统各个方面的设计。</p>
+<p>架构设计的目的：解决软件系统复杂度带来的问题</p>
+<h3 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h3><p>高性能带来的复杂度主要体现在：单机计算机内内部为了高性能带来的复杂度；多台计算机集群为了高性能带来的复杂度</p>
+<p>单机复杂度最关键的地方就是操作系统，操作系统和性能相关的就是进程和线程。</p>
+<p>要考虑高性能的软件系统，需要考虑如多进程、多线程、进程间通信、多线程并发等技术点</p>
+<p>扫码一下几种常见的服务器</p>
+<p>Apache<br>Apache HTTP Server（简称 Apache）是 Apache 软件基金会的一款开放源码的 WEB 服务器软件</p>
+<p>优点：稳定、开源、跨平台，适合处理动态请求<br>缺点：不支持高并发</p>
+<p>发展时期很长，它兴起的年代，互联网产业远远比不上现在。所以它被设计为一个重量级的。在 Apache 上运行数以万计的并发访问，会导致服务器消耗大量内存。操作系统对其进行进程或线程间的切换也消耗了大量的 CPU 资源，导致 HTTP 请求的平均响应速度降低。</p>
+<p>Nginx<br>同 Apache 一样都是一种 WEB 服务器，是轻量级高并发 HTTP 服务器和反向代理服务器。<br>优点：轻量级、高并发、处理静态文件好消耗内存少，提供负载均衡<br>缺点：需要配合其他后端使用，没有 Apache 稳定</p>
+<p>正向代理最大的特点是客户端非常明确要访问的服务器地址<br>反向代理，”它代理的是服务端，代服务端接收请求”，主要用于服务器集群分布式部署的情况下，反向代理隐藏了服务器的信息</p>
+<p>常见的网站架构有：Nginx + php、Nginx + tomcat、Nginx + apache + php 等</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th style="text-align:right">是否支持多进程</th>
+<th style="text-align:center">是否支持多线程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nginx</td>
+<td style="text-align:right">是</td>
+<td style="text-align:center">是</td>
+</tr>
+<tr>
+<td>JBoss</td>
+<td style="text-align:right">否</td>
+<td style="text-align:center">是</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td style="text-align:right">否</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td>Memcache</td>
+<td style="text-align:right">否</td>
+<td style="text-align:center">是</td>
+</tr>
+</tbody>
+</table>
+<p>以上 Redis 是单进程单线程的，但是它的效率不比单进程多线程的同样基于内存的 KV 数据库 Memchache 差，官方提供的数据是可以达到 10万+ 的 QPS（每秒查询次数）。原因是它是基于内存存储，数据查找类似于 HashMap 时间复杂度是 O(1)；数据结构简单；单线程模式不用上下文切换和竞争条件；使用多路 I/O 复用模型，非阻塞 IO。“多路”指多个网络连接，“复用”指复用同一个线程。多路 I/O 复用技术可以让单个线程高效的处理多个连接请求。</p>
+<h4 id="集群的复杂度"><a href="#集群的复杂度" class="headerlink" title="集群的复杂度"></a>集群的复杂度</h4><ul>
+<li>任务分配：每天机器都可以处理完整的业务任务</li>
+</ul>
+<a id="more"></a>
+<p>任务分配器</p>
+<p>硬件网络设备 (例如：F5、交换机)<br>软件网络设备 (例如：LVS)<br>负载均衡软件（例如：Nginx、HAProxy）</p>
+<p>任务分配器从 1 台变为多台时，复杂度提高，需要将不同用户分配到不同的任务分配器上，常见方法包括</p>
+<p>DNS 轮询、智能 DNS、CDN（Content Delivery Network 内容分发网络）、GSLB（Global Server Load Balance 全局负载均衡）设备</p>
+<ul>
+<li>任务分解：通过任务分解将原来大而统一的复杂业务系统拆分为小而简单的多个系统配合的业务系统</li>
+</ul>
+<h3 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h3><p>系统 无中断 地执行其功能的能力</p>
+<ul>
+<li><p>计算高可用<br>同样输入同样输出，其复杂度表现为：加入任务分配器；任务分配器和真正的业务服务器之间的连接和交互选择合适的连接方式；任务分配器需要增加分配算法。<br>ZooKeeper 采用 1  主多备<br>Memcached 采用 全主 0 备</p>
+</li>
+<li><p>存储高可用<br>减少或者规避数据不一致对业务造成的影响。分布式领域著名的 <a href="http://www.ruanyifeng.com/blog/2018/07/cap.html" target="_blank" rel="external">CAP 定理</a>，从理论上论证了存储高可用的复杂度。</p>
+</li>
+</ul>
+<p>CAP 理论告诉我们：一个分布式系统不可能同时满足一致性（C：Consistency）、可用性（A：Availability）和分区容错性（P：Partition tolerance）这三个基本需求。</p>
+<p>状态决策<br>决策方式</p>
+<ul>
+<li>独裁式</li>
+<li>协商式</li>
+<li>民主式， ZooKeeper 集群在选举 leader 时采用的这种方式。该方式有一个固有的缺陷：脑裂，为了解决脑裂问题，民主式决策系统一般都采用“投票节点数必须超过系统总结点数一半”规则来处理。</li>
+</ul>
+<h3 id="可扩展"><a href="#可扩展" class="headerlink" title="可扩展"></a>可扩展</h3><p>数据库，例如 MySQL 替换为 Oracle<br>接口协议，例如 HTTP 接口协议支持 ProtocolBuffer<br> 将“变化”封装在一个“变化层”，将不变的部分封装在一个独立的“稳定层”</p>
+<h3 id="低成本、安全、规模"><a href="#低成本、安全、规模" class="headerlink" title="低成本、安全、规模"></a>低成本、安全、规模</h3><p>低成本，“创新”才能达到低成本目标，例如</p>
+<ul>
+<li>NoSQL （Memcache、 Redis）的出现为了解决关系型数据库无法应对高并发访问带来的压力</li>
+<li>全文检索引擎 (Sphinx、Elasticsearch、Solr) 为了解决关系型数据库 like 搜索的低效的问题</li>
+<li>Hadoop 为了解决传统文件系统无法应对海量数据存储和计算的问题</li>
+</ul>
+<p>安全</p>
+<ul>
+<li>功能安全：XSS 攻击、CSRF 攻击、SQL 注入等</li>
+<li>架构安全：防火墙（将网络划分成不同区域，制定出不同区域之间的访问控制策略）。因防火墙性能一般所以传统的银行和企业应用领域较多，互联网应用场景并不多。</li>
+</ul>
+<p>规模<br>规模带来复杂度的主要原因就是“量变引起质变”</p>
+<h3 id="架构设计三原则"><a href="#架构设计三原则" class="headerlink" title="架构设计三原则"></a>架构设计三原则</h3><ul>
+<li>合适原则，合适优于业界领先</li>
+<li>简单原则，简单优于复杂</li>
+<li>演化原则，演化优于一步到位</li>
+</ul>
+<h2 id="架构设计流程"><a href="#架构设计流程" class="headerlink" title="架构设计流程"></a>架构设计流程</h2><h3 id="第-1-步：识别复杂度"><a href="#第-1-步：识别复杂度" class="headerlink" title="第 1 步：识别复杂度"></a>第 1 步：识别复杂度</h3><p>架构复杂度主要源于“高性能”“高可用”“可扩展”三个方面。实际上大部分场景下，复杂度只是其中的某一个，少数情况下包含某两个，即使认为同时需要满足这三个方面，也必须进行优先级排序。</p>
+<ul>
+<li>是否需要高性能</li>
+</ul>
+<p>估算 TPS (Transactions Per Second 每秒需要处理的事务个数)  和 QPS (Queries Per Second) 每秒查询数据次数。估算一天内平均每秒的 TPS 和 QPS ，峰值一般取平均值的 3 - 4 倍，不要设定在 10 倍以上。如果这两个数的数值过万说明需要高性能是复杂度之一。</p>
+<ul>
+<li>根据业务需要衡量是否需要高可用性、可扩展性、安全及成本等</li>
+</ul>
+<h3 id="第-2-步：设计备选方案"><a href="#第-2-步：设计备选方案" class="headerlink" title="第 2 步：设计备选方案"></a>第 2 步：设计备选方案</h3><p>常见错误：设计最优秀的方案、只做一个方案、备选方案过于详细</p>
+<p>备选方案应该选择适合的即可，数量以 3 ～ 5 个为最佳，差异要比较明显，只关注技术选型而不是技术细节</p>
+<p>例如，实现微博系统，复杂性体现在高性能消息读取、高可用消息写入、高可用消息存储、高可用消息读取。为这样的系统设计备选方案如下：<br>方案一：采用开源的 Kafka<br>方案二：集群 + MySQL 存储，Netty 构建高性能系统，数据分散集群，集群中的服务器分组，每个分组包含一个主备 SQL，分组内主备数据复制，分组间数据不同步<br>方案三：集群 + 自研存储方案，方案二的基础上，将 MySQL 存储替换为自研实现存储方案<br>此外，开源方案还可能包括 Kafka、ActiveMQ、RabbitMQ；集群方案存储既可以考虑 MySQL，也可以考虑 HBase，或者 MySQL + Redis 结合；自研文件系统可以参考 Kafka 或者 LevelDB、HBase 等。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>请我喝汽水儿</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wepay.jpg" alt="Alicia WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Alicia Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/05/Technical-Management/" rel="next" title="Technical Management">
+                <i class="fa fa-chevron-left"></i> Technical Management
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zODgwOS8xNTMzNw=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Alicia" />
+            
+              <p class="site-author-name" itemprop="name">Alicia</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/alicialy" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:alicialy@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/alicialy" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/2027344411/" target="_blank" title="weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>weibo</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#复杂度"><span class="nav-number">1.</span> <span class="nav-text">复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#高性能"><span class="nav-number">1.1.</span> <span class="nav-text">高性能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#集群的复杂度"><span class="nav-number">1.1.1.</span> <span class="nav-text">集群的复杂度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高可用"><span class="nav-number">1.2.</span> <span class="nav-text">高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可扩展"><span class="nav-number">1.3.</span> <span class="nav-text">可扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#低成本、安全、规模"><span class="nav-number">1.4.</span> <span class="nav-text">低成本、安全、规模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#架构设计三原则"><span class="nav-number">1.5.</span> <span class="nav-text">架构设计三原则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构设计流程"><span class="nav-number">2.</span> <span class="nav-text">架构设计流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第-1-步：识别复杂度"><span class="nav-number">2.1.</span> <span class="nav-text">第 1 步：识别复杂度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第-2-步：设计备选方案"><span class="nav-number">2.2.</span> <span class="nav-text">第 2 步：设计备选方案</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alicia</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

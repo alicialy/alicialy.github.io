@@ -251,7 +251,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/Recruit/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/24/Architecture/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alicia">
@@ -270,7 +270,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/16/Recruit/" itemprop="url">Recruit</a></h1>
+                <a class="post-title-link" href="/2019/07/24/Architecture/" itemprop="url">Architecture</a></h1>
         
 
         <div class="post-meta">
@@ -282,8 +282,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-16T17:00:44+08:00">
-                2019-01-16
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-24T13:04:34+08:00">
+                2019-07-24
               </time>
             
 
@@ -321,30 +321,61 @@
 
       
         
-          
-            <p>做个招聘广告，长期有效</p>
-<p>目前带一个创业团队做央企项目，需要 iOS 开发，坐标 北京金融街，有兴趣请将你的简历发送到邮箱 liran@vld-tech.com。</p>
-<p>你来需要什么：</p>
-<ul>
-<li>较扎实的计算机基础知识</li>
-<li>对知识的深度探索</li>
-<li>不断学习的进取心</li>
-<li>对产品细节瑕疵的不容忍</li>
-<li>良好的代码风格</li>
+          <p>最近在看后台相关的技术书籍，总结一下架构相关的知识。</p>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><p>软件架构：一些列相关的抽象模式，用于指导大型软件系统各个方面的设计。</p>
+<p>架构设计的目的：解决软件系统复杂度带来的问题</p>
+<h3 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h3><p>高性能带来的复杂度主要体现在：单机计算机内内部为了高性能带来的复杂度；多台计算机集群为了高性能带来的复杂度</p>
+<p>单机复杂度最关键的地方就是操作系统，操作系统和性能相关的就是进程和线程。</p>
+<p>要考虑高性能的软件系统，需要考虑如多进程、多线程、进程间通信、多线程并发等技术点</p>
+<p>扫码一下几种常见的服务器</p>
+<p>Apache<br>Apache HTTP Server（简称 Apache）是 Apache 软件基金会的一款开放源码的 WEB 服务器软件</p>
+<p>优点：稳定、开源、跨平台，适合处理动态请求<br>缺点：不支持高并发</p>
+<p>发展时期很长，它兴起的年代，互联网产业远远比不上现在。所以它被设计为一个重量级的。在 Apache 上运行数以万计的并发访问，会导致服务器消耗大量内存。操作系统对其进行进程或线程间的切换也消耗了大量的 CPU 资源，导致 HTTP 请求的平均响应速度降低。</p>
+<p>Nginx<br>同 Apache 一样都是一种 WEB 服务器，是轻量级高并发 HTTP 服务器和反向代理服务器。<br>优点：轻量级、高并发、处理静态文件好消耗内存少，提供负载均衡<br>缺点：需要配合其他后端使用，没有 Apache 稳定</p>
+<p>正向代理最大的特点是客户端非常明确要访问的服务器地址<br>反向代理，”它代理的是服务端，代服务端接收请求”，主要用于服务器集群分布式部署的情况下，反向代理隐藏了服务器的信息</p>
+<p>常见的网站架构有：Nginx + php、Nginx + tomcat、Nginx + apache + php 等</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th style="text-align:right">是否支持多进程</th>
+<th style="text-align:center">是否支持多线程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nginx</td>
+<td style="text-align:right">是</td>
+<td style="text-align:center">是</td>
+</tr>
+<tr>
+<td>JBoss</td>
+<td style="text-align:right">否</td>
+<td style="text-align:center">是</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td style="text-align:right">否</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td>Memcache</td>
+<td style="text-align:right">否</td>
+<td style="text-align:center">是</td>
+</tr>
+</tbody>
+</table>
+<p>以上 Redis 是单进程单线程的，但是它的效率不比单进程多线程的同样基于内存的 KV 数据库 Memchache 差，官方提供的数据是可以达到 10万+ 的 QPS（每秒查询次数）。原因是它是基于内存存储，数据查找类似于 HashMap 时间复杂度是 O(1)；数据结构简单；单线程模式不用上下文切换和竞争条件；使用多路 I/O 复用模型，非阻塞 IO。“多路”指多个网络连接，“复用”指复用同一个线程。多路 I/O 复用技术可以让单个线程高效的处理多个连接请求。</p>
+<h4 id="集群的复杂度"><a href="#集群的复杂度" class="headerlink" title="集群的复杂度"></a>集群的复杂度</h4><ul>
+<li>任务分配：每天机器都可以处理完整的业务任务</li>
 </ul>
-<p>你来能得到什么：</p>
-<ul>
-<li>能被重视的工作体验</li>
-<li>良好的学习氛围，免费技术书籍查阅和技术分享</li>
-<li>培养全栈思维，如果你希望做全栈也有机会</li>
-<li>和十年开发经验的人分享技术成果</li>
-<li>技术能力短期内快速成长</li>
-<li>正规开发公司的工作体系</li>
-<li>发布优秀的开源项目</li>
-<li>下家公司工资翻倍的潜能</li>
-</ul>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/07/24/Architecture/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1719,7 +1750,7 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

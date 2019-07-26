@@ -95,7 +95,7 @@
 高性能高性能带来的复杂度主要体现在：单机计算机内内部为了高性能带来的复杂度；多台计算机集群为了高性能带来的复杂度
 单机复杂度最关键的地方就是操作系统，操作系统和性能相关的就是进程和线程。
 要考虑高性能的软件系统，需要考虑如多">
-<meta property="og:updated_time" content="2019-07-26T01:44:56.442Z">
+<meta property="og:updated_time" content="2019-07-26T01:46:44.593Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Architecture">
 <meta name="twitter:description" content="最近在看后台相关的技术书籍，总结一下架构相关的知识。
@@ -381,6 +381,7 @@
 <h4 id="集群的复杂度"><a href="#集群的复杂度" class="headerlink" title="集群的复杂度"></a>集群的复杂度</h4><ul>
 <li>任务分配：每台机器都可以处理完整的业务任务</li>
 </ul>
+<a id="more"></a>
 <p>任务分配器</p>
 <p>硬件网络设备 (例如：F5、交换机)<br>软件网络设备 (例如：LVS)<br>负载均衡软件（例如：Nginx、HAProxy）</p>
 <p>任务分配器从 1 台变为多台时，复杂度提高，需要将不同用户分配到不同的任务分配器上，常见方法包括</p>

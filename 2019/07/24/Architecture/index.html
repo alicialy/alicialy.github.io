@@ -95,7 +95,7 @@
 高性能高性能带来的复杂度主要体现在：单机计算机内内部为了高性能带来的复杂度；多台计算机集群为了高性能带来的复杂度
 单机复杂度最关键的地方就是操作系统，操作系统和性能相关的就是进程和线程。
 要考虑高性能的软件系统，需要考虑如多">
-<meta property="og:updated_time" content="2019-07-26T01:46:44.593Z">
+<meta property="og:updated_time" content="2019-07-26T01:51:28.523Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Architecture">
 <meta name="twitter:description" content="最近在看后台相关的技术书籍，总结一下架构相关的知识。
@@ -506,7 +506,39 @@
 <li>性能最优类，根据响应时间来分配，优先分配给响应最快的服务器</li>
 <li>Hash 类，将 Hash 值分配到同一台服务器上，常见的有源地址 Hash、目标地址 Hash、SessionID Hash、用户 ID Hash 等</li>
 </ul>
-<h2 id="高可用存储架构"><a href="#高可用存储架构" class="headerlink" title="高可用存储架构"></a>高可用存储架构</h2><p>FMEA 方法排除可用性隐患的利器，样例<br>|功能点      | 故障模式 | 故障影响 | 严重程度    |故障原因    | 故障概率    | 风险程度    | 已有措施     | 规避措施    | 解决措施    |后续规划    |<br>| :——– | :—: | :—: |:—– |:—– |:—– |:—– |:—– |:—– |:—– |:—– |<br>| 登录     | MySQL 无法访问 | 当 MC 中无缓存时，用户无法登录，预计有 60%的用户 | 高   |  MySQL 服务器断电 | 中   | 中    | 无    | 无    | 无    | 增加备份 MySQL</p>
+<h2 id="高可用存储架构"><a href="#高可用存储架构" class="headerlink" title="高可用存储架构"></a>高可用存储架构</h2><p>FMEA 方法排除可用性隐患的利器，样例</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能点</th>
+<th style="text-align:left">故障模式</th>
+<th style="text-align:left">故障影响</th>
+<th style="text-align:left">严重程度</th>
+<th style="text-align:left">故障原因</th>
+<th style="text-align:left">故障概率</th>
+<th style="text-align:left">风险程度</th>
+<th style="text-align:left">已有措施</th>
+<th style="text-align:left">规避措施</th>
+<th style="text-align:left">解决措施</th>
+<th style="text-align:left">后续规划</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">登录</td>
+<td style="text-align:left">MySQL 无法访问</td>
+<td style="text-align:left">当 MC 中无缓存时，用户无法登录，预计有 60%的用户</td>
+<td style="text-align:left">高</td>
+<td style="text-align:left">MySQL 服务器断电</td>
+<td style="text-align:left">中</td>
+<td style="text-align:left">中</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">无</td>
+<td style="text-align:left">增加备份 MySQL</td>
+</tr>
+</tbody>
+</table>
 <h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p>多台机器组成一起形成一个系统。<br>集群可以分为两类：数据集中集群（与主备、主从架构类似）、数据分散集群（多个服务器组成一个集群，每台服务都会负责存储一部分数据；同时，为了提升硬件利用率，每台服务又会备份一部分数据）。集中集群架构中，客户端只能将数据写入到主机；分散集群架构中客户端可以向任意服务器读写数据。</p>
 <h3 id="数据分区"><a href="#数据分区" class="headerlink" title="数据分区"></a>数据分区</h3><p>将数据按照一定的规则进行分区，不同分区分布在不同的地理位置上，每个分区存储一部分数据，以此规避地理界别故障所造成的巨大影响。设计分区架构时应考虑以下几点：</p>
 <ul>

@@ -251,6 +251,215 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/Full-Stack-Development/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/06/Full-Stack-Development/" itemprop="url">Full Stack Development</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-06T10:59:03+08:00">
+                2020-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="全栈"><a href="#全栈" class="headerlink" title="全栈"></a>全栈</h1><p>本文主要是看过极客时间“左耳朵耗子”《左耳听风》课程的一篇总结，由于这个课程涵盖的知识面积非常广，所以没有像原课程名字那样富有诗意，姑且这篇总结就叫做全栈开发吧。我这里会将原文内容提炼，有些精华领悟了就没有在这里码字，喜欢的话大家可以去购买课程。</p>
+<h1 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h1><h3 id="技术领导力"><a href="#技术领导力" class="headerlink" title="技术领导力"></a>技术领导力</h3><p>具有技术领导力的工程师所具有的特质：<strong>能够发现并简单优雅地解决问题</strong>，<strong>了解不同方案的优缺点</strong>，<strong>代码高性能、可复用、可扩展、易维护</strong>，<strong>能够用正确方式管理团队</strong>，<strong>发挥每个人潜力以及提高团队效能</strong>，并具有<strong>创新能力</strong>。</p>
+<p>为了具备以上特质需要有<strong>扎实的基础技术</strong>，<strong>非同一般的学习能力</strong>，<strong>坚持做正确的事</strong>，<strong>不断提高对自己的要求标准</strong>。以上几点中，要做到做正确的事可以包括：<strong>提高效率</strong>，<strong>自动化</strong>，<strong>掌握前沿技术</strong>，<strong>知识密集型</strong>，<strong>技术驱动</strong>。同时，我认为坚持做正确的事也是最难的，它受到太多外在因素的影响。</p>
+<p>对于一个普通的开发人员来说，写代码的过程中，你明明发现有个地方需要重构优化，但是你做了得不到任何利益，不做的话也没有人说你，你愿意花自己的时间加班做这个工作么，我想几十个人里才能挑出一个人愿意这样做的，受益的看起来是公司，其实是你自己。</p>
+<p>对于一个管理者，谁都知道代码审核作用很大，但是有几个公司能做到真正的代码审核，不忙的时候什么都可以做，只要一忙起来神马都是浮云，然后进入恶性循环。</p>
+<h3 id="领导"><a href="#领导" class="headerlink" title="领导"></a>领导</h3><p>让大家追随 Leader 的素质包括：<strong>赢得他人的信任</strong>，<strong>开放的心态</strong>，<strong>以身示范</strong>，<strong>保持热情和冲动</strong>，<strong>抓住事物本质</strong>，<strong>描绘令人向往的方向</strong>，<strong>为他人创造机会</strong>。</p>
+<h1 id="分布式技术"><a href="#分布式技术" class="headerlink" title="分布式技术"></a>分布式技术</h1><p>高性能：缓存、负载均衡、异步调用（消息队列）、数据镜像（读写分离）、数据分区</p>
+<p>高可用：拆分、冗余、限流降级、多活、监控及 DevOps</p>
+<h3 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h3><p>可用性 = 平均故障前时间/（平均故障前时间 + 平均修复时间）</p>
+<table>
+<thead>
+<tr>
+<th>系统可用性%</th>
+<th>右对齐</th>
+<th>宕机时间/月</th>
+<th>宕机时间/周</th>
+<th>宕机时间/天</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>90%</td>
+<td>36.5天</td>
+<td>72小时</td>
+<td>16.8小时</td>
+<td>2.4小时</td>
+</tr>
+<tr>
+<td>99%</td>
+<td>3.65天</td>
+<td>7.2小时</td>
+<td>1.68小时</td>
+<td>14.4分</td>
+</tr>
+<tr>
+<td>99.9%</td>
+<td>8.76小时</td>
+<td>43.8分</td>
+<td>10.1分</td>
+<td>1.44分</td>
+</tr>
+<tr>
+<td>99.99%</td>
+<td>52.56分</td>
+<td>4.38分</td>
+<td>1.01分</td>
+<td>8.66秒</td>
+</tr>
+<tr>
+<td>99.999%</td>
+<td>5.26分</td>
+<td>25.9分</td>
+<td>6.05秒</td>
+<td>0.87秒</td>
+</tr>
+</tbody>
+</table>
+<p>故障分类：网络问题、性能问题、安全问题、运维问题、管理问题、硬件问题等</p>
+<h3 id="“补偿事务”"><a href="#“补偿事务”" class="headerlink" title="“补偿事务”"></a>“补偿事务”</h3><p>基于 CAP 理论，分布式不能做到 C(一致性) A(可用性) P(分区容错)三者同时保证，分布式的话必须保证 P，CP 和 AP 的结合时，大多数应用场景都是需要 CP，保证数据一致性。</p>
+<p>CAP 理论后又出现了 ACID（“酸”，A 原子性、C 一致性、I 隔离性、D 持久性） 和 BASE（”碱” BA 基本可用、S 软状态、E 最终一致），二者的差别是“酸”强调一致性（C），“碱”强调可用性 (A)</p>
+<h3 id="“限流设计”"><a href="#“限流设计”" class="headerlink" title="“限流设计”"></a>“限流设计”</h3><p>回顾到这里的时候，正好读到刘超的《趣谈网络协议-云中网络的QoS》讲到网络流量控制技术，再看看限流技术两者惊人相似。实现方式包括队列算法、漏斗算法、令牌桶算法。</p>
+<h3 id="“数据库扩展”"><a href="#“数据库扩展”" class="headerlink" title="“数据库扩展”"></a>“数据库扩展”</h3><p>数据库扩展的方式有读写分离（CQRS）、分库分表(Sharding)，</p>
+<p>CQRS(Command and Query Responsibility Segregation 命令与查询职责分离)，也就是将命令（写操作，包括增删改）与查询（读操作）做好区分。</p>
+<p>分库分表在之前的文章 <a href="http://alicialy.github.io/2019/07/24/Architecture/" target="_blank" rel="external">Architeture</a> 中也有提及，这篇文章提及分片策略，主要通过多租户 ID 来分（如商家ID）、数据种类（如商品库类目）、范围（订单时间）、哈希算法（主键 id % 3 之类）。</p>
+<h1 id="高效学习"><a href="#高效学习" class="headerlink" title="高效学习"></a>高效学习</h1><p>系统学习模板</p>
+<ul>
+<li>技术出现的背景、要解决的问题</li>
+<li>技术优势、劣势</li>
+<li>技术适用场景</li>
+<li>技术组成部分和关键点</li>
+<li>技术的底层原理和关键实现</li>
+<li>已有的实现和它之间的对比</li>
+</ul>
+<p>学习到的知识要能做到举一反三，做到这点需要<strong>联想能力</strong>，联想到其他事物的应用；<strong>抽象能力</strong>，找到通用模型；<strong>自省能力</strong>，即思辨，利用批判性思维进行思考。</p>
+<h1 id="推荐书籍"><a href="#推荐书籍" class="headerlink" title="推荐书籍"></a>推荐书籍</h1><h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><p>《深入理解计算机系统》《计算机的构造和解释》</p>
+<p>《算法导论》《算法》《算法图解》《编程珠玑》</p>
+<p>《设计模式》《Head First 设计模式》</p>
+<p>《领域驱动设计》《Unix 编程艺术》《架构整洁之道》</p>
+<p>《设计模式》《重构》《代码整洁之道》《修改代码的艺术》《程序员的职业素养》</p>
+<p>《UNIX 环境高级编程》《Windows 核心编程》《鸟哥的 Linux 私房菜》</p>
+<p>《UNIX 网络编程》《TCP/IP 详解》</p>
+<p>《C 程序设计语言（第 2 版）》《Effective C++》《More Effective C++》</p>
+<p>《Java 核心技术（卷1）》《Spring in Action》《Spring Boot 实战》《Effectvie Java》《Java 并发编程实战》《Java 性能权威指南》《深入理解 Java 虚拟机》《Java 编程思想》《精通 Spring 4.x》</p>
+<p>《MySQL 必知必会》《高性能 MySQL》《MySQL技术内幕：InnoDB存储引擎》《数据库的索引设计与优化》</p>
+<p>《HTML 5 权威指南》</p>
+<p>《别让我思考》《简约至上》《认知与设计：理解 UI 设计准则》</p>
+<p>《完美软件：对软件测试的各种幻想》《Google 的软件测试之道》</p>
+<p>《程序员修炼之道》《人月神话》</p>
+<p>《技术领导之路》《卓有成效的管理者》</p>
+<h3 id="非技术类"><a href="#非技术类" class="headerlink" title="非技术类"></a>非技术类</h3><p>《重来》《清醒思考的艺术》《简单逻辑学》《沟通的艺术》</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/30/2019-book-list/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -321,25 +530,20 @@
 
       
         
-          
-            <h1 id="今年看过的工作类图书"><a href="#今年看过的工作类图书" class="headerlink" title="今年看过的工作类图书"></a>今年看过的工作类图书</h1><p>Github 上写博客的第四个年头了，过去的一年工作重心不再偏向 iOS，所以也没有看任何跟 iOS 相关的书籍，走过程序员退休的年龄，再度思考将来要走的路，之后会考虑向大前端（iOS &amp; Android &amp; Web）方向发展，同时兼顾 Java 后台路线，接受新的技术挑战。</p>
+          <h1 id="今年看过的工作类图书"><a href="#今年看过的工作类图书" class="headerlink" title="今年看过的工作类图书"></a>今年看过的工作类图书</h1><p>过去的一年工作重心不再偏向 iOS，所以也没有看任何跟 iOS 相关的书籍，走过程序员退休的年龄，之后会考虑向大前端（iOS &amp; Android &amp; Web）方向发展，同时兼顾 Java 后台路线，接受新的技术挑战。</p>
 <p>《从零开始学架构》</p>
 <p>介绍 Java 后台架构的一本书籍，真的能做到零基础也能对后台架构有一个较全面的认识。</p>
-<p>前段时间做 Android 的朋友年底工作述职，被其他部门老大问到对后台技术高并发如何处理，我相信看过这本书的话，他也就不会抱怨为什么问移动客户端工程师后台的技术问题了，机会总是给有准备的人，你总是对现状不满，不知道如何努力就不努力，状态停滞不前又能怪谁没给你机会呢？无聊的时候看看不相关的技术也许对眼前的工作没有什么帮助，但是他绝对能开阔你的视野和思路，今后跟其他人沟通也不至于鸡同鸭讲。</p>
+<p>前段时间做 Android 的朋友年底工作述职，被其他部门老大问到对后台技术高并发如何处理，我相信看过这本书的话，他也就不会抱怨为什么问移动客户端工程师后台的技术问题了，机会总是给有准备的人，你总是对现状不满，不知道如何努力就不努力，状态停滞不前又能怪谁没给你机会呢？看看不相关的技术也许对眼前的工作没有什么帮助，但是它能开阔视野和思路，今后工作中跟其他人沟通也不至于鸡同鸭讲。</p>
 <p>《区块链——通往资产数字化之路》</p>
-<p>这本书英文名字 Master Bitcoin 缩写 MB，MB 对于很多了解区块链的人来说不会陌生豆瓣评分 9.0，就是这本书了。不管是从技术角度的剖析还是应用角度的讲解都非常全面到位，相对于《区块链革命》这本讲区块链会给人们生活带来什么改变的介绍书籍，通过 MB 你能够对区块链有一个比较具象的认识，而且书中介绍了加密算法、椭圆曲线加密算法、默克尔树等等能使你对密码学有一定了解。</p>
+<p>这本书英文名字 Master Bitcoin 缩写 MB，MB 对于很多了解区块链的人来说不会陌生，豆瓣评分 9.0 。不管是从技术角度的剖析还是应用角度的讲解都非常全面到位，相对于《区块链革命》这本讲区块链会给人们生活带来什么改变的介绍书籍，通过 MB 你能够对区块链有一个比较具象的认识，而且书中介绍了加密算法、椭圆曲线加密算法、默克尔树等等对密码学的介绍也相当有趣。</p>
 <p>《智能时代》</p>
-<p>吴军博士的这本书虽然没怎么讲技术，但是读起来还算有趣，看他书写的思路也能看出来这位前辈的博学。</p>
-<p>《大数据时代》</p>
-<p>这种不讲技术但是又说技术的书，对我来说真的是吸引力不大，囫囵吞枣的看完，隔了一段时间以后对书中内容竟全无印象</p>
-<p>2019 年看过的技术书籍还是太少了，主要是工作繁忙还有这两本书啃得比较费劲，对于书中很多知识的不理解，需要时间理解消化，不找借口了继续努力吧。</p>
-<h1 id="管理类书籍"><a href="#管理类书籍" class="headerlink" title="管理类书籍"></a>管理类书籍</h1><p>今年竟然没有读多少管理类书籍，甚是可怕，看了很多似技术又非技术的书籍，就算是为了管理工作做的铺垫吧</p>
-<p>《赋能》</p>
-<p>算是今年阅读的少数管理类书籍中的一本，讲美军海豹突击队的管理，有一定的启发性。</p>
-<h1 id="非工作类书籍推荐"><a href="#非工作类书籍推荐" class="headerlink" title="非工作类书籍推荐"></a>非工作类书籍推荐</h1><p>《基因传》</p>
-<p>一本非常浅显易懂介绍基因医学史的书，从中学课本中的孟德尔豌豆杂交到达尔文进化论，再到基因的发现很多有意思的故事，看完本书对事物背后的原理故事更感兴趣，突然想重读《别逗了，费曼先生》，作为女生之前对这种书籍真的是硬着头皮看完，还找不到任何感兴趣的点，看完本书重燃了兴趣。</p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/30/2019-book-list/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1554,137 +1758,6 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/14/Using-OpenCV/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alicia">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alicia's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/14/Using-OpenCV/" itemprop="url">Using OpenCV</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-14T20:59:11+08:00">
-                2017-12-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Using OpenCV</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>最近这几年人工智能大火，公司也想向现有产品（移动销售自动化管理软件）中加入些沾边的功能，于是想到现在销售填报数据时将现有的人工采集数据（超市货架中货品种类和数量统计）方式改用机器来做。让机器识别出货物首先要给机器大量的图片让它学习，然后通过图像识别技术来辨识超市货架的货物，并计算出数量。</p>
-<p>本来按着这个思路下去应该是先进行 CoreML 等方式的调研，然后线下人员采集大量产品图片，结果公司领导不知道是基于什么原因，要求移动端开发先做个图像分割的应用，将一张超市货架的图片拍照后，再手动将每层货架标识出来，然后手动分割每层货架的产品，显然这种方式太没有技术含量了，所以用业余时间研究了一下 OpenCV ，看看有什么方式能实现自动检测出货架，并分割出每个产品。</p>
-<p>经研究，通过直线检测方式能检测出货架位置，但是图像分割的效果由于光线以及产品摆放方式等原因会效果较差，趁着印象深刻的时候，把用到的知识点以及遇到的问题和解决方案总结一下。</p>
-<p><a href="https://github.com/alicialy/LTImageAnalysis">LTImageAnalysis - Demo地址</a></p>
-<p><img src="https://github.com/alicialy/LTImageAnalysis/raw/master/readme.gif" alt="img"></p>
-<h3 id="书籍推荐"><a href="#书籍推荐" class="headerlink" title="书籍推荐"></a>书籍推荐</h3><p>如果想用好 OpenCV，就要对 OpenCV 能做什么有非常清楚的了解，所以 《Learning OpenCV 3》 是个人感觉最有用的书，第三版好像还没有中文版，所以看了英文版，对比了下中文版的第一版，第三版内容更丰富目录结构更合理。另外推荐 《Mastering OpenCV with Practical Computer Vision Projects》，在没有思路的时候可以借鉴一下。</p>
-<h3 id="OpenCV-安装和使用"><a href="#OpenCV-安装和使用" class="headerlink" title="OpenCV 安装和使用"></a>OpenCV 安装和使用</h3><p>OpenCV 是 Open source computer vision 的缩写，它的目的是提供一种更简单的方式来快速处理复杂的视觉应用。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/12/14/Using-OpenCV/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1739,7 +1812,7 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-count">45</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1817,7 +1890,7 @@ FBSnapshotVerifyViewWithOptions(vc.view, app.displayName, FBSnapshotTestCaseDefa
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

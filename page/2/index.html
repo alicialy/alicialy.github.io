@@ -251,6 +251,137 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/14/Using-OpenCV/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alicia">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alicia's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/14/Using-OpenCV/" itemprop="url">Using OpenCV</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-14T20:59:11+08:00">
+                2017-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Using OpenCV</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>最近这几年人工智能大火，公司也想向现有产品（移动销售自动化管理软件）中加入些沾边的功能，于是想到现在销售填报数据时将现有的人工采集数据（超市货架中货品种类和数量统计）方式改用机器来做。让机器识别出货物首先要给机器大量的图片让它学习，然后通过图像识别技术来辨识超市货架的货物，并计算出数量。</p>
+<p>本来按着这个思路下去应该是先进行 CoreML 等方式的调研，然后线下人员采集大量产品图片，结果公司领导不知道是基于什么原因，要求移动端开发先做个图像分割的应用，将一张超市货架的图片拍照后，再手动将每层货架标识出来，然后手动分割每层货架的产品，显然这种方式太没有技术含量了，所以用业余时间研究了一下 OpenCV ，看看有什么方式能实现自动检测出货架，并分割出每个产品。</p>
+<p>经研究，通过直线检测方式能检测出货架位置，但是图像分割的效果由于光线以及产品摆放方式等原因会效果较差，趁着印象深刻的时候，把用到的知识点以及遇到的问题和解决方案总结一下。</p>
+<p><a href="https://github.com/alicialy/LTImageAnalysis">LTImageAnalysis - Demo地址</a></p>
+<p><img src="https://github.com/alicialy/LTImageAnalysis/raw/master/readme.gif" alt="img"></p>
+<h3 id="书籍推荐"><a href="#书籍推荐" class="headerlink" title="书籍推荐"></a>书籍推荐</h3><p>如果想用好 OpenCV，就要对 OpenCV 能做什么有非常清楚的了解，所以 《Learning OpenCV 3》 是个人感觉最有用的书，第三版好像还没有中文版，所以看了英文版，对比了下中文版的第一版，第三版内容更丰富目录结构更合理。另外推荐 《Mastering OpenCV with Practical Computer Vision Projects》，在没有思路的时候可以借鉴一下。</p>
+<h3 id="OpenCV-安装和使用"><a href="#OpenCV-安装和使用" class="headerlink" title="OpenCV 安装和使用"></a>OpenCV 安装和使用</h3><p>OpenCV 是 Open source computer vision 的缩写，它的目的是提供一种更简单的方式来快速处理复杂的视觉应用。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/14/Using-OpenCV/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/07/An-Organic-Problem-Solving-Approach/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1511,178 +1642,6 @@ self.window.rootViewController = [[UINavigationController alloc] initWithRootVie
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/23/Clang-Attributes-in-Open-Source/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alicia">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alicia's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/23/Clang-Attributes-in-Open-Source/" itemprop="url">Clang Attributes in Open Source</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-23T19:37:56+08:00">
-                2016-09-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这篇文章应该叫做那些开源项目中用到过的 Clang Attributes，会列出开源项目的名字和使用方式以及用例</p>
-<h3 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h3><h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><pre><code>__attribute__ ((visibility(&quot;default&quot;)))
-</code></pre><p>visibility 中的值可以为 default | internal | hidden | protected</p>
-<p>该属性用于设置动态链接库中函数或者变量的可见性</p>
-<p>我们在 C 语言中，如果想要将函数或变量限制在当前文件中，可以使用 static 关键字，但是在复杂的项目中，如果想要限制某个符号被共享库内部某些文件可以访问，而外部不可以访问泽有些困难，于是 GCC 中引入了 visibility 属性，它可以设置某个函数或变量是否可访问，例如这个变量在多个文件中被定义，又同时有多个链接库需要引用它时，如果不设置可见性，那么到底引用为那个值或者函数就要看加载顺序了。</p>
-<h4 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h4><pre><code>UIKIT_EXTERN const UIWindowLevel UIWindowLevelNormal;
-UIKIT_EXTERN const UIWindowLevel UIWindowLevelAlert;
-UIKIT_EXTERN const UIWindowLevel UIWindowLevelStatusBar __TVOS_PROHIBITED;
-
-#ifdef __cplusplus
-#define UIKIT_EXTERN        extern &quot;C&quot; __attribute__((visibility (&quot;default&quot;)))
-#else
-#define UIKIT_EXTERN            extern __attribute__((visibility (&quot;default&quot;)))
-#endif
-</code></pre><h4 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h4><p>JDStatusBarNotification</p>
-<h4 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h4><p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.3.5/gcc/Function-Attributes.html" target="_blank" rel="external">Visibility Pragmas</a><br><a href="https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/CppRuntimeEnv/Articles/SymbolVisibility.html" target="_blank" rel="external">Controlling Symbol Visibility</a></p>
-<h3 id="objc-subclassing-restricted"><a href="#objc-subclassing-restricted" class="headerlink" title="objc_subclassing_restricted"></a>objc_subclassing_restricted</h3><h4 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h4><pre><code>__attribute__((objc_subclassing_restricted))
-</code></pre><p>用于限制某个类是不可继承的，但是这个限制只是编译时的限制，不直接写 @interface SubClass : ParentClass，而是使用 Runtime 的方式仍然是可以创建继承关系的。</p>
-<pre><code>void run(id self, SEL _cmd) {}
-class subClass = objc_allocateClassPair([ParentClass class], &quot;SubClass&quot;, 0);
-class_addMethod(subClass, @selector(run),(IMP) run, &quot;v@:&quot;);
-objc_registerClassPair(subClass);
-</code></pre><h4 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h4><pre><code>__attribute__((objc_subclassing_restricted))
-@interface ParentClass : NSObject
-@end
-@interface SubClass : ParentClass // &lt;--- Compile Error
-@end
-</code></pre><h4 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h4><p><a href="http://blog.sunnyxx.com/2016/05/14/clang-attributes/" target="_blank" rel="external">Clang Attributes 黑魔法小记</a></p>
-<h3 id="deprecated"><a href="#deprecated" class="headerlink" title="deprecated"></a>deprecated</h3><h4 id="解释-2"><a href="#解释-2" class="headerlink" title="解释"></a>解释</h4><pre><code>__attribute__((deprecated(&quot;弃用解释说明&quot;)));
-</code></pre><p>用于说明某个属性已经弃用</p>
-<pre><code>@property (assign, nonatomic) CGFloat opacity __attribute__((deprecated(&quot;Customize bezelView properties instead.&quot;)));
-</code></pre><h4 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h4><p>另外，忽略弃用警告可以使用</p>
-<pre><code>#pragma clang diagnostic push
-#pragma clang diagnostic ignored &quot;-Wdeprecated-declarations&quot;
-self.bezelView.alpha = self.opacity;
-#pragma clang diagnostic pop
-</code></pre><h4 id="项目-1"><a href="#项目-1" class="headerlink" title="项目"></a>项目</h4><p>MBProgress</p>
-<h3 id="objc-requires-super"><a href="#objc-requires-super" class="headerlink" title="objc_requires_super"></a>objc_requires_super</h3><h4 id="解释-3"><a href="#解释-3" class="headerlink" title="解释"></a>解释</h4><p>子类可以覆盖父类方法，如果子类需要调用父类方法使用 super 父类方法名，如果需要强制子类调用父类的方法，可以使用 objc_requires_super，当子类没有调用父类方法时则会给出警告</p>
-<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><pre><code>@interface Father : NSObject
-- (void)payMoney __attribute__((objc_requires_super));
-@end
-@implementation Father
-- (void)payMoney {
-    NSLog(@&quot;I paid&quot;);    
-}
-@end
-@interface Son : Father
-@end
-@implementation Son
-- (void)payMoney {
-} // &lt;--- Compile Error Missing call [super payMoney]
-@end
-</code></pre><p>// .. 待追加</p>
-<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><h4 id="解释-4"><a href="#解释-4" class="headerlink" title="解释"></a>解释</h4><h4 id="用例-3"><a href="#用例-3" class="headerlink" title="用例"></a>用例</h4><h4 id="项目-2"><a href="#项目-2" class="headerlink" title="项目"></a>项目</h4><h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><h4 id="参考文献-2"><a href="#参考文献-2" class="headerlink" title="参考文献"></a>参考文献</h4>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1737,7 +1696,7 @@ self.bezelView.alpha = self.opacity;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-count">45</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1815,7 +1774,7 @@ self.bezelView.alpha = self.opacity;
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
